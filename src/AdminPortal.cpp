@@ -76,11 +76,11 @@ void AdminPortal::display_menu()
     std::cout << Colors::YELLOW << "  SEMESTER MANAGEMENT" << Colors::RESET << "\n";
 
     std::string regStatus = semesterManager->is_course_add_enabled() ? (Colors::GREEN + "OPEN" + Colors::RESET) : (Colors::RED + "CLOSED" + Colors::RESET);
-    std::cout << "  " << Colors::CYAN << "[16]" << Colors::RESET
+    std::cout << "    " << Colors::CYAN << "[16]" << Colors::RESET
               << "  Toggle Course Registration (Currently: " << regStatus << ")\n";
 
     std::string dropStatus = semesterManager->is_course_drop_enabled() ? (Colors::GREEN + "ENABLED" + Colors::RESET) : (Colors::RED + "DISABLED" + Colors::RESET);
-    std::cout << "  " << Colors::CYAN << "[17]" << Colors::RESET
+    std::cout << "    " << Colors::CYAN << "[17]" << Colors::RESET
               << "  Toggle Course Drop (Currently: " << dropStatus << ")\n";
 
     OutputFormatter::print_menu_item(18, "View Semester Manager Status", Colors::CYAN);
