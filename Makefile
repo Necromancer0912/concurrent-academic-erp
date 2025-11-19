@@ -90,7 +90,7 @@ clean:
 clean-all: clean
 	@echo "Cleaning data files..."
 	@rm -rf $(DATA_DIR)
-	@rm -f *.csv *.txt *.db transcript_*.txt
+# 	@rm -f *.csv *.txt *.db transcript_*.txt
 	@echo "=> Complete clean done"
 
 # Help target

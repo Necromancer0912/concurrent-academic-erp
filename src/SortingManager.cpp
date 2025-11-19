@@ -175,7 +175,7 @@ SortingManager<RollType, CourseCodeType>::parallelSort(
     // Override numThreads with optimal value
     int effectiveThreads = optimalThreads;
 
-    std::cout << "\n[Parallel Sort Configuration]\n";
+    std::cout << "\nParallel Sort Configuration\n";
     std::cout << "  Student count: " << n << "\n";
     std::cout << "  Hardware threads: " << std::thread::hardware_concurrency() << "\n";
     std::cout << "  Optimal threads: " << optimalThreads << "\n";
@@ -195,7 +195,7 @@ SortingManager<RollType, CourseCodeType>::parallelSort(
     std::vector<int> boundaries;
 
     // Create boundaries for each thread
-    std::cout << "[Thread Workload Distribution]\n";
+    std::cout << "Thread Workload Distribution\n";
     for (int i = 0; i < effectiveThreads; ++i)
     {
         int left = i * segmentSize;
@@ -208,7 +208,7 @@ SortingManager<RollType, CourseCodeType>::parallelSort(
 
     // Launch threads to sort each segment
     auto sortingStart = std::chrono::steady_clock::now();
-    std::cout << "[Phase 1: Parallel Sorting]\n";
+    std::cout << "Phase 1: Parallel Sorting\n";
     for (int i = 0; i < effectiveThreads; ++i)
     {
         int left = boundaries[i * 2];
@@ -226,7 +226,7 @@ SortingManager<RollType, CourseCodeType>::parallelSort(
     std::cout << "  All sorting threads completed in " << sortingDuration.count() << " ms\n\n";
 
     // Merge all sorted segments using a dedicated merge thread
-    std::cout << "[Phase 2: Parallel Merging]\n";
+    std::cout << "Phase 2: Parallel Merging\n";
     auto mergeStartTime = std::chrono::steady_clock::now();
 
     // Create a lambda for the merge operation to run in a separate thread
@@ -293,7 +293,7 @@ SortingManager<RollType, CourseCodeType>::parallelSort(
 
     auto overallEnd = std::chrono::steady_clock::now();
     auto totalDuration = std::chrono::duration_cast<std::chrono::milliseconds>(overallEnd - sortingStart);
-    std::cout << "[Overall Performance]\n";
+    std::cout << "Overall Performance\n";
     std::cout << "  Total sorting time: " << totalDuration.count() << " ms\n";
     std::cout << "  Sorted " << n << " students using " << effectiveThreads << " threads\n\n";
 

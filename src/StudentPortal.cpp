@@ -297,7 +297,7 @@ void StudentPortal::viewPendingRequests()
     }
     catch (const std::exception &e)
     {
-        std::cout << "\nX Error: " << e.what() << "\n";
+        std::cout << "\nERROR: " << e.what() << "\n";
     }
 }
 
@@ -305,7 +305,7 @@ void StudentPortal::registerForCourse()
 {
     if (!semesterManager->isCourseAddEnabled())
     {
-        std::cout << "\nX Course registration is currently closed.\n";
+        std::cout << "\nERROR: Course registration is currently closed.\n";
         std::cout << "   Please contact administration for more information.\n";
         return;
     }
@@ -322,7 +322,7 @@ void StudentPortal::registerForCourse()
     // Check if course exists in catalog
     if (!courseCatalog->courseExists(courseCode))
     {
-        std::cout << "\nX Course not found in catalog.\n";
+        std::cout << "\nERROR: Course not found in catalog.\n";
         return;
     }
 
@@ -331,7 +331,7 @@ void StudentPortal::registerForCourse()
     {
         if (course.getCourseCode() == courseCode)
         {
-            std::cout << "\nX You are already enrolled in this course.\n";
+            std::cout << "\nERROR: You are already enrolled in this course.\n";
             return;
         }
     }
@@ -342,7 +342,7 @@ void StudentPortal::registerForCourse()
     {
         if (req.getCourseCode() == courseCode && req.getStatus() == RequestStatus::PENDING)
         {
-            std::cout << "\nX You already have a pending request for this course.\n";
+            std::cout << "\nERROR: You already have a pending request for this course.\n";
             std::cout << "  Request ID: " << req.getRequestId() << "\n";
             std::cout << "  Status: " << requestStatusToString(req.getStatus()) << "\n";
             return;
@@ -366,7 +366,7 @@ void StudentPortal::registerForCourse()
 
     if (currentCredits + courseCredits > 16)
     {
-        std::cout << "\nX Not enough credits available for this semester.\n";
+        std::cout << "\nERROR: Not enough credits available for this semester.\n";
         std::cout << "   Maximum 16 credits per semester.\n";
         return;
     }
@@ -387,7 +387,7 @@ void StudentPortal::registerForCourse()
     try
     {
         int requestId = erpSystem->addPendingRequest(rollNumber, courseCode);
-        std::cout << "\n=> Course registration request submitted successfully!\n";
+        std::cout << "\nCourse registration request submitted successfully.\n";
         std::cout << "  Request ID: " << requestId << "\n";
         std::cout << "  Course Code: " << courseCode << "\n";
         std::cout << "  Status: PENDING\n";
@@ -396,7 +396,7 @@ void StudentPortal::registerForCourse()
     }
     catch (const std::exception &e)
     {
-        std::cout << "\nX Error submitting request: " << e.what() << "\n";
+        std::cout << "\nERROR: Error submitting request: " << e.what() << "\n";
     }
 }
 
@@ -404,7 +404,7 @@ void StudentPortal::dropCourse()
 {
     if (!semesterManager->isCourseDropEnabled())
     {
-        std::cout << "\nX Course drop is currently disabled.\n";
+        std::cout << "\nERROR: Course drop is currently disabled.\n";
         std::cout << "   Please contact administration for more information.\n";
         return;
     }
@@ -422,7 +422,7 @@ void StudentPortal::dropCourse()
 
     if (confirm == "YES")
     {
-        std::cout << "\n⚠ Course drop functionality is under development.\n";
+        std::cout << "\nWARNING: Course drop functionality is under development.\n";
         std::cout << "   Please contact administration to drop courses.\n";
     }
     else
@@ -489,7 +489,7 @@ void StudentPortal::viewCourseDetails()
 
     if (!courseCatalog->courseExists(courseCode))
     {
-        std::cout << "\nX Course not found.\n";
+        std::cout << "\nERROR: Course not found.\n";
         return;
     }
 
@@ -636,14 +636,14 @@ void StudentPortal::downloadTranscript()
 
     if (!file.is_open())
     {
-        std::cout << "\nX Error: Could not create transcript file.\n";
+        std::cout << "\nERROR: Could not create transcript file.\n";
         return;
     }
 
     file << transcript;
     file.close();
 
-    std::cout << "\n=> Transcript saved successfully!\n";
+    std::cout << "\nTranscript saved successfully.\n";
     std::cout << "   File: " << filename << "\n";
 }
 
@@ -663,22 +663,22 @@ void StudentPortal::changePassword()
 
     if (newPassword != confirmPassword)
     {
-        std::cout << "\nX Passwords do not match.\n";
+        std::cout << "\nERROR: Passwords do not match.\n";
         return;
     }
 
     if (newPassword.length() < 6)
     {
-        std::cout << "\nX Password must be at least 6 characters long.\n";
+        std::cout << "\nERROR: Password must be at least 6 characters long.\n";
         return;
     }
 
     if (Auth::changePassword(rollNumber, oldPassword, newPassword, UserType::STUDENT))
     {
-        std::cout << "\n=> Password changed successfully!\n";
+        std::cout << "\nPassword changed successfully.\n";
     }
     else
     {
-        std::cout << "\nX Failed to change password. Check your current password.\n";
+        std::cout << "\nERROR: Failed to change password. Check your current password.\n";
     }
 }

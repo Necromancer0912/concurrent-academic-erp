@@ -251,7 +251,7 @@ void AdminPortal::addSingleStudent()
         studentLevel = StudentLevel::DUAL_DEGREE;
     else
     {
-        std::cout << "\nX Invalid level. Use BTECH/MTECH/PHD/DUAL_DEGREE\n";
+        std::cout << "\nERROR: Invalid level. Use BTECH/MTECH/PHD/DUAL_DEGREE.\n";
         return;
     }
 
@@ -306,13 +306,13 @@ void AdminPortal::addSingleStudent()
         // Save insertion order to file
         erpSystem->saveInsertionOrderToFile();
 
-        std::cout << "\n=> Student added successfully!\n";
+        std::cout << "\nStudent added successfully.\n";
         std::cout << "  Roll Number: " << rollNumber << "\n";
         std::cout << "  Name: " << name << "\n";
     }
     catch (const std::exception &e)
     {
-        std::cout << "\nX Error: " << e.what() << "\n";
+        std::cout << "\nERROR: " << e.what() << "\n";
     }
 }
 
@@ -354,7 +354,7 @@ void AdminPortal::addBulkStudents()
             }
         }
 
-        std::cout << "\n=> Successfully added " << added << " out of "
+        std::cout << "\nSuccessfully added " << added << " out of "
                   << students.size() << " students.\n";
 
         // Save insertion order to file after bulk add
@@ -365,7 +365,7 @@ void AdminPortal::addBulkStudents()
     }
     catch (const std::exception &e)
     {
-        std::cout << "\nX Error: " << e.what() << "\n";
+        std::cout << "\nERROR: " << e.what() << "\n";
     }
 }
 
@@ -548,12 +548,12 @@ void AdminPortal::sortStudents(int criteria, bool multiThreaded)
                       << " | CGPA: " << std::fixed << std::setprecision(2) << sortedStudents[i]->getLoadedCGPA() << "\n";
         }
 
-        std::cout << "\n=> Students sorted successfully!\n";
+        std::cout << "\nStudents sorted successfully.\n";
         std::cout << "   Insertion order preserved. Database unchanged.\n";
     }
     catch (const std::exception &e)
     {
-        std::cout << "\nX Error: " << e.what() << "\n";
+        std::cout << "\nERROR: " << e.what() << "\n";
     }
 }
 
@@ -618,7 +618,7 @@ void AdminPortal::searchStudent()
         auto student = erpSystem->findStudent(rollNumber);
         if (!student)
         {
-            std::cout << "\nX Student not found.\n";
+            std::cout << "\nERROR: Student not found.\n";
             return;
         }
 
@@ -640,7 +640,7 @@ void AdminPortal::searchStudent()
             break;
         }
 
-        std::cout << "\n=> Student Found:\n";
+        std::cout << "\nStudent Found:\n";
         std::cout << "Roll Number: " << student->getRollNumber() << "\n";
         std::cout << "Name: " << student->getName() << "\n";
         std::cout << "Branch: " << student->getBranch().getBranchName() << "\n";
@@ -692,7 +692,7 @@ void AdminPortal::searchStudent()
     }
     catch (const std::exception &e)
     {
-        std::cout << "\nX Error: " << e.what() << "\n";
+        std::cout << "\nERROR: " << e.what() << "\n";
     }
 }
 
@@ -709,7 +709,7 @@ void AdminPortal::updateStudentMarks()
         auto student = erpSystem->findStudent(rollNumber);
         if (!student)
         {
-            std::cout << "\nX Student not found.\n";
+            std::cout << "\nERROR: Student not found.\n";
             return;
         }
 
@@ -759,13 +759,13 @@ void AdminPortal::updateStudentMarks()
         // Update grade through ERP system
         erpSystem->updateStudentGrade(rollNumber, currentCourses[courseNum - 1].getCourseCode(), grade);
 
-        std::cout << "\n=> Marks updated successfully!\n";
+        std::cout << "\nMarks updated successfully.\n";
         std::cout << "  Total: " << std::fixed << std::setprecision(2) << total << "\n";
         std::cout << "  Grade: " << grade.getLetterGrade() << " (" << grade.getGradePoint() << ")\n";
     }
     catch (const std::exception &e)
     {
-        std::cout << "\nX Error: " << e.what() << "\n";
+        std::cout << "\nERROR: " << e.what() << "\n";
     }
 }
 
@@ -782,7 +782,7 @@ void AdminPortal::deleteStudent()
     auto student = erpSystem->findStudent(rollNumber);
     if (!student)
     {
-        std::cout << "\nX Student with roll number '" << rollNumber << "' not found.\n";
+        std::cout << "\nERROR: Student with roll number '" << rollNumber << "' not found.\n";
         return;
     }
 
@@ -803,12 +803,12 @@ void AdminPortal::deleteStudent()
             // Save insertion order to file after removal
             erpSystem->saveInsertionOrderToFile();
 
-            std::cout << "\n=> Student deleted successfully from database.\n";
+            std::cout << "\nStudent deleted successfully from database.\n";
             std::cout << "   Note: Student account credentials (if any) remain and must be manually removed.\n";
         }
         else
         {
-            std::cout << "\nX Student could not be deleted from database.\n";
+            std::cout << "\nERROR: Student could not be deleted from database.\n";
         }
     }
     else
@@ -842,7 +842,7 @@ void AdminPortal::deleteBulkStudents()
         std::ifstream file(filename);
         if (!file.is_open())
         {
-            std::cout << "\nX Error: Could not open file '" << filename << "'\n";
+            std::cout << "\nERROR: Could not open file '" << filename << "'.\n";
             return;
         }
 
@@ -897,7 +897,7 @@ void AdminPortal::deleteBulkStudents()
 
         if (rollNumbers.empty())
         {
-            std::cout << "\nX No valid roll numbers found in CSV file.\n";
+            std::cout << "\nERROR: No valid roll numbers found in CSV file.\n";
             return;
         }
 
@@ -922,7 +922,7 @@ void AdminPortal::deleteBulkStudents()
             // Delete from database
             if (erpSystem->removeStudent(rollNumber))
             {
-                std::cout << "  ✓ Roll " << rollNumber << " - deleted (" << student->getName() << ")\n";
+                std::cout << "  DONE: Roll " << rollNumber << " - deleted (" << student->getName() << ")\n";
                 successCount++;
             }
             else
@@ -942,12 +942,12 @@ void AdminPortal::deleteBulkStudents()
             erpSystem->saveInsertionOrderToFile();
         }
 
-        std::cout << "=> Bulk deletion completed.\n";
+        std::cout << "Bulk deletion completed.\n";
         std::cout << "   Note: Student account credentials (if any) remain and must be manually removed.\n";
     }
     catch (const std::exception &e)
     {
-        std::cout << "\nX Error during bulk deletion: " << e.what() << "\n";
+        std::cout << "\nERROR: Error during bulk deletion: " << e.what() << "\n";
     }
 }
 
@@ -955,7 +955,7 @@ void AdminPortal::deleteAllStudents()
 {
     std::cout << "\n";
     std::cout << "╔════════════════════════════════════════════════════════════════╗\n";
-    std::cout << "║               ⚠️  WARNING: DELETE ALL STUDENTS  ⚠️               ║\n";
+    std::cout << "║                WARNING: DELETE ALL STUDENTS                ║\n";
     std::cout << "╠════════════════════════════════════════════════════════════════╣\n";
     std::cout << "║  This action will PERMANENTLY DELETE ALL STUDENTS from the    ║\n";
     std::cout << "║  database. This operation CANNOT be undone!                   ║\n";
@@ -988,7 +988,7 @@ void AdminPortal::deleteAllStudents()
     }
 
     // Second confirmation with exact phrase
-    std::cout << "\n⚠️  FINAL WARNING ⚠️\n";
+    std::cout << "\n FINAL WARNING ⚠️\n";
     std::cout << "To confirm, type exactly: DELETE ALL STUDENTS\n";
     std::cout << "> ";
     std::string confirm2;
@@ -1000,7 +1000,7 @@ void AdminPortal::deleteAllStudents()
         return;
     }
 
-    std::cout << "\n[*] Starting deletion of all students...\n\n";
+    std::cout << "\nStarting deletion of all students...\n\n";
 
     int successCount = 0;
     int failCount = 0;
@@ -1060,13 +1060,13 @@ void AdminPortal::deleteAllStudents()
         Database db;
         db.clearInsertionOrder();
 
-        std::cout << "\n=> All students have been deleted from the database.\n";
+        std::cout << "\nAll students have been deleted from the database.\n";
         std::cout << "   Note: Student account credentials (if any) remain and must be manually removed.\n";
     }
 
     if (failCount > 0)
     {
-        std::cout << "\n⚠️  Warning: " << failCount << " student(s) could not be deleted.\n";
+        std::cout << "\n Warning: " << failCount << " student(s) could not be deleted.\n";
     }
 }
 
@@ -1084,7 +1084,7 @@ void AdminPortal::createStudentAccount()
         auto student = erpSystem->findStudent(rollNumber);
         if (!student)
         {
-            std::cout << "\nX Student not found in ERP system.\n";
+            std::cout << "\nERROR: Student not found in ERP system.\n";
             std::cout << "  Please add the student first before creating account.\n";
             return;
         }
@@ -1092,7 +1092,7 @@ void AdminPortal::createStudentAccount()
         // Create credentials
         std::string password = Auth::createStudentAccount(rollNumber);
 
-        std::cout << "\n=> Student account created successfully!\n";
+        std::cout << "\nStudent account created successfully.\n";
         std::cout << "  Roll Number (Login ID): " << rollNumber << "\n";
         std::cout << "  Generated Password: " << password << "\n";
         std::cout << "\n  ** Please share these credentials with the student **\n";
@@ -1100,7 +1100,7 @@ void AdminPortal::createStudentAccount()
     }
     catch (const std::exception &e)
     {
-        std::cout << "\nX Error: " << e.what() << "\n";
+        std::cout << "\nERROR: " << e.what() << "\n";
     }
 }
 
@@ -1123,7 +1123,7 @@ void AdminPortal::bulkCreateStudentAccounts()
         return;
     }
 
-    std::cout << "\n[*] Processing bulk account creation...\n\n";
+    std::cout << "\nProcessing bulk account creation...\n\n";
 
     // Get all students from ERP system
     auto students = erpSystem->getAllStudents();
@@ -1157,7 +1157,7 @@ void AdminPortal::bulkCreateStudentAccounts()
                 created++;
                 std::cout << std::left << std::setw(20) << rollNumber
                           << std::setw(35) << name
-                          << "=> Created\n";
+                          << "Created\n";
             }
             else
             {
@@ -1178,7 +1178,7 @@ void AdminPortal::bulkCreateStudentAccounts()
 
     std::cout << "\n"
               << std::string(70, '=') << "\n";
-    std::cout << "=> Bulk account creation completed!\n\n";
+    std::cout << "Bulk account creation completed!\n\n";
     std::cout << "Total Students: " << students.size() << "\n";
     std::cout << "Accounts Created: " << created << "\n";
     std::cout << "Skipped (Already existed): " << skipped << "\n";
@@ -1257,7 +1257,7 @@ void AdminPortal::manageCourses()
         }
 
         courseCatalog->addCourse(course);
-        std::cout << "\n=> Course added successfully!\n";
+        std::cout << "\nCourse added successfully.\n";
         break;
     }
     case 3:
@@ -1316,13 +1316,13 @@ void AdminPortal::restoreBackup()
     {
         if (Database::restoreFromBackup(backupNum))
         {
-            std::cout << "\n=> Database restored successfully from backup "
+            std::cout << "\nDatabase restored successfully from backup "
                       << backupNum << ".\n";
             std::cout << "  Please restart the application to load restored data.\n";
         }
         else
         {
-            std::cout << "\nX Failed to restore backup.\n";
+            std::cout << "\nERROR: Failed to restore backup.\n";
         }
     }
     else
@@ -1342,11 +1342,11 @@ void AdminPortal::exportData()
     try
     {
         Database::exportToCSV(filename);
-        std::cout << "\n=> Data exported successfully to " << filename << "\n";
+        std::cout << "\nData exported successfully to " << filename << "\n";
     }
     catch (const std::exception &e)
     {
-        std::cout << "\nX Error: " << e.what() << "\n";
+        std::cout << "\nERROR: " << e.what() << "\n";
     }
 }
 
@@ -1420,17 +1420,17 @@ void AdminPortal::changeOwnPassword()
 
     if (newPassword != confirmPassword)
     {
-        std::cout << "\nX Passwords do not match.\n";
+        std::cout << "\nERROR: Passwords do not match.\n";
         return;
     }
 
     if (Auth::changePassword(adminUsername, oldPassword, newPassword, UserType::ADMIN))
     {
-        std::cout << "\n=> Password changed successfully!\n";
+        std::cout << "\nPassword changed successfully.\n";
     }
     else
     {
-        std::cout << "\nX Failed to change password. Check your current password.\n";
+        std::cout << "\nERROR: Failed to change password. Check your current password.\n";
     }
 }
 
@@ -1472,11 +1472,11 @@ void AdminPortal::viewStudentsInsertionOrder()
             }
         }
 
-        std::cout << "\n=> Total students displayed: " << count << " (in insertion order)\n";
+        std::cout << "\nTotal students displayed: " << count << " (in insertion order)\n";
     }
     catch (const std::exception &e)
     {
-        std::cout << "\nX Error: " << e.what() << "\n";
+        std::cout << "\nERROR: " << e.what() << "\n";
     }
 }
 
@@ -1494,7 +1494,7 @@ void AdminPortal::viewStudentsSortedOrder()
     {
         if (!erpSystem->getIsSorted())
         {
-            std::cout << "\nX Students are not sorted yet.\n";
+            std::cout << "\nERROR: Students are not sorted yet.\n";
             std::cout << "   Please use Menu Option 9 to sort students first.\n";
             return;
         }
@@ -1526,11 +1526,11 @@ void AdminPortal::viewStudentsSortedOrder()
             }
         }
 
-        std::cout << "\n=> Total students displayed: " << count << " (in sorted order)\n";
+        std::cout << "\nTotal students displayed: " << count << " (in sorted order)\n";
     }
     catch (const std::exception &e)
     {
-        std::cout << "\nX Error: " << e.what() << "\n";
+        std::cout << "\nERROR: " << e.what() << "\n";
     }
 }
 
@@ -1714,11 +1714,11 @@ void AdminPortal::viewPendingCourseRequests()
                       << std::setw(20) << request.getRequestTimeString() << "\n";
         }
 
-        std::cout << "\n=> Use option 12 to approve or reject these requests.\n";
+        std::cout << "\nUse option 12 to approve or reject these requests.\n";
     }
     catch (const std::exception &e)
     {
-        std::cout << "\nX Error: " << e.what() << "\n";
+        std::cout << "\nERROR: " << e.what() << "\n";
     }
 }
 
@@ -1783,13 +1783,13 @@ void AdminPortal::approveCourseRequest()
         auto *request = erpSystem->findPendingRequest(requestId);
         if (!request)
         {
-            std::cout << "\nX Request ID not found.\n";
+            std::cout << "\nERROR: Request ID not found.\n";
             return;
         }
 
         if (request->getStatus() != RequestStatus::PENDING)
         {
-            std::cout << "\nX This request has already been processed.\n";
+            std::cout << "\nERROR: This request has already been processed.\n";
             std::cout << "  Status: " << requestStatusToString(request->getStatus()) << "\n";
             return;
         }
@@ -1839,19 +1839,19 @@ void AdminPortal::approveCourseRequest()
 
                         student->addCurrentCourse(course);
 
-                        std::cout << "\n=> Request APPROVED successfully!\n";
+                        std::cout << "\nRequest APPROVED successfully.\n";
                         std::cout << "  Course " << request->getCourseCode()
                                   << " has been added to student's enrollment.\n";
                     }
                     else
                     {
-                        std::cout << "\nX Warning: Request approved but course not found in catalog.\n";
+                        std::cout << "\nERROR: Warning: Request approved but course not found in catalog.\n";
                     }
                 }
             }
             else
             {
-                std::cout << "\nX Failed to approve request.\n";
+                std::cout << "\nERROR: Failed to approve request.\n";
             }
         }
         else if (action == 2)
@@ -1859,7 +1859,7 @@ void AdminPortal::approveCourseRequest()
             // Reject
             if (erpSystem->rejectPendingRequest(requestId, adminUsername, remarks))
             {
-                std::cout << "\n=> Request REJECTED.\n";
+                std::cout << "\nRequest REJECTED.\n";
                 if (!remarks.empty())
                 {
                     std::cout << "  Remarks sent to student: " << remarks << "\n";
@@ -1867,17 +1867,17 @@ void AdminPortal::approveCourseRequest()
             }
             else
             {
-                std::cout << "\nX Failed to reject request.\n";
+                std::cout << "\nERROR: Failed to reject request.\n";
             }
         }
         else
         {
-            std::cout << "\nX Invalid choice.\n";
+            std::cout << "\nERROR: Invalid choice.\n";
         }
     }
     catch (const std::exception &e)
     {
-        std::cout << "\nX Error: " << e.what() << "\n";
+        std::cout << "\nERROR: " << e.what() << "\n";
     }
 }
 
@@ -2243,7 +2243,7 @@ void AdminPortal::demoIIITIITCourseIntegration()
     std::cout << "DEMO 4: Template Type Comparison\n";
     std::cout << std::string(68, '=') << "\n";
 
-    std::cout << "\n✓ Template Instantiations Demonstrated:\n\n";
+    std::cout << "\nDONE: Template Instantiations Demonstrated:\n\n";
 
     std::cout << "1. Student<string, string> - IIIT-Delhi student\n";
     std::cout << "   • Roll Number Type: std::string\n";
@@ -2319,11 +2319,11 @@ void AdminPortal::demoIIITIITCourseIntegration()
     std::cout << "SUMMARY: Template Benefits Demonstrated\n";
     std::cout << std::string(68, '=') << "\n\n";
 
-    std::cout << "✓ Type Safety: Compile-time type checking prevents mixing incompatible types\n";
-    std::cout << "✓ Flexibility: Same Student class handles multiple course code formats\n";
-    std::cout << "✓ Reusability: No code duplication for different institutional systems\n";
-    std::cout << "✓ Scalability: Easy to add new institutions with different formats\n";
-    std::cout << "✓ Performance: Zero runtime overhead compared to runtime polymorphism\n\n";
+    std::cout << "DONE: Type Safety: Compile-time type checking prevents mixing incompatible types\n";
+    std::cout << "DONE: Flexibility: Same Student class handles multiple course code formats\n";
+    std::cout << "DONE: Reusability: No code duplication for different institutional systems\n";
+    std::cout << "DONE: Scalability: Easy to add new institutions with different formats\n";
+    std::cout << "DONE: Performance: Zero runtime overhead compared to runtime polymorphism\n\n";
 
     std::cout << "Real-world Application:\n";
     std::cout << "  • IIIT-Delhi students can seamlessly take IIT-Delhi courses\n";
