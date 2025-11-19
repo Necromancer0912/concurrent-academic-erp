@@ -631,37 +631,50 @@ Enter your choice:
 
 ```
 STUDENT MANAGEMENT
-  [ 1 ]  Add Single Student
-  [ 2 ]  Add Students from CSV (Bulk)
-  [ 3 ]  View All Students
-  [ 4 ]  Search Student
-  [ 5 ]  Update Student Marks
-  [ 6 ]  Delete Student
-  [ 7 ]  View Statistics
+    [ 1]  Add Single Student
+    [ 2]  Add Students from CSV (Bulk)
+    [ 3]  View All Students
+    [ 4]  Search Student
+    [ 5]  Update Student Marks
+    [ 6]  Delete Single Student
+    [ 7]  Delete Students from CSV (Bulk)
+    [ 8]  Delete ALL Students (DANGEROUS)
+    [ 9]  Sort Students (By Name/Roll/CGPA + Threading)
+    [10]  Create Student Account (Generate Credentials)
+    [11]  Bulk Create All Student Accounts (abc123)
 
-COURSE MANAGEMENT
-  [ 8 ]  View Course Catalog
-  [ 9 ]  View Course Enrollments
-  [10]  Add New Course
+  COURSE MANAGEMENT
+    [12]  Manage Course Catalog
+    [13]  View Course Statistics
 
-REGISTRATION & REQUESTS
-  [11]  View Pending Requests
-  [12]  Approve/Reject Requests
-  [13]  Semester Settings
+  COURSE REGISTRATION APPROVAL
+    [14]  View Pending Course Requests
+    [15]  Approve/Reject Course Requests
 
-ADVANCED OPERATIONS
-  [14]  Search by Grade
-  [15]  Sort Students (Parallel)
-  [16]  Generate Reports
+  SEMESTER MANAGEMENT
+    [16]  Toggle Course Registration (Currently: CLOSED)
+    [17]  Toggle Course Drop (Currently: DISABLED)
+    [18]  View Semester Manager Status
 
-SYSTEM ADMINISTRATION
-  [17]  Create Student Account
-  [18]  Bulk Account Creation
-  [19]  Database Backup
-  [20]  Export to CSV
-  [21]  Demo: IIIT-IIT Integration
+  DATABASE & BACKUP
+    [19]  View Backup Information
+    [20]  Restore from Backup
+    [21]  Export Data to CSV
 
-  [ 0 ]  Logout
+  COURSE ENROLLMENT & ANALYSIS
+    [22]  View Course Enrollments (Students per Course)
+    [23]  IIIT-IIT Course Integration Demo (Template Demo)
+
+  ITERATORS & GRADE SEARCH (Assignment Features)
+    [25]  View Students (Insertion Order)
+    [26]  View Students (Sorted Order)
+    [27]  Find Students by Grade (Quick Search)
+    [28]  Rebuild Grade Index
+
+  SYSTEM
+    [29]  View System Statistics
+    [30]  Change Password
+    [31]  Logout
 ```
 
 ---
