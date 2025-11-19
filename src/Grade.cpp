@@ -3,144 +3,144 @@
 #include <cmath>
 
 // Constructor with marks (30% mid, 40% end, 30% assignment)
-Grade::Grade(double mid, double end, double assignment)
-    : midSemMarks(mid), endSemMarks(end), assignmentMarks(assignment)
+Grade::Grade(double _mid, double _end, double _assignment)
+    : __mid_sem_marks(_mid), __end_sem_marks(_end), __assignment_marks(_assignment)
 {
-    calculateGrade();
+    __calculate_grade();
 }
 
 // Constructor with direct grade
-Grade::Grade(double gp) : midSemMarks(0), endSemMarks(0), assignmentMarks(0),
-                          totalMarks(0), gradePoint(gp)
+Grade::Grade(double _gp) : __mid_sem_marks(0), __end_sem_marks(0), __assignment_marks(0),
+                           __total_marks(0), __grade_point(_gp)
 {
-    letterGrade = calculateLetterGrade(gp);
+    __letter_grade = calculate_letter_grade(_gp);
 }
 
 // Default constructor
-Grade::Grade() : midSemMarks(0), endSemMarks(0), assignmentMarks(0),
-                 totalMarks(0), gradePoint(0), letterGrade("F") {}
+Grade::Grade() : __mid_sem_marks(0), __end_sem_marks(0), __assignment_marks(0),
+                 __total_marks(0), __grade_point(0), __letter_grade("F") {}
 
 // Copy constructor
-Grade::Grade(const Grade &other)
-    : midSemMarks(other.midSemMarks), endSemMarks(other.endSemMarks),
-      assignmentMarks(other.assignmentMarks), totalMarks(other.totalMarks),
-      gradePoint(other.gradePoint), letterGrade(other.letterGrade) {}
+Grade::Grade(const Grade &_other)
+    : __mid_sem_marks(_other.__mid_sem_marks), __end_sem_marks(_other.__end_sem_marks),
+      __assignment_marks(_other.__assignment_marks), __total_marks(_other.__total_marks),
+      __grade_point(_other.__grade_point), __letter_grade(_other.__letter_grade) {}
 
 // Assignment operator
-Grade &Grade::operator=(const Grade &other)
+Grade &Grade::operator=(const Grade &_other)
 {
-    if (this != &other)
+    if (this != &_other)
     {
-        midSemMarks = other.midSemMarks;
-        endSemMarks = other.endSemMarks;
-        assignmentMarks = other.assignmentMarks;
-        totalMarks = other.totalMarks;
-        gradePoint = other.gradePoint;
-        letterGrade = other.letterGrade;
+        __mid_sem_marks = _other.__mid_sem_marks;
+        __end_sem_marks = _other.__end_sem_marks;
+        __assignment_marks = _other.__assignment_marks;
+        __total_marks = _other.__total_marks;
+        __grade_point = _other.__grade_point;
+        __letter_grade = _other.__letter_grade;
     }
     return *this;
 }
 
 // Calculate grade from marks
-void Grade::calculateGrade()
+void Grade::__calculate_grade()
 {
     // Weighted calculation: 30% mid, 40% end, 30% assignment
-    totalMarks = (midSemMarks * 0.30) + (endSemMarks * 0.40) + (assignmentMarks * 0.30);
+    __total_marks = (__mid_sem_marks * 0.30) + (__end_sem_marks * 0.40) + (__assignment_marks * 0.30);
 
     // Convert to 10-point scale
     // Assuming marks are out of 100
-    if (totalMarks >= 90)
-        gradePoint = 10.0;
-    else if (totalMarks >= 80)
-        gradePoint = 9.0;
-    else if (totalMarks >= 70)
-        gradePoint = 8.0;
-    else if (totalMarks >= 60)
-        gradePoint = 7.0;
-    else if (totalMarks >= 50)
-        gradePoint = 6.0;
-    else if (totalMarks >= 40)
-        gradePoint = 5.0;
-    else if (totalMarks >= 30)
-        gradePoint = 4.0;
+    if (__total_marks >= 90)
+        __grade_point = 10.0;
+    else if (__total_marks >= 80)
+        __grade_point = 9.0;
+    else if (__total_marks >= 70)
+        __grade_point = 8.0;
+    else if (__total_marks >= 60)
+        __grade_point = 7.0;
+    else if (__total_marks >= 50)
+        __grade_point = 6.0;
+    else if (__total_marks >= 40)
+        __grade_point = 5.0;
+    else if (__total_marks >= 30)
+        __grade_point = 4.0;
     else
-        gradePoint = 0.0;
+        __grade_point = 0.0;
 
-    letterGrade = calculateLetterGrade(gradePoint);
+    __letter_grade = calculate_letter_grade(__grade_point);
 }
 
 // Getters
-double Grade::getMidSemMarks() const { return midSemMarks; }
-double Grade::getEndSemMarks() const { return endSemMarks; }
-double Grade::getAssignmentMarks() const { return assignmentMarks; }
-double Grade::getTotalMarks() const { return totalMarks; }
-double Grade::getGradePoint() const { return gradePoint; }
-std::string Grade::getLetterGrade() const { return letterGrade; }
+double Grade::get_mid_sem_marks() const { return __mid_sem_marks; }
+double Grade::get_end_sem_marks() const { return __end_sem_marks; }
+double Grade::get_assignment_marks() const { return __assignment_marks; }
+double Grade::get_total_marks() const { return __total_marks; }
+double Grade::get_grade_point() const { return __grade_point; }
+std::string Grade::get_letter_grade() const { return __letter_grade; }
 
 // Setters
-void Grade::setMarks(double mid, double end, double assignment)
+void Grade::set_marks(double _mid, double _end, double _assignment)
 {
-    midSemMarks = mid;
-    endSemMarks = end;
-    assignmentMarks = assignment;
-    calculateGrade();
+    __mid_sem_marks = _mid;
+    __end_sem_marks = _end;
+    __assignment_marks = _assignment;
+    __calculate_grade();
 }
 
-void Grade::setGradePoint(double gp)
+void Grade::set_grade_point(double _gp)
 {
-    gradePoint = gp;
-    letterGrade = calculateLetterGrade(gp);
+    __grade_point = _gp;
+    __letter_grade = calculate_letter_grade(_gp);
 }
 
 // Display
-void Grade::displayInfo() const
+void Grade::display_info() const
 {
-    std::cout << "Grade: " << letterGrade
-              << " (GP: " << std::fixed << std::setprecision(2) << gradePoint << ")"
-              << " | Total: " << totalMarks
-              << " (Mid: " << midSemMarks << ", End: " << endSemMarks
-              << ", Asgn: " << assignmentMarks << ")" << std::endl;
+    std::cout << "Grade: " << __letter_grade
+              << " (GP: " << std::fixed << std::setprecision(2) << __grade_point << ")"
+              << " | Total: " << __total_marks
+              << " (Mid: " << __mid_sem_marks << ", End: " << __end_sem_marks
+              << ", Asgn: " << __assignment_marks << ")" << std::endl;
 }
 
 // Comparison operators
-bool Grade::operator>=(double minGrade) const
+bool Grade::operator>=(double _min_grade) const
 {
-    return gradePoint >= minGrade;
+    return __grade_point >= _min_grade;
 }
 
-bool Grade::operator<(const Grade &other) const
+bool Grade::operator<(const Grade &_other) const
 {
-    return gradePoint < other.gradePoint;
+    return __grade_point < _other.__grade_point;
 }
 
-bool Grade::operator>(const Grade &other) const
+bool Grade::operator>(const Grade &_other) const
 {
-    return gradePoint > other.gradePoint;
+    return __grade_point > _other.__grade_point;
 }
 
-bool Grade::operator==(const Grade &other) const
+bool Grade::operator==(const Grade &_other) const
 {
-    return std::abs(gradePoint - other.gradePoint) < 0.01;
+    return std::abs(__grade_point - _other.__grade_point) < 0.01;
 }
 
 // Static helper for grade calculation
-std::string Grade::calculateLetterGrade(double gradePoint)
+std::string Grade::calculate_letter_grade(double _grade_point)
 {
-    if (gradePoint >= 10.0)
+    if (_grade_point >= 10.0)
         return "A+";
-    else if (gradePoint >= 9.0)
+    else if (_grade_point >= 9.0)
         return "A";
-    else if (gradePoint >= 8.0)
+    else if (_grade_point >= 8.0)
         return "A-";
-    else if (gradePoint >= 7.0)
+    else if (_grade_point >= 7.0)
         return "B+";
-    else if (gradePoint >= 6.0)
+    else if (_grade_point >= 6.0)
         return "B";
-    else if (gradePoint >= 5.0)
+    else if (_grade_point >= 5.0)
         return "B-";
-    else if (gradePoint >= 4.0)
+    else if (_grade_point >= 4.0)
         return "C";
-    else if (gradePoint >= 3.0)
+    else if (_grade_point >= 3.0)
         return "D";
     else
         return "F";

@@ -53,58 +53,58 @@ class ERPSystem
 {
 private:
     // Main storage - hash map for O(1) lookup by roll number
-    std::unordered_map<std::string, std::shared_ptr<Student<RollType, CourseCodeType>>> students;
+    std::unordered_map<std::string, std::shared_ptr<Student<RollType, CourseCodeType>>> __students;
 
     // Enrollment records to maintain insertion order
-    std::vector<EnrollmentRecord<RollType, CourseCodeType>> enrollmentRecords;
+    std::vector<EnrollmentRecord<RollType, CourseCodeType>> __enrollment_records;
 
     // Sorted list (updated after sorting)
-    std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>> sortedStudents;
-    bool isSorted;
+    std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>> __sorted_students;
+    bool __is_sorted;
 
     // Index for quick grade-based searches - map<courseCode, map<gradeThreshold, vector<studentPointers>>>
-    std::map<CourseCodeType, std::multimap<double, std::shared_ptr<Student<RollType, CourseCodeType>>>> gradeIndex;
+    std::map<CourseCodeType, std::multimap<double, std::shared_ptr<Student<RollType, CourseCodeType>>>> __grade_index;
 
     // Counter for record IDs
     int nextRecordId;
 
     // Pending course registration requests
-    std::vector<PendingCourseRequest<RollType, CourseCodeType>> pendingRequests;
+    std::vector<PendingCourseRequest<RollType, CourseCodeType>> __pending_requests;
     int nextRequestId;
 
     // Mutex for thread safety
     mutable std::mutex systemMutex;
 
     // Helper to convert roll number to string key
-    std::string rollToString(const RollType &roll) const;
+    std::string roll_to_string(const RollType &roll) const;
 
     // Update grade index
-    void updateGradeIndex(std::shared_ptr<Student<RollType, CourseCodeType>> student);
+    void update_grade_index(std::shared_ptr<Student<RollType, CourseCodeType>> student);
 
 public:
     // Constructor
     ERPSystem();
 
     // Add student
-    void addStudent(std::shared_ptr<Student<RollType, CourseCodeType>> student);
+    void add_student(std::shared_ptr<Student<RollType, CourseCodeType>> student);
 
     // Remove student
-    bool removeStudent(const RollType &rollNumber);
+    bool remove_student(const RollType &rollNumber);
 
     // Find student
-    std::shared_ptr<Student<RollType, CourseCodeType>> findStudent(const RollType &rollNumber) const;
+    std::shared_ptr<Student<RollType, CourseCodeType>> find_student(const RollType &rollNumber) const;
 
     // Update student grade and refresh index
-    void updateStudentGrade(const RollType &rollNumber, const CourseCodeType &courseCode, const Grade &grade);
+    void update_student_grade(const RollType &rollNumber, const CourseCodeType &courseCode, const Grade &grade);
 
     // Get all students
-    std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>> getAllStudents() const;
+    std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>> get_all_students() const;
 
     // Sort students (will be used by SortingManager)
-    void setSortedStudents(std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>> sorted);
+    void set_sorted_students(std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>> sorted);
 
     // Check if sorted
-    bool getIsSorted() const;
+    bool get_is_sorted() const;
 
     // Iterators for insertion order
     InsertionOrderIterator<RollType, CourseCodeType> beginInsertionOrder() const;
@@ -119,35 +119,35 @@ public:
     findStudentsWithGrade(const CourseCodeType &courseCode, double minGrade) const;
 
     // Rebuild grade index (call after bulk updates)
-    void rebuildGradeIndex();
+    void rebuild_grade_index();
 
     // Get statistics
     size_t getStudentCount() const;
 
     // Display all students in insertion order
-    void displayAllInsertionOrder() const;
+    void display_all_insertion_order() const;
 
     // Display all students in sorted order
-    void displayAllSorted() const;
+    void display_all_sorted() const;
 
     // Search by name
-    std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>> searchByName(const std::string &name) const;
+    std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>> search_by_name(const std::string &name) const;
 
     // Search by branch
-    std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>> searchByBranch(const Branch &branch) const;
+    std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>> search_by_branch(const Branch &branch) const;
 
     // Pending Course Request Management
     int addPendingRequest(const RollType &rollNumber, const CourseCodeType &courseCode);
-    std::vector<PendingCourseRequest<RollType, CourseCodeType>> getPendingRequests() const;
-    std::vector<PendingCourseRequest<RollType, CourseCodeType>> getPendingRequestsByStudent(const RollType &rollNumber) const;
+    std::vector<PendingCourseRequest<RollType, CourseCodeType>> get_pending_requests() const;
+    std::vector<PendingCourseRequest<RollType, CourseCodeType>> get_pending_requests_by_student(const RollType &rollNumber) const;
     PendingCourseRequest<RollType, CourseCodeType> *findPendingRequest(int requestId);
-    bool approvePendingRequest(int requestId, const std::string &adminUsername, const std::string &remarks = "");
-    bool rejectPendingRequest(int requestId, const std::string &adminUsername, const std::string &remarks = "");
-    void removePendingRequest(int requestId);
+    bool approve_pending_request(int requestId, const std::string &adminUsername, const std::string &remarks = "");
+    bool reject_pending_request(int requestId, const std::string &adminUsername, const std::string &remarks = "");
+    void remove_pending_request(int requestId);
 
     // Insertion order management
-    void loadInsertionOrderFromFile();
-    void saveInsertionOrderToFile();
+    void load_insertion_order_from_file();
+    void save_insertion_order_to_file();
 };
 
 #endif // ERP_SYSTEM_H

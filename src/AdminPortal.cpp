@@ -2,6 +2,8 @@
 #include "CSVHandler.h"
 #include "Database.h"
 #include "SortingManager.h"
+#include "Colors.h"
+#include "OutputFormatter.h"
 #include <iostream>
 #include <iomanip>
 #include <limits>
@@ -28,72 +30,96 @@ AdminPortal::AdminPortal(const std::string &username,
                          ERPSystem<std::string, std::string> *erp,
                          CourseCatalog *catalog,
                          SemesterManager *semMgr)
-    : adminUsername(username), erpSystem(erp), courseCatalog(catalog),
+    : __admin_username(username), erpSystem(erp), courseCatalog(catalog),
       semesterManager(semMgr)
 {
 }
 
-void AdminPortal::displayMenu()
+void AdminPortal::display_menu()
 {
+    OutputFormatter::print_header("ADMIN PORTAL - IIIT-Delhi ERP");
+
+    std::cout << Colors::DIM << "  Logged in as: " << Colors::BOLD << Colors::CYAN
+              << __admin_username << Colors::RESET << "\n\n";
+
+    // student management section
+    std::cout << Colors::YELLOW << "  STUDENT MANAGEMENT" << Colors::RESET << "\n";
+    OutputFormatter::print_menu_item(1, "Add Single Student", Colors::GREEN);
+    OutputFormatter::print_menu_item(2, "Add Students from CSV (Bulk)", Colors::GREEN);
+    OutputFormatter::print_menu_item(3, "View All Students", Colors::CYAN);
+    OutputFormatter::print_menu_item(4, "Search Student", Colors::CYAN);
+    OutputFormatter::print_menu_item(5, "Update Student Marks", Colors::CYAN);
+    OutputFormatter::print_menu_item(6, "Delete Single Student", Colors::RED);
+    OutputFormatter::print_menu_item(7, "Delete Students from CSV (Bulk)", Colors::RED);
+    OutputFormatter::print_menu_item(8, "Delete ALL Students (DANGEROUS)", Colors::BRIGHT_RED);
+    OutputFormatter::print_menu_item(9, "Sort Students (By Name/Roll/CGPA + Threading)", Colors::MAGENTA);
+    OutputFormatter::print_menu_item(10, "Create Student Account (Generate Credentials)", Colors::GREEN);
+    OutputFormatter::print_menu_item(11, "Bulk Create All Student Accounts (abc123)", Colors::GREEN);
+
+    OutputFormatter::print_menu_separator();
+
+    // course management section
+    std::cout << Colors::YELLOW << "  COURSE MANAGEMENT" << Colors::RESET << "\n";
+    OutputFormatter::print_menu_item(12, "Manage Course Catalog", Colors::CYAN);
+    OutputFormatter::print_menu_item(13, "View Course Statistics", Colors::CYAN);
+
+    OutputFormatter::print_menu_separator();
+
+    // course registration approval
+    std::cout << Colors::YELLOW << "  COURSE REGISTRATION APPROVAL" << Colors::RESET << "\n";
+    OutputFormatter::print_menu_item(14, "View Pending Course Requests", Colors::CYAN);
+    OutputFormatter::print_menu_item(15, "Approve/Reject Course Requests", Colors::YELLOW);
+
+    OutputFormatter::print_menu_separator();
+
+    // semester management
+    std::cout << Colors::YELLOW << "  SEMESTER MANAGEMENT" << Colors::RESET << "\n";
+
+    std::string regStatus = semesterManager->is_course_add_enabled() ? (Colors::GREEN + "OPEN" + Colors::RESET) : (Colors::RED + "CLOSED" + Colors::RESET);
+    std::cout << "  " << Colors::CYAN << "[16]" << Colors::RESET
+              << "  Toggle Course Registration (Currently: " << regStatus << ")\n";
+
+    std::string dropStatus = semesterManager->is_course_drop_enabled() ? (Colors::GREEN + "ENABLED" + Colors::RESET) : (Colors::RED + "DISABLED" + Colors::RESET);
+    std::cout << "  " << Colors::CYAN << "[17]" << Colors::RESET
+              << "  Toggle Course Drop (Currently: " << dropStatus << ")\n";
+
+    OutputFormatter::print_menu_item(18, "View Semester Manager Status", Colors::CYAN);
+
+    OutputFormatter::print_menu_separator();
+
+    // __database & backup
+    std::cout << Colors::YELLOW << "  DATABASE & BACKUP" << Colors::RESET << "\n";
+    OutputFormatter::print_menu_item(19, "View Backup Information", Colors::CYAN);
+    OutputFormatter::print_menu_item(20, "Restore from Backup", Colors::YELLOW);
+    OutputFormatter::print_menu_item(21, "Export Data to CSV", Colors::GREEN);
+
+    OutputFormatter::print_menu_separator();
+
+    // course enrollment & analysis
+    std::cout << Colors::YELLOW << "  COURSE ENROLLMENT & ANALYSIS" << Colors::RESET << "\n";
+    OutputFormatter::print_menu_item(22, "View Course Enrollments (Students per Course)", Colors::CYAN);
+    OutputFormatter::print_menu_item(23, "IIIT-IIT Course Integration Demo (Template Demo)", Colors::MAGENTA);
+
+    OutputFormatter::print_menu_separator();
+
+    // iterators & grade search
+    std::cout << Colors::YELLOW << "  ITERATORS & GRADE SEARCH (Assignment Features)" << Colors::RESET << "\n";
+    OutputFormatter::print_menu_item(25, "View Students (Insertion Order)", Colors::BLUE);
+    OutputFormatter::print_menu_item(26, "View Students (Sorted Order)", Colors::BLUE);
+    OutputFormatter::print_menu_item(27, "Find Students by Grade (Quick Search)", Colors::MAGENTA);
+    OutputFormatter::print_menu_item(28, "Rebuild Grade Index", Colors::YELLOW);
+
+    OutputFormatter::print_menu_separator();
+
+    // system
+    std::cout << Colors::YELLOW << "  SYSTEM" << Colors::RESET << "\n";
+    OutputFormatter::print_menu_item(29, "View System Statistics", Colors::CYAN);
+    OutputFormatter::print_menu_item(30, "Change Password", Colors::YELLOW);
+    OutputFormatter::print_menu_item(31, "Logout", Colors::DIM);
+
     std::cout << "\n";
-    std::cout << "╔════════════════════════════════════════════════════════════════╗\n";
-    std::cout << "║                    ADMIN PORTAL - IIIT-Delhi ERP               ║\n";
-    std::cout << "║                    Logged in as: " << std::left << std::setw(27) << adminUsername << "   ║\n";
-    std::cout << "╠════════════════════════════════════════════════════════════════╣\n";
-    std::cout << "║  STUDENT MANAGEMENT                                            ║\n";
-    std::cout << "║   1. Add Single Student                                        ║\n";
-    std::cout << "║   2. Add Students from CSV (Bulk)                              ║\n";
-    std::cout << "║   3. View All Students                                         ║\n";
-    std::cout << "║   4. Search Student                                            ║\n";
-    std::cout << "║   5. Update Student Marks                                      ║\n";
-    std::cout << "║   6. Delete Single Student                                     ║\n";
-    std::cout << "║   7. Delete Students from CSV (Bulk)                           ║\n";
-    std::cout << "║   8. Delete ALL Students (DANGEROUS)                           ║\n";
-    std::cout << "║   9. Sort Students (By Name/Roll/CGPA + Threading)             ║\n";
-    std::cout << "║  10. Create Student Account (Generate Credentials)             ║\n";
-    std::cout << "║  11. Bulk Create All Student Accounts (abc123)                 ║\n";
-    std::cout << "╠════════════════════════════════════════════════════════════════╣\n";
-    std::cout << "║  COURSE MANAGEMENT                                             ║\n";
-    std::cout << "║  12. Manage Course Catalog                                     ║\n";
-    std::cout << "║  13. View Course Statistics                                    ║\n";
-    std::cout << "╠════════════════════════════════════════════════════════════════╣\n";
-    std::cout << "║  COURSE REGISTRATION APPROVAL                                  ║\n";
-    std::cout << "║  14. View Pending Course Requests                              ║\n";
-    std::cout << "║  15. Approve/Reject Course Requests                            ║\n";
-    std::cout << "╠════════════════════════════════════════════════════════════════╣\n";
-    std::cout << "║  SEMESTER MANAGEMENT                                           ║\n";
-
-    // Line 16: Course Registration Status
-    std::string regStatus = semesterManager->isCourseAddEnabled() ? "OPEN  " : "CLOSED";
-    std::cout << "║  16. Toggle Course Registration (Currently: " << regStatus << ")            ║\n";
-
-    // Line 17: Course Drop Status
-    std::string dropStatus = semesterManager->isCourseDropEnabled() ? "ENABLED" : "DISABLED";
-    std::cout << "║  17. Toggle Course Drop (Currently: " << dropStatus << ")                  ║\n";
-
-    std::cout << "║  18. View Semester Manager Status                              ║\n";
-    std::cout << "╠════════════════════════════════════════════════════════════════╣\n";
-    std::cout << "║  DATABASE & BACKUP                                             ║\n";
-    std::cout << "║  19. View Backup Information                                   ║\n";
-    std::cout << "║  20. Restore from Backup                                       ║\n";
-    std::cout << "║  21. Export Data to CSV                                        ║\n";
-    std::cout << "╠════════════════════════════════════════════════════════════════╣\n";
-    std::cout << "║  COURSE ENROLLMENT & ANALYSIS                                  ║\n";
-    std::cout << "║  22. View Course Enrollments (Students per Course)             ║\n";
-    std::cout << "║  23. IIIT-IIT Course Integration Demo (Template Demo)          ║\n";
-    std::cout << "╠════════════════════════════════════════════════════════════════╣\n";
-    std::cout << "║  ITERATORS & GRADE SEARCH (Assignment Features)                ║\n";
-    std::cout << "║  25. View Students (Insertion Order)                           ║\n";
-    std::cout << "║  26. View Students (Sorted Order)                              ║\n";
-    std::cout << "║  27. Find Students by Grade (Quick Search)                     ║\n";
-    std::cout << "║  28. Rebuild Grade Index                                       ║\n";
-    std::cout << "╠════════════════════════════════════════════════════════════════╣\n";
-    std::cout << "║  SYSTEM                                                        ║\n";
-    std::cout << "║  29. View System Statistics                                    ║\n";
-    std::cout << "║  30. Change Password                                           ║\n";
-    std::cout << "║  31. Logout                                                    ║\n";
-    std::cout << "╚════════════════════════════════════════════════════════════════╝\n";
-    std::cout << "Enter your choice: ";
+    OutputFormatter::print_double_line(80);
+    std::cout << Colors::CYAN << "Enter your choice: " << Colors::RESET;
 }
 
 void AdminPortal::run()
@@ -102,13 +128,13 @@ void AdminPortal::run()
 
     while (true)
     {
-        displayMenu();
+        display_menu();
 
         if (!(std::cin >> choice))
         {
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cout << "Invalid input. Please enter a number.\n";
+            std::cout << Colors::RED << "[X] Invalid input. Please enter a number." << Colors::RESET << "\n";
             continue;
         }
         std::cin.ignore();
@@ -116,94 +142,94 @@ void AdminPortal::run()
         switch (choice)
         {
         case 1:
-            addSingleStudent();
+            add_single_student();
             break;
         case 2:
-            addBulkStudents();
+            add_bulk_students();
             break;
         case 3:
-            viewAllStudents();
+            view_all_students();
             break;
         case 4:
-            searchStudent();
+            search_student();
             break;
         case 5:
-            updateStudentMarks();
+            update_student_marks();
             break;
         case 6:
-            deleteStudent();
+            delete_student();
             break;
         case 7:
-            deleteBulkStudents();
+            delete_bulk_students();
             break;
         case 8:
-            deleteAllStudents();
+            delete_all_students();
             break;
         case 9:
-            sortStudentsMenu();
+            sort_students_menu();
             break;
         case 10:
-            createStudentAccount();
+            create_student_account();
             break;
         case 11:
-            bulkCreateStudentAccounts();
+            bulk_create_student_accounts();
             break;
         case 12:
-            manageCourses();
+            manage_courses();
             break;
         case 13:
             std::cout << "\nCourse statistics feature - coming soon!\n";
             break;
         case 14:
-            viewPendingCourseRequests();
+            view_pending_course_requests();
             break;
         case 15:
-            approveCourseRequest();
+            approve_course_request();
             break;
         case 16:
-            semesterManager->setCourseAddEnabled(!semesterManager->isCourseAddEnabled());
+            semesterManager->set_course_add_enabled(!semesterManager->is_course_add_enabled());
             break;
         case 17:
-            semesterManager->setCourseDropEnabled(!semesterManager->isCourseDropEnabled());
+            semesterManager->set_course_drop_enabled(!semesterManager->is_course_drop_enabled());
             break;
         case 18:
-            std::cout << semesterManager->getStatus();
+            std::cout << semesterManager->get_status();
             break;
         case 19:
-            viewBackups();
+            view_backups();
             break;
         case 20:
-            restoreBackup();
+            restore_backup();
             break;
         case 21:
-            exportData();
+            export_data();
             break;
         case 22:
-            viewCourseEnrollments();
+            view_course_enrollments();
             break;
         case 23:
-            demoIIITIITCourseIntegration();
+            demo_iiit_iit_course_integration();
             break;
         case 24:
-            changeOwnPassword();
+            change_own_password();
             break;
         case 25:
-            viewStudentsInsertionOrder();
+            view_students_insertion_order();
             break;
         case 26:
-            viewStudentsSortedOrder();
+            view_students_sorted_order();
             break;
         case 27:
-            findStudentsByGrade();
+            find_students_by_grade();
             break;
         case 28:
-            rebuildGradeIndex();
+            rebuild_grade_index();
             break;
         case 29:
-            viewStatistics();
+            view_statistics();
             break;
         case 30:
-            changeOwnPassword();
+            change_own_password();
             break;
         case 31:
             std::cout << "\nLogging out from admin portal...\n";
@@ -212,30 +238,33 @@ void AdminPortal::run()
             std::cout << "\nLogging out from admin portal...\n";
             return;
         default:
-            std::cout << "\nInvalid choice. Please try again.\n";
+            std::cout << "\n"
+                      << Colors::RED << "[X] Invalid choice. Please try again." << Colors::RESET << "\n";
         }
 
-        std::cout << "\nPress Enter to continue...";
+        std::cout << "\n"
+                  << Colors::DIM << "Press " << Colors::BOLD << "[Enter]"
+                  << Colors::RESET << Colors::DIM << " to continue..." << Colors::RESET;
         std::cin.get();
     }
 }
 
-void AdminPortal::addSingleStudent()
+void AdminPortal::add_single_student()
 {
-    std::cout << "\n=== Add Single Student ===\n";
+    OutputFormatter::print_header("ADD SINGLE STUDENT");
 
     std::string rollNumber, name, branchCode, level;
     int startYear;
 
-    std::cout << "Enter Roll Number (max 15 chars, no spaces): ";
+    std::cout << Colors::CYAN << "Enter Roll Number (max 15 chars, no spaces): " << Colors::RESET;
     std::getline(std::cin, rollNumber);
     rollNumber = toUpperCase(rollNumber); // Convert to uppercase
 
-    std::cout << "Enter Name (FirstName LastName format): ";
+    std::cout << Colors::CYAN << "Enter Name (FirstName LastName format): " << Colors::RESET;
     std::getline(std::cin, name);
     name = toUpperCase(name); // Convert to uppercase
 
-    std::cout << "Enter Level (BTECH/MTECH/PHD/DUAL_DEGREE): ";
+    std::cout << Colors::CYAN << "Enter Level (BTECH/MTECH/PHD/DUAL_DEGREE): " << Colors::RESET;
     std::getline(std::cin, level);
     level = toUpperCase(level); // Convert to uppercase
 
@@ -251,48 +280,51 @@ void AdminPortal::addSingleStudent()
         studentLevel = StudentLevel::DUAL_DEGREE;
     else
     {
-        std::cout << "\nERROR: Invalid level. Use BTECH/MTECH/PHD/DUAL_DEGREE.\n";
+        std::cout << Colors::RED << "\n[X] ERROR: " << Colors::RESET << "Invalid level. Use BTECH/MTECH/PHD/DUAL_DEGREE.\n";
         return;
     }
 
     // Display branches based on level
-    std::cout << "\n=== Available Branches for " << level << " ===\n";
+    std::cout << "\n"
+              << Colors::CYAN << "> Available Branches for " << level << Colors::RESET << "\n";
+    OutputFormatter::print_line();
 
     if (studentLevel == StudentLevel::BTECH || studentLevel == StudentLevel::DUAL_DEGREE)
     {
-        std::cout << "1.  CSE     - Computer Science and Engineering\n";
-        std::cout << "2.  ECE     - Electronics and Communications Engineering\n";
-        std::cout << "3.  CSAI    - Computer Science & Artificial Intelligence\n";
-        std::cout << "4.  CSAM    - Computer Science and Applied Mathematics\n";
-        std::cout << "5.  CSD     - Computer Science and Design\n";
-        std::cout << "6.  CSB     - Computer Science and Biosciences\n";
-        std::cout << "7.  CSSS    - Computer Science and Social Sciences\n";
-        std::cout << "8.  EVE     - Electronics & VLSI Engineering\n";
-        std::cout << "9.  CSEcon  - Computer Science and Economics\n";
+        std::cout << Colors::DIM << "1.  " << Colors::RESET << Colors::BOLD << "CSE" << Colors::RESET << "     - Computer Science and Engineering\n";
+        std::cout << Colors::DIM << "2.  " << Colors::RESET << Colors::BOLD << "ECE" << Colors::RESET << "     - Electronics and Communications Engineering\n";
+        std::cout << Colors::DIM << "3.  " << Colors::RESET << Colors::BOLD << "CSAI" << Colors::RESET << "    - Computer Science & Artificial Intelligence\n";
+        std::cout << Colors::DIM << "4.  " << Colors::RESET << Colors::BOLD << "CSAM" << Colors::RESET << "    - Computer Science and Applied Mathematics\n";
+        std::cout << Colors::DIM << "5.  " << Colors::RESET << Colors::BOLD << "CSD" << Colors::RESET << "     - Computer Science and Design\n";
+        std::cout << Colors::DIM << "6.  " << Colors::RESET << Colors::BOLD << "CSB" << Colors::RESET << "     - Computer Science and Biosciences\n";
+        std::cout << Colors::DIM << "7.  " << Colors::RESET << Colors::BOLD << "CSSS" << Colors::RESET << "    - Computer Science and Social Sciences\n";
+        std::cout << Colors::DIM << "8.  " << Colors::RESET << Colors::BOLD << "EVE" << Colors::RESET << "     - Electronics & VLSI Engineering\n";
+        std::cout << Colors::DIM << "9.  " << Colors::RESET << Colors::BOLD << "CSEcon" << Colors::RESET << "  - Computer Science and Economics\n";
     }
     else if (studentLevel == StudentLevel::MTECH)
     {
-        std::cout << "1. MTCSE - M.Tech Computer Science & Engineering\n";
-        std::cout << "   Specializations: AI, Data Engineering, Information Security, Mobile Computing\n";
-        std::cout << "2. MTECE - M.Tech Electronics & Communications Engineering\n";
-        std::cout << "   Specializations: VLSI, Embedded Systems, Communication, Machine Learning\n";
-        std::cout << "3. MTCB  - M.Tech Computational Biology\n";
+        std::cout << Colors::DIM << "1. " << Colors::RESET << Colors::BOLD << "MTCSE" << Colors::RESET << " - M.Tech Computer Science & Engineering\n";
+        std::cout << Colors::DIM << "   Specializations: " << Colors::RESET << "AI, Data Engineering, Information Security, Mobile Computing\n";
+        std::cout << Colors::DIM << "2. " << Colors::RESET << Colors::BOLD << "MTECE" << Colors::RESET << " - M.Tech Electronics & Communications Engineering\n";
+        std::cout << Colors::DIM << "   Specializations: " << Colors::RESET << "VLSI, Embedded Systems, Communication, Machine Learning\n";
+        std::cout << Colors::DIM << "3. " << Colors::RESET << Colors::BOLD << "MTCB" << Colors::RESET << "  - M.Tech Computational Biology\n";
     }
     else if (studentLevel == StudentLevel::PHD)
     {
-        std::cout << "1. PHDCSE   - PhD Computer Science & Engineering\n";
-        std::cout << "2. PHDECE   - PhD Electronics & Communications Engineering\n";
-        std::cout << "3. PHDCB    - PhD Computational Biology\n";
-        std::cout << "4. PHDMATH  - PhD Mathematics\n";
-        std::cout << "5. PHDHCD   - PhD Human-Centred & Design\n";
-        std::cout << "6. PHDSSH   - PhD Social Sciences & Humanities\n";
+        std::cout << Colors::DIM << "1. " << Colors::RESET << Colors::BOLD << "PHDCSE" << Colors::RESET << "   - PhD Computer Science & Engineering\n";
+        std::cout << Colors::DIM << "2. " << Colors::RESET << Colors::BOLD << "PHDECE" << Colors::RESET << "   - PhD Electronics & Communications Engineering\n";
+        std::cout << Colors::DIM << "3. " << Colors::RESET << Colors::BOLD << "PHDCB" << Colors::RESET << "    - PhD Computational Biology\n";
+        std::cout << Colors::DIM << "4. " << Colors::RESET << Colors::BOLD << "PHDMATH" << Colors::RESET << "  - PhD Mathematics\n";
+        std::cout << Colors::DIM << "5. " << Colors::RESET << Colors::BOLD << "PHDHCD" << Colors::RESET << "   - PhD Human-Centred & Design\n";
+        std::cout << Colors::DIM << "6. " << Colors::RESET << Colors::BOLD << "PHDSSH" << Colors::RESET << "   - PhD Social Sciences & Humanities\n";
     }
 
-    std::cout << "\nEnter Branch Code: ";
+    std::cout << "\n"
+              << Colors::CYAN << "Enter Branch Code: " << Colors::RESET;
     std::getline(std::cin, branchCode);
     branchCode = toUpperCase(branchCode); // Convert to uppercase
 
-    std::cout << "Enter Start Year: ";
+    std::cout << Colors::CYAN << "Enter Start Year: " << Colors::RESET;
     std::cin >> startYear;
     std::cin.ignore();
 
@@ -301,25 +333,25 @@ void AdminPortal::addSingleStudent()
         // Create branch based on code
         Branch branch(branchCode, branchCode, "Department"); // Will be replaced by proper mapping
         auto student = std::make_shared<Student<std::string, std::string>>(name, rollNumber, branch, studentLevel, startYear);
-        erpSystem->addStudent(student);
+        erpSystem->add_student(student);
 
         // Save insertion order to file
-        erpSystem->saveInsertionOrderToFile();
+        erpSystem->save_insertion_order_to_file();
 
-        std::cout << "\nStudent added successfully.\n";
-        std::cout << "  Roll Number: " << rollNumber << "\n";
-        std::cout << "  Name: " << name << "\n";
+        std::cout << Colors::GREEN << "\n[OK] Student added successfully." << Colors::RESET << "\n";
+        std::cout << "  " << Colors::BOLD << "Roll Number:" << Colors::RESET << " " << rollNumber << "\n";
+        std::cout << "  " << Colors::BOLD << "Name:" << Colors::RESET << " " << name << "\n";
     }
     catch (const std::exception &e)
     {
-        std::cout << "\nERROR: " << e.what() << "\n";
+        std::cout << Colors::RED << "\n[X] ERROR: " << Colors::RESET << e.what() << "\n";
     }
 }
 
-void AdminPortal::addBulkStudents()
+void AdminPortal::add_bulk_students()
 {
-    std::cout << "\n=== Add Students from CSV ===\n";
-    std::cout << "Enter CSV filename (default: demo_students.csv): ";
+    OutputFormatter::print_header("ADD STUDENTS FROM CSV");
+    std::cout << Colors::CYAN << "Enter CSV filename" << Colors::RESET << " (default: demo_students.csv): ";
 
     std::string filename;
     std::getline(std::cin, filename);
@@ -328,44 +360,44 @@ void AdminPortal::addBulkStudents()
     if (filename.empty())
     {
         filename = "demo_students.csv";
-        std::cout << "Using default file: demo_students.csv\n";
+        std::cout << Colors::DIM << "[i] Using default file: demo_students.csv" << Colors::RESET << "\n";
     }
 
     try
     {
         CSVHandler<std::string, std::string> csvHandler(filename);
-        auto students = csvHandler.readStudents();
+        auto students = csvHandler.read_students();
 
-        std::cout << "\nFound " << students.size() << " students in CSV.\n";
-        std::cout << "Adding to system...\n";
+        std::cout << Colors::CYAN << "\n[i] Found " << Colors::BOLD << students.size() << Colors::RESET << Colors::CYAN << " students in CSV." << Colors::RESET << "\n";
+        std::cout << Colors::YELLOW << " Adding to system..." << Colors::RESET << "\n";
 
         int added = 0;
         for (const auto &student : students)
         {
             try
             {
-                erpSystem->addStudent(student);
+                erpSystem->add_student(student);
                 added++;
             }
             catch (const std::exception &e)
             {
-                std::cout << "Warning: Could not add student "
-                          << student->getRollNumber() << ": " << e.what() << "\n";
+                std::cout << Colors::YELLOW << "[!] Warning: " << Colors::RESET << "Could not add student "
+                          << student->get_roll_number() << ": " << e.what() << "\n";
             }
         }
 
-        std::cout << "\nSuccessfully added " << added << " out of "
-                  << students.size() << " students.\n";
+        std::cout << Colors::GREEN << "\n[OK] Successfully added " << Colors::BOLD << added << Colors::RESET << Colors::GREEN
+                  << " out of " << students.size() << " students." << Colors::RESET << "\n";
 
         // Save insertion order to file after bulk add
         if (added > 0)
         {
-            erpSystem->saveInsertionOrderToFile();
+            erpSystem->save_insertion_order_to_file();
         }
     }
     catch (const std::exception &e)
     {
-        std::cout << "\nERROR: " << e.what() << "\n";
+        std::cout << Colors::RED << "\n[X] ERROR: " << Colors::RESET << e.what() << "\n";
     }
 }
 
@@ -373,17 +405,16 @@ void AdminPortal::addBulkStudents()
 // COMPREHENSIVE SORTING SYSTEM - By Name, Roll Number, or CGPA
 // =============================================================================
 
-void AdminPortal::sortStudentsMenu()
+void AdminPortal::sort_students_menu()
 {
-    std::cout << "\n╔════════════════════════════════════════════════════════════════╗\n";
-    std::cout << "║              STUDENT SORTING SYSTEM                            ║\n";
-    std::cout << "╠════════════════════════════════════════════════════════════════╣\n";
-    std::cout << "║  Select Sorting Criteria:                                      ║\n";
-    std::cout << "║   1. Sort by Name (Dictionary Order)                           ║\n";
-    std::cout << "║   2. Sort by Roll Number                                       ║\n";
-    std::cout << "║   3. Sort by CGPA (Descending)                                 ║\n";
-    std::cout << "║   0. Back to Main Menu                                         ║\n";
-    std::cout << "╚════════════════════════════════════════════════════════════════╝\n";
+    OutputFormatter::print_header("STUDENT SORTING SYSTEM");
+    std::cout << "\n"
+              << Colors::CYAN << "> Select Sorting Criteria:" << Colors::RESET << "\n";
+    OutputFormatter::print_menu_item(1, "Sort by Name (Dictionary Order)", Colors::CYAN);
+    OutputFormatter::print_menu_item(2, "Sort by Roll Number", Colors::CYAN);
+    OutputFormatter::print_menu_item(3, "Sort by CGPA (Descending)", Colors::CYAN);
+    OutputFormatter::print_menu_item(0, "Back to Main Menu", Colors::DIM);
+    OutputFormatter::print_line();
     std::cout << "Enter your choice: ";
 
     int criteria;
@@ -391,7 +422,7 @@ void AdminPortal::sortStudentsMenu()
     {
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        std::cout << "Invalid input.\n";
+        std::cout << Colors::RED << "[X] Invalid input." << Colors::RESET << "\n";
         return;
     }
     std::cin.ignore();
@@ -401,16 +432,16 @@ void AdminPortal::sortStudentsMenu()
 
     if (criteria < 1 || criteria > 3)
     {
-        std::cout << "Invalid choice.\n";
+        std::cout << Colors::RED << "[X] Invalid choice." << Colors::RESET << "\n";
         return;
     }
 
     // Now ask for threading option
-    std::cout << "\n╔════════════════════════════════════════════════════════════════╗\n";
-    std::cout << "║  Select Threading Mode:                                        ║\n";
-    std::cout << "║   1. Single-threaded (Sequential)                              ║\n";
-    std::cout << "║   2. Multi-threaded (Parallel - 2 threads)                     ║\n";
-    std::cout << "╚════════════════════════════════════════════════════════════════╝\n";
+    std::cout << "\n"
+              << Colors::MAGENTA << "> Select Threading Mode:" << Colors::RESET << "\n";
+    OutputFormatter::print_menu_item(1, "Single-threaded (Sequential)", Colors::CYAN);
+    OutputFormatter::print_menu_item(2, "Multi-threaded (Parallel - 2 threads)", Colors::MAGENTA);
+    OutputFormatter::print_line();
     std::cout << "Enter your choice: ";
 
     int threadChoice;
@@ -418,48 +449,50 @@ void AdminPortal::sortStudentsMenu()
     {
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        std::cout << "Invalid input.\n";
+        std::cout << Colors::RED << "[X] Invalid input." << Colors::RESET << "\n";
         return;
     }
     std::cin.ignore();
 
     if (threadChoice < 1 || threadChoice > 2)
     {
-        std::cout << "Invalid choice.\n";
+        std::cout << Colors::RED << "[X] Invalid choice." << Colors::RESET << "\n";
         return;
     }
 
     bool multiThreaded = (threadChoice == 2);
 
     // Perform the sort
-    sortStudents(criteria, multiThreaded);
+    sort_students(criteria, multiThreaded);
 }
 
-void AdminPortal::sortStudents(int criteria, bool multiThreaded)
+void AdminPortal::sort_students(int criteria, bool multiThreaded)
 {
     const char *criteriaNames[] = {"", "Name", "Roll Number", "CGPA"};
     const char *threadMode = multiThreaded ? "Multi-threaded" : "Single-threaded";
 
-    std::cout << "\n╔════════════════════════════════════════════════════════════════╗\n";
-    std::cout << "║  " << std::left << std::setw(60) << (std::string(threadMode) + " Sort by " + criteriaNames[criteria]) << "  ║\n";
-    std::cout << "╚════════════════════════════════════════════════════════════════╝\n\n";
+    std::string title = std::string(threadMode) + " Sort by " + criteriaNames[criteria];
+    OutputFormatter::print_header(title);
+    std::cout << "\n";
 
     try
     {
         // Load all students from memory
         auto loadStart = std::chrono::high_resolution_clock::now();
-        auto allStudents = erpSystem->getAllStudents();
+        auto allStudents = erpSystem->get_all_students();
         auto loadEnd = std::chrono::high_resolution_clock::now();
         long long loadMs = std::chrono::duration_cast<std::chrono::milliseconds>(loadEnd - loadStart).count();
 
         if (allStudents.empty())
         {
-            std::cout << "No students in the system to sort.\n";
+            std::cout << Colors::YELLOW << "[!] No students in the system to sort." << Colors::RESET << "\n";
             return;
         }
 
         int totalCount = allStudents.size();
-        std::cout << "Loaded " << totalCount << " students from memory in " << loadMs << " ms\n";
+        std::cout << Colors::CYAN << "[i] Loaded " << Colors::BOLD << totalCount << Colors::RESET
+                  << Colors::CYAN << " students from memory in " << Colors::BOLD << loadMs << "ms"
+                  << Colors::RESET << "\n";
 
         if (!multiThreaded)
         {
@@ -471,17 +504,17 @@ void AdminPortal::sortStudents(int criteria, bool multiThreaded)
             case 1: // Sort by Name
                 std::sort(allStudents.begin(), allStudents.end(),
                           [](const auto &a, const auto &b)
-                          { return a->getName() < b->getName(); });
+                          { return a->get_name() < b->get_name(); });
                 break;
             case 2: // Sort by Roll Number
                 std::sort(allStudents.begin(), allStudents.end(),
                           [](const auto &a, const auto &b)
-                          { return a->getRollNumber() < b->getRollNumber(); });
+                          { return a->get_roll_number() < b->get_roll_number(); });
                 break;
             case 3: // Sort by CGPA (descending)
                 std::sort(allStudents.begin(), allStudents.end(),
                           [](const auto &a, const auto &b)
-                          { return a->getLoadedCGPA() > b->getLoadedCGPA(); });
+                          { return a->get_loaded_cgpa() > b->get_loaded_cgpa(); });
                 break;
             }
 
@@ -491,11 +524,11 @@ void AdminPortal::sortStudents(int criteria, bool multiThreaded)
             std::cout << "Sorted " << totalCount << " students in " << sortMs << " ms\n";
 
             // Update ERP system with sorted list (only in-memory, not persisted)
-            erpSystem->setSortedStudents(allStudents);
+            erpSystem->set_sorted_students(allStudents);
 
             std::cout << "\n--- Performance Summary ---\n";
             std::cout << "Sort time: " << sortMs << " ms\n";
-            std::cout << "Note: Sorted order is in-memory only, not saved to database.\n";
+            std::cout << "Note: Sorted order is in-memory only, not saved to __database.\n";
             std::cout << "      This preserves insertion order for the next program run.\n";
         }
         else
@@ -526,30 +559,32 @@ void AdminPortal::sortStudents(int criteria, bool multiThreaded)
             auto sortedStudents = sortingManager.parallelSort(allStudents);
 
             // Update ERP system with sorted list (only in-memory, not persisted)
-            erpSystem->setSortedStudents(sortedStudents);
+            erpSystem->set_sorted_students(sortedStudents);
 
             // Display thread performance logs
             sortingManager.displayThreadLogs();
 
-            std::cout << "Note: Sorted order is in-memory only, not saved to database.\n";
+            std::cout << "Note: Sorted order is in-memory only, not saved to __database.\n";
             std::cout << "      This preserves insertion order for the next program run.\n";
         }
 
         // Print first 10 students after sorting
-        std::cout << "\n╔════════════════════════════════════════════════════════════════╗\n";
-        std::cout << "║  First 10 Students After Sorting:                             ║\n";
-        std::cout << "╚════════════════════════════════════════════════════════════════╝\n";
-        auto sortedStudents = erpSystem->getAllStudents();
+        std::cout << "\n";
+        OutputFormatter::print_double_line(80);
+        std::cout << Colors::BOLD << "  First 10 Students After Sorting:" << Colors::RESET << "\n";
+        OutputFormatter::print_double_line(80);
+        auto sortedStudents = erpSystem->get_all_students();
         for (size_t i = 0; i < sortedStudents.size() && i < 10; ++i)
         {
-            std::cout << "  " << std::setw(3) << (i + 1) << ". "
-                      << std::setw(20) << sortedStudents[i]->getRollNumber()
-                      << " | " << std::setw(25) << sortedStudents[i]->getName()
-                      << " | CGPA: " << std::fixed << std::setprecision(2) << sortedStudents[i]->getLoadedCGPA() << "\n";
+            std::cout << Colors::CYAN << "  " << std::setw(3) << (i + 1) << ". " << Colors::RESET
+                      << Colors::BOLD << std::setw(20) << sortedStudents[i]->get_roll_number() << Colors::RESET
+                      << " | " << std::setw(25) << sortedStudents[i]->get_name()
+                      << " | CGPA: " << Colors::GREEN << std::fixed << std::setprecision(2) << sortedStudents[i]->get_loaded_cgpa() << Colors::RESET << "\n";
         }
 
-        std::cout << "\nStudents sorted successfully.\n";
-        std::cout << "   Insertion order preserved. Database unchanged.\n";
+        std::cout << "\n"
+                  << Colors::GREEN << "[OK] Students sorted successfully." << Colors::RESET << "\n";
+        std::cout << Colors::DIM << "   [i] Insertion order preserved. Database unchanged." << Colors::RESET << "\n";
     }
     catch (const std::exception &e)
     {
@@ -557,31 +592,34 @@ void AdminPortal::sortStudents(int criteria, bool multiThreaded)
     }
 }
 
-void AdminPortal::viewAllStudents()
+void AdminPortal::view_all_students()
 {
-    std::cout << "\n=== All Students ===\n";
+    OutputFormatter::print_header("ALL STUDENTS");
 
-    auto students = erpSystem->getAllStudents();
+    auto students = erpSystem->get_all_students();
 
     if (students.empty())
     {
-        std::cout << "No students in the system.\n";
+        std::cout << Colors::YELLOW << "\n[!] No students in the system." << Colors::RESET << "\n";
         return;
     }
 
-    std::cout << "\nTotal Students: " << students.size() << "\n\n";
-    std::cout << std::left << std::setw(16) << "Roll No"
+    std::cout << "\n"
+              << Colors::CYAN << "> " << Colors::BOLD << "Total Students: "
+              << Colors::GREEN << students.size() << Colors::RESET << "\n\n";
+    OutputFormatter::print_line(121);
+    std::cout << Colors::BOLD << Colors::CYAN << std::left << std::setw(16) << "Roll No"
               << std::setw(33) << "Name"
               << std::setw(48) << "Branch"
               << std::setw(14) << "Level"
-              << std::setw(10) << "Year" << "\n";
-    std::cout << std::string(121, '-') << "\n";
+              << std::setw(10) << "Year" << Colors::RESET << "\n";
+    OutputFormatter::print_line(121);
 
     for (const auto &student : students)
     {
         // Convert StudentLevel enum to string
         std::string levelStr;
-        switch (student->getLevel())
+        switch (student->get_level())
         {
         case StudentLevel::BTECH:
             levelStr = "BTECH";
@@ -597,34 +635,36 @@ void AdminPortal::viewAllStudents()
             break;
         }
 
-        std::cout << std::left << std::setw(16) << student->getRollNumber()
-                  << std::setw(33) << student->getName()
-                  << std::setw(48) << student->getBranch().getBranchName()
-                  << std::setw(14) << levelStr
-                  << std::setw(10) << student->getStartingYear() << "\n";
+        std::cout << Colors::BOLD << std::left << std::setw(16) << student->get_roll_number() << Colors::RESET
+                  << std::setw(33) << student->get_name()
+                  << Colors::DIM << std::setw(48) << student->get_branch().get_branch_name() << Colors::RESET
+                  << Colors::CYAN << std::setw(14) << levelStr << Colors::RESET
+                  << Colors::DIM << std::setw(10) << student->get_starting_year() << Colors::RESET << "\n";
     }
+    OutputFormatter::print_line(121);
 }
 
-void AdminPortal::searchStudent()
+void AdminPortal::search_student()
 {
-    std::cout << "\n=== Search Student ===\n";
-    std::cout << "Enter Roll Number: ";
+    OutputFormatter::print_header("SEARCH STUDENT");
+    std::cout << Colors::CYAN << "Enter Roll Number: " << Colors::RESET;
 
     std::string rollNumber;
     std::getline(std::cin, rollNumber);
 
     try
     {
-        auto student = erpSystem->findStudent(rollNumber);
+        auto student = erpSystem->find_student(rollNumber);
         if (!student)
         {
-            std::cout << "\nERROR: Student not found.\n";
+            std::cout << "\n"
+                      << Colors::RED << "[X] ERROR: " << Colors::RESET << "Student not found.\n";
             return;
         }
 
         // Convert StudentLevel enum to string
         std::string levelStr;
-        switch (student->getLevel())
+        switch (student->get_level())
         {
         case StudentLevel::BTECH:
             levelStr = "BTECH";
@@ -640,51 +680,57 @@ void AdminPortal::searchStudent()
             break;
         }
 
-        std::cout << "\nStudent Found:\n";
-        std::cout << "Roll Number: " << student->getRollNumber() << "\n";
-        std::cout << "Name: " << student->getName() << "\n";
-        std::cout << "Branch: " << student->getBranch().getBranchName() << "\n";
-        std::cout << "Level: " << levelStr << "\n";
-        std::cout << "Start Year: " << student->getStartingYear() << "\n";
+        std::cout << "\n"
+                  << Colors::GREEN << "[OK] Student Found:" << Colors::RESET << "\n";
+        OutputFormatter::print_line();
+        std::cout << Colors::BOLD << "Roll Number:" << Colors::RESET << " " << student->get_roll_number() << "\n";
+        std::cout << Colors::BOLD << "Name:" << Colors::RESET << " " << student->get_name() << "\n";
+        std::cout << Colors::BOLD << "Branch:" << Colors::RESET << " " << student->get_branch().get_branch_name() << "\n";
+        std::cout << Colors::BOLD << "Level:" << Colors::RESET << " " << levelStr << "\n";
+        std::cout << Colors::BOLD << "Start Year:" << Colors::RESET << " " << student->get_starting_year() << "\n";
 
         // Combine current and previous courses
-        auto currentCourses = student->getCurrentCourses();
-        auto previousCourses = student->getPreviousCourses();
+        auto currentCourses = student->get_current_courses();
+        auto previousCourses = student->get_previous_courses();
 
-        std::cout << "\nCurrent Courses: " << currentCourses.size() << "\n";
-        std::cout << "Previous Courses: " << previousCourses.size() << "\n";
-        std::cout << "Total Enrollments: " << (currentCourses.size() + previousCourses.size()) << "\n";
+        std::cout << "\n"
+                  << Colors::CYAN << "> Course Enrollments" << Colors::RESET << "\n";
+        std::cout << Colors::BOLD << "Current Courses: " << Colors::RESET << Colors::GREEN << currentCourses.size() << Colors::RESET << "\n";
+        std::cout << Colors::BOLD << "Previous Courses: " << Colors::RESET << Colors::CYAN << previousCourses.size() << Colors::RESET << "\n";
+        std::cout << Colors::BOLD << "Total Enrollments: " << Colors::RESET << Colors::MAGENTA << (currentCourses.size() + previousCourses.size()) << Colors::RESET << "\n";
 
         if (!currentCourses.empty())
         {
-            std::cout << "\nCurrent Courses:\n";
-            std::cout << std::string(80, '-') << "\n";
+            std::cout << "\n"
+                      << Colors::GREEN << "> Current Courses" << Colors::RESET << "\n";
+            OutputFormatter::print_line();
             for (const auto &course : currentCourses)
             {
-                std::cout << course.getCourseCode() << " - "
-                          << course.getCourseName() << " ("
-                          << course.getCredits() << " credits)\n";
+                std::cout << Colors::BOLD << course.get_course_code() << Colors::RESET << " - "
+                          << course.get_course_name() << " "
+                          << Colors::DIM << "(" << course.get_credits() << " credits)" << Colors::RESET << "\n";
             }
         }
 
         if (!previousCourses.empty())
         {
-            std::cout << "\nPrevious Courses:\n";
-            std::cout << std::string(80, '-') << "\n";
-            auto previousGrades = student->getPreviousGrades();
+            std::cout << "\n"
+                      << Colors::CYAN << "> Previous Courses" << Colors::RESET << "\n";
+            OutputFormatter::print_line();
+            auto previousGrades = student->get_previous_grades();
             for (size_t i = 0; i < previousCourses.size(); ++i)
             {
                 const auto &course = previousCourses[i];
-                std::cout << course.getCourseCode() << " - "
-                          << course.getCourseName() << " ("
-                          << course.getCredits() << " credits)";
+                std::cout << Colors::BOLD << course.get_course_code() << Colors::RESET << " - "
+                          << course.get_course_name() << " "
+                          << Colors::DIM << "(" << course.get_credits() << " credits)" << Colors::RESET;
 
                 if (i < previousGrades.size())
                 {
                     const auto &grade = previousGrades[i];
-                    std::cout << " - Grade: " << grade.getLetterGrade()
-                              << " (" << std::fixed << std::setprecision(2)
-                              << grade.getGradePoint() << ")";
+                    std::cout << " - " << Colors::BOLD << "Grade: " << Colors::GREEN << grade.get_letter_grade() << Colors::RESET
+                              << Colors::DIM << " (" << std::fixed << std::setprecision(2)
+                              << grade.get_grade_point() << ")" << Colors::RESET;
                 }
                 std::cout << "\n";
             }
@@ -692,62 +738,70 @@ void AdminPortal::searchStudent()
     }
     catch (const std::exception &e)
     {
-        std::cout << "\nERROR: " << e.what() << "\n";
+        std::cout << Colors::RED << "\n[X] ERROR: " << Colors::RESET << e.what() << "\n";
     }
 }
 
-void AdminPortal::updateStudentMarks()
+void AdminPortal::update_student_marks()
 {
-    std::cout << "\n=== Update Student Marks ===\n";
-    std::cout << "Enter Roll Number: ";
+    OutputFormatter::print_header("UPDATE STUDENT MARKS");
+    std::cout << Colors::CYAN << "Enter Roll Number: " << Colors::RESET;
 
     std::string rollNumber;
     std::getline(std::cin, rollNumber);
 
     try
     {
-        auto student = erpSystem->findStudent(rollNumber);
+        auto student = erpSystem->find_student(rollNumber);
         if (!student)
         {
-            std::cout << "\nERROR: Student not found.\n";
+            std::cout << "\n"
+                      << Colors::RED << "[X] ERROR: " << Colors::RESET << "Student not found.\n";
             return;
         }
 
-        auto currentCourses = student->getCurrentCourses();
+        auto currentCourses = student->get_current_courses();
 
         if (currentCourses.empty())
         {
-            std::cout << "Student has no current course enrollments.\n";
+            std::cout << Colors::YELLOW << "[!] WARNING: " << Colors::RESET << "Student has no current course enrollments.\n";
             return;
         }
 
-        std::cout << "\nCurrent Courses:\n";
+        std::cout << "\n"
+                  << Colors::CYAN << "> Current Courses" << Colors::RESET << "\n";
+        OutputFormatter::print_line();
         for (size_t i = 0; i < currentCourses.size(); ++i)
         {
-            std::cout << i + 1 << ". " << currentCourses[i].getCourseCode()
-                      << " - " << currentCourses[i].getCourseName() << "\n";
+            std::cout << Colors::BOLD << "  " << i + 1 << ". " << Colors::RESET
+                      << Colors::CYAN << currentCourses[i].get_course_code() << Colors::RESET
+                      << " - " << currentCourses[i].get_course_name() << "\n";
         }
 
-        std::cout << "\nSelect course number: ";
+        std::cout << "\n"
+                  << Colors::CYAN << "Select course number: " << Colors::RESET;
         int courseNum;
         std::cin >> courseNum;
         std::cin.ignore();
 
         if (courseNum < 1 || courseNum > static_cast<int>(currentCourses.size()))
         {
-            std::cout << "Invalid course number.\n";
+            std::cout << Colors::RED << "[X] ERROR: " << Colors::RESET << "Invalid course number.\n";
             return;
         }
 
-        std::cout << "\nEnter Mid Sem marks (0-100): ";
+        std::cout << "\n"
+                  << Colors::CYAN << "> Enter Marks" << Colors::RESET << "\n";
+        OutputFormatter::print_line();
+        std::cout << Colors::BOLD << "Mid Sem marks (0-100): " << Colors::RESET;
         double midSem;
         std::cin >> midSem;
 
-        std::cout << "Enter End Sem marks (0-100): ";
+        std::cout << Colors::BOLD << "End Sem marks (0-100): " << Colors::RESET;
         double endSem;
         std::cin >> endSem;
 
-        std::cout << "Enter Assignment marks (0-100): ";
+        std::cout << Colors::BOLD << "Assignment marks (0-100): " << Colors::RESET;
         double assignment;
         std::cin >> assignment;
         std::cin.ignore();
@@ -757,11 +811,13 @@ void AdminPortal::updateStudentMarks()
         Grade grade(total);
 
         // Update grade through ERP system
-        erpSystem->updateStudentGrade(rollNumber, currentCourses[courseNum - 1].getCourseCode(), grade);
+        erpSystem->update_student_grade(rollNumber, currentCourses[courseNum - 1].get_course_code(), grade);
 
-        std::cout << "\nMarks updated successfully.\n";
-        std::cout << "  Total: " << std::fixed << std::setprecision(2) << total << "\n";
-        std::cout << "  Grade: " << grade.getLetterGrade() << " (" << grade.getGradePoint() << ")\n";
+        std::cout << "\n"
+                  << Colors::GREEN << "[OK] Marks updated successfully." << Colors::RESET << "\n";
+        std::cout << Colors::BOLD << "  Total: " << Colors::RESET << std::fixed << std::setprecision(2) << total << "\n";
+        std::cout << Colors::BOLD << "  Grade: " << Colors::GREEN << grade.get_letter_grade() << Colors::RESET
+                  << Colors::DIM << " (" << grade.get_grade_point() << ")" << Colors::RESET << "\n";
     }
     catch (const std::exception &e)
     {
@@ -769,70 +825,76 @@ void AdminPortal::updateStudentMarks()
     }
 }
 
-void AdminPortal::deleteStudent()
+void AdminPortal::delete_student()
 {
-    std::cout << "\n=== Delete Single Student ===\n";
-    std::cout << "Enter Roll Number: ";
+    OutputFormatter::print_header("DELETE SINGLE STUDENT");
+    std::cout << Colors::CYAN << "Enter Roll Number: " << Colors::RESET;
 
     std::string rollNumber;
     std::getline(std::cin, rollNumber);
     rollNumber = toUpperCase(rollNumber);
 
     // Check if student exists
-    auto student = erpSystem->findStudent(rollNumber);
+    auto student = erpSystem->find_student(rollNumber);
     if (!student)
     {
-        std::cout << "\nERROR: Student with roll number '" << rollNumber << "' not found.\n";
+        std::cout << Colors::RED << "\n[X] ERROR: " << Colors::RESET << "Student with roll number '" << rollNumber << "' not found.\n";
         return;
-    }
+    } // Display student info
+    std::cout << "\n"
+              << Colors::YELLOW << "> Student Details" << Colors::RESET << "\n";
+    OutputFormatter::print_line();
+    std::cout << Colors::BOLD << "  Roll Number: " << Colors::RESET << student->get_roll_number() << "\n";
+    std::cout << Colors::BOLD << "  Name: " << Colors::RESET << student->get_name() << "\n";
+    std::cout << Colors::BOLD << "  Branch: " << Colors::RESET << student->get_branch().get_branch_name() << "\n";
 
-    // Display student info
-    std::cout << "\nStudent Details:\n";
-    std::cout << "  Roll Number: " << student->getRollNumber() << "\n";
-    std::cout << "  Name: " << student->getName() << "\n";
-    std::cout << "  Branch: " << student->getBranch().getBranchName() << "\n";
-
-    std::cout << "\nAre you sure you want to delete this student? (yes/no): ";
+    std::cout << "\n"
+              << Colors::YELLOW << "[!] Are you sure you want to delete this student? (yes/no): " << Colors::RESET;
     std::string confirm;
     std::getline(std::cin, confirm);
 
     if (confirm == "yes" || confirm == "YES")
     {
-        if (erpSystem->removeStudent(rollNumber))
+        if (erpSystem->remove_student(rollNumber))
         {
             // Save insertion order to file after removal
-            erpSystem->saveInsertionOrderToFile();
+            erpSystem->save_insertion_order_to_file();
 
-            std::cout << "\nStudent deleted successfully from database.\n";
-            std::cout << "   Note: Student account credentials (if any) remain and must be manually removed.\n";
+            std::cout << "\n"
+                      << Colors::GREEN << "[OK] Student deleted successfully from __database." << Colors::RESET << "\n";
+            std::cout << Colors::DIM << "   [i] Note: Student account credentials (if any) remain and must be manually removed." << Colors::RESET << "\n";
         }
         else
         {
-            std::cout << "\nERROR: Student could not be deleted from database.\n";
+            std::cout << "\n"
+                      << Colors::RED << "[X] ERROR: " << Colors::RESET << "Student could not be deleted from __database.\n";
         }
     }
     else
     {
-        std::cout << "\nDeletion cancelled.\n";
+        std::cout << "\n"
+                  << Colors::CYAN << "[i] Deletion cancelled." << Colors::RESET << "\n";
     }
 }
 
-void AdminPortal::deleteBulkStudents()
+void AdminPortal::delete_bulk_students()
 {
-    std::cout << "\n=== Delete Students from CSV (Bulk) ===\n";
-    std::cout << "Enter CSV filename (must contain roll numbers): ";
+    OutputFormatter::print_header("DELETE STUDENTS FROM CSV (BULK)");
+    std::cout << Colors::CYAN << "Enter CSV filename (must contain roll numbers): " << Colors::RESET;
 
     std::string filename;
     std::getline(std::cin, filename);
 
-    std::cout << "\nThis will delete all students whose roll numbers are listed in the CSV file.\n";
-    std::cout << "Are you sure you want to proceed? (yes/no): ";
+    std::cout << "\n"
+              << Colors::YELLOW << "[!] This will delete all students whose roll numbers are listed in the CSV file." << Colors::RESET << "\n";
+    std::cout << Colors::YELLOW << "Are you sure you want to proceed? (yes/no): " << Colors::RESET;
     std::string confirm;
     std::getline(std::cin, confirm);
 
     if (confirm != "yes" && confirm != "YES")
     {
-        std::cout << "\nBulk deletion cancelled.\n";
+        std::cout << "\n"
+                  << Colors::CYAN << "[i] Bulk deletion cancelled." << Colors::RESET << "\n";
         return;
     }
 
@@ -897,12 +959,14 @@ void AdminPortal::deleteBulkStudents()
 
         if (rollNumbers.empty())
         {
-            std::cout << "\nERROR: No valid roll numbers found in CSV file.\n";
+            std::cout << Colors::RED << "\n[X] ERROR: " << Colors::RESET << "No valid roll numbers found in CSV file.\n";
             return;
         }
 
-        std::cout << "\nFound " << rollNumbers.size() << " roll number(s) in file.\n";
-        std::cout << "Processing deletions...\n\n";
+        std::cout << "\n"
+                  << Colors::CYAN << "[i] Found " << Colors::BOLD << rollNumbers.size() << Colors::RESET
+                  << Colors::CYAN << " roll number(s) in file." << Colors::RESET << "\n";
+        std::cout << Colors::YELLOW << " Processing deletions..." << Colors::RESET << "\n\n";
 
         int successCount = 0;
         int notFoundCount = 0;
@@ -910,97 +974,105 @@ void AdminPortal::deleteBulkStudents()
         for (const auto &rollNumber : rollNumbers)
         {
             // Check if student exists
-            auto student = erpSystem->findStudent(rollNumber);
+            auto student = erpSystem->find_student(rollNumber);
 
             if (!student)
             {
-                std::cout << "  X Roll " << rollNumber << " - not found\n";
+                std::cout << Colors::RED << "  [X] " << Colors::RESET << "Roll " << rollNumber << " - not found\n";
                 notFoundCount++;
                 continue;
             }
 
-            // Delete from database
-            if (erpSystem->removeStudent(rollNumber))
+            // Delete from __database
+            if (erpSystem->remove_student(rollNumber))
             {
-                std::cout << "  DONE: Roll " << rollNumber << " - deleted (" << student->getName() << ")\n";
+                std::cout << Colors::GREEN << "  [OK] " << Colors::RESET << "Roll " << rollNumber << " - deleted "
+                          << Colors::DIM << "(" << student->get_name() << ")" << Colors::RESET << "\n";
                 successCount++;
             }
             else
             {
-                std::cout << "  X Roll " << rollNumber << " - could not delete\n";
+                std::cout << Colors::RED << "  [X] " << Colors::RESET << "Roll " << rollNumber << " - could not delete\n";
             }
         }
 
-        std::cout << "\n=== Bulk Deletion Summary ===\n";
-        std::cout << "Total roll numbers in file: " << rollNumbers.size() << "\n";
-        std::cout << "Successfully deleted: " << successCount << "\n";
-        std::cout << "Not found: " << notFoundCount << "\n";
+        OutputFormatter::print_header("BULK DELETION SUMMARY");
+        std::cout << Colors::BOLD << "Total roll numbers in file: " << Colors::RESET << rollNumbers.size() << "\n";
+        std::cout << Colors::GREEN << "Successfully deleted: " << Colors::RESET << successCount << "\n";
+        std::cout << Colors::YELLOW << "Not found: " << Colors::RESET << notFoundCount << "\n";
 
         // Save insertion order to file after bulk deletions
         if (successCount > 0)
         {
-            erpSystem->saveInsertionOrderToFile();
+            erpSystem->save_insertion_order_to_file();
         }
 
-        std::cout << "Bulk deletion completed.\n";
-        std::cout << "   Note: Student account credentials (if any) remain and must be manually removed.\n";
+        std::cout << Colors::GREEN << "\n[OK] Bulk deletion completed." << Colors::RESET << "\n";
+        std::cout << Colors::DIM << "   [i] Note: Student account credentials (if any) remain and must be manually removed." << Colors::RESET << "\n";
     }
     catch (const std::exception &e)
     {
-        std::cout << "\nERROR: Error during bulk deletion: " << e.what() << "\n";
+        std::cout << Colors::RED << "\n[X] ERROR: " << Colors::RESET << "Error during bulk deletion: " << e.what() << "\n";
     }
 }
 
-void AdminPortal::deleteAllStudents()
+void AdminPortal::delete_all_students()
 {
     std::cout << "\n";
-    std::cout << "╔════════════════════════════════════════════════════════════════╗\n";
-    std::cout << "║                WARNING: DELETE ALL STUDENTS                   ║\n";
-    std::cout << "╠════════════════════════════════════════════════════════════════╣\n";
-    std::cout << "║  This action will PERMANENTLY DELETE ALL STUDENTS from the    ║\n";
-    std::cout << "║  database. This operation CANNOT be undone!                   ║\n";
-    std::cout << "║                                                               ║\n";
-    std::cout << "║  All student records, enrollment data, and grades will be     ║\n";
-    std::cout << "║  removed from the system.                                     ║\n";
-    std::cout << "╚════════════════════════════════════════════════════════════════╝\n";
+    OutputFormatter::print_double_line(80);
+    std::cout << Colors::BRIGHT_RED << Colors::BOLD << "               WARNING: DELETE ALL STUDENTS" << Colors::RESET << "\n";
+    OutputFormatter::print_double_line(80);
+    std::cout << Colors::RED << "  This action will PERMANENTLY DELETE ALL STUDENTS from the" << Colors::RESET << "\n";
+    std::cout << Colors::RED << "  __database. This operation CANNOT be undone!" << Colors::RESET << "\n";
+    std::cout << "\n";
+    std::cout << Colors::YELLOW << "  All student records, enrollment data, and grades will be" << Colors::RESET << "\n";
+    std::cout << Colors::YELLOW << "  removed from the system." << Colors::RESET << "\n";
+    OutputFormatter::print_double_line(80);
 
     // Get current student count
-    auto students = erpSystem->getAllStudents();
+    auto students = erpSystem->get_all_students();
     size_t totalStudents = students.size();
 
     if (totalStudents == 0)
     {
-        std::cout << "\nNo students in the database to delete.\n";
+        std::cout << "\n"
+                  << Colors::CYAN << "[i] No students in the __database to delete." << Colors::RESET << "\n";
         return;
     }
 
-    std::cout << "\nCurrent number of students in database: " << totalStudents << "\n";
+    std::cout << "\n"
+              << Colors::BOLD << "Current number of students in __database: " << Colors::BRIGHT_RED << totalStudents << Colors::RESET << "\n";
 
     // First confirmation
-    std::cout << "\nAre you absolutely sure you want to delete ALL students? (yes/no): ";
+    std::cout << "\n"
+              << Colors::YELLOW << "Are you absolutely sure you want to delete ALL students? (yes/no): " << Colors::RESET;
     std::string confirm1;
     std::getline(std::cin, confirm1);
 
     if (confirm1 != "yes" && confirm1 != "YES")
     {
-        std::cout << "\nDeletion cancelled.\n";
+        std::cout << "\n"
+                  << Colors::GREEN << "[OK] Deletion cancelled." << Colors::RESET << "\n";
         return;
     }
 
     // Second confirmation with exact phrase
-    std::cout << "\n FINAL WARNING!\n";
-    std::cout << "To confirm, type exactly: DELETE ALL\n";
-    std::cout << "> ";
+    std::cout << "\n"
+              << Colors::BRIGHT_RED << Colors::BOLD << "[!] FINAL WARNING!" << Colors::RESET << "\n";
+    std::cout << Colors::YELLOW << "To confirm, type exactly: " << Colors::BOLD << "DELETE ALL" << Colors::RESET << "\n";
+    std::cout << Colors::CYAN << "> " << Colors::RESET;
     std::string confirm2;
     std::getline(std::cin, confirm2);
 
     if (confirm2 != "DELETE ALL")
     {
-        std::cout << "\nDeletion cancelled. (Confirmation phrase did not match)\n";
+        std::cout << "\n"
+                  << Colors::GREEN << "[OK] Deletion cancelled. " << Colors::DIM << "(Confirmation phrase did not match)" << Colors::RESET << "\n";
         return;
     }
 
-    std::cout << "\nStarting deletion of all students...\n\n";
+    std::cout << "\n"
+              << Colors::YELLOW << " Starting deletion of all students..." << Colors::RESET << "\n\n";
 
     int successCount = 0;
     int failCount = 0;
@@ -1010,11 +1082,11 @@ void AdminPortal::deleteAllStudents()
     rollNumbers.reserve(totalStudents);
     for (const auto &student : students)
     {
-        rollNumbers.push_back(student->getRollNumber());
+        rollNumbers.push_back(student->get_roll_number());
     }
 
     // Progress indicator
-    std::cout << "Progress: [";
+    std::cout << Colors::CYAN << "Progress: [" << Colors::RESET;
     size_t progressBarWidth = 50;
     size_t lastProgress = 0;
 
@@ -1022,7 +1094,7 @@ void AdminPortal::deleteAllStudents()
     {
         const auto &rollNumber = rollNumbers[i];
 
-        if (erpSystem->removeStudent(rollNumber))
+        if (erpSystem->remove_student(rollNumber))
         {
             successCount++;
         }
@@ -1037,22 +1109,22 @@ void AdminPortal::deleteAllStudents()
         {
             for (size_t j = lastProgress; j < currentProgress; ++j)
             {
-                std::cout << "=";
+                std::cout << Colors::GREEN << "=" << Colors::RESET;
                 std::cout.flush();
             }
             lastProgress = currentProgress;
         }
     }
-    std::cout << "] 100%\n\n";
+    std::cout << Colors::CYAN << "] " << Colors::GREEN << "100%" << Colors::RESET << "\n\n";
 
     // Summary
-    std::cout << "╔════════════════════════════════════════════════════════════════╗\n";
-    std::cout << "║               DELETE ALL STUDENTS - SUMMARY                    ║\n";
-    std::cout << "╠════════════════════════════════════════════════════════════════╣\n";
-    std::cout << "║  Total students processed: " << std::setw(36) << totalStudents << "║\n";
-    std::cout << "║  Successfully deleted:     " << std::setw(36) << successCount << "║\n";
-    std::cout << "║  Failed to delete:         " << std::setw(36) << failCount << "║\n";
-    std::cout << "╚════════════════════════════════════════════════════════════════╝\n";
+    OutputFormatter::print_double_line(80);
+    std::cout << Colors::BOLD << "               DELETE ALL STUDENTS - SUMMARY" << Colors::RESET << "\n";
+    OutputFormatter::print_double_line(80);
+    std::cout << Colors::BOLD << "  Total students processed:  " << Colors::RESET << Colors::CYAN << totalStudents << Colors::RESET << "\n";
+    std::cout << Colors::BOLD << "  Successfully deleted:      " << Colors::RESET << Colors::GREEN << successCount << Colors::RESET << "\n";
+    std::cout << Colors::BOLD << "  Failed to delete:          " << Colors::RESET << Colors::RED << failCount << Colors::RESET << "\n";
+    OutputFormatter::print_double_line(80);
 
     if (successCount > 0)
     {
@@ -1060,20 +1132,22 @@ void AdminPortal::deleteAllStudents()
         Database db;
         db.clearInsertionOrder();
 
-        std::cout << "\nAll students have been deleted from the database.\n";
-        std::cout << "   Note: Student account credentials (if any) remain and must be manually removed.\n";
+        std::cout << "\n"
+                  << Colors::GREEN << "[OK] All students have been deleted from the __database." << Colors::RESET << "\n";
+        std::cout << Colors::DIM << "   [i] Note: Student account credentials (if any) remain and must be manually removed." << Colors::RESET << "\n";
     }
 
     if (failCount > 0)
     {
-        std::cout << "\n Warning: " << failCount << " student(s) could not be deleted.\n";
+        std::cout << "\n"
+                  << Colors::YELLOW << "[!] Warning: " << Colors::RESET << failCount << " student(s) could not be deleted.\n";
     }
 }
 
-void AdminPortal::createStudentAccount()
+void AdminPortal::create_student_account()
 {
-    std::cout << "\n=== Create Student Account ===\n";
-    std::cout << "Enter Roll Number: ";
+    OutputFormatter::print_header("CREATE STUDENT ACCOUNT");
+    std::cout << Colors::CYAN << "Enter Roll Number: " << Colors::RESET;
 
     std::string rollNumber;
     std::getline(std::cin, rollNumber);
@@ -1081,37 +1155,45 @@ void AdminPortal::createStudentAccount()
     try
     {
         // Check if student exists in ERP
-        auto student = erpSystem->findStudent(rollNumber);
+        auto student = erpSystem->find_student(rollNumber);
         if (!student)
         {
-            std::cout << "\nERROR: Student not found in ERP system.\n";
-            std::cout << "  Please add the student first before creating account.\n";
+            std::cout << "\n"
+                      << Colors::RED << "[X] ERROR: " << Colors::RESET << "Student not found in ERP system.\n";
+            std::cout << Colors::DIM << "  [i] Please add the student first before creating account." << Colors::RESET << "\n";
             return;
         }
 
         // Create credentials
-        std::string password = Auth::createStudentAccount(rollNumber);
+        std::string password = Auth::create_student_account(rollNumber);
 
-        std::cout << "\nStudent account created successfully.\n";
-        std::cout << "  Roll Number (Login ID): " << rollNumber << "\n";
-        std::cout << "  Generated Password: " << password << "\n";
-        std::cout << "\n  ** Please share these credentials with the student **\n";
-        std::cout << "  ** Student should change password after first login **\n";
+        std::cout << "\n"
+                  << Colors::GREEN << "[OK] Student account created successfully." << Colors::RESET << "\n";
+        OutputFormatter::print_line();
+        std::cout << Colors::BOLD << "  Roll Number (Login ID): " << Colors::RESET << Colors::CYAN << rollNumber << Colors::RESET << "\n";
+        std::cout << Colors::BOLD << "  Generated Password:     " << Colors::RESET << Colors::YELLOW << password << Colors::RESET << "\n";
+        OutputFormatter::print_line();
+        std::cout << Colors::DIM << "\n  [i] Please share these credentials with the student" << Colors::RESET << "\n";
+        std::cout << Colors::DIM << "  [i] Student should change password after first login" << Colors::RESET << "\n";
     }
     catch (const std::exception &e)
     {
-        std::cout << "\nERROR: " << e.what() << "\n";
+        std::cout << "\n"
+                  << Colors::RED << "[X] ERROR: " << Colors::RESET << e.what() << "\n";
     }
 }
 
-void AdminPortal::bulkCreateStudentAccounts()
+void AdminPortal::bulk_create_student_accounts()
 {
-    std::cout << "\n=== Bulk Create Student Accounts ===\n";
-    std::cout << "\nThis will create accounts for ALL students in the database\n";
-    std::cout << "who do not already have credentials.\n";
-    std::cout << "\nDefault Password: abc123\n";
-    std::cout << "User ID: Student's Roll Number\n";
-    std::cout << "\nDo you want to proceed? (YES/NO): ";
+    OutputFormatter::print_header("BULK CREATE STUDENT ACCOUNTS");
+    std::cout << "\n"
+              << Colors::CYAN << "[i] This will create accounts for ALL students in the __database" << Colors::RESET << "\n";
+    std::cout << Colors::CYAN << "  who do not already have credentials." << Colors::RESET << "\n";
+    std::cout << "\n"
+              << Colors::BOLD << "Default Password: " << Colors::YELLOW << "abc123" << Colors::RESET << "\n";
+    std::cout << Colors::BOLD << "User ID: " << Colors::CYAN << "Student's Roll Number" << Colors::RESET << "\n";
+    std::cout << "\n"
+              << Colors::YELLOW << "Do you want to proceed? (YES/NO): " << Colors::RESET;
 
     std::string confirm;
     std::getline(std::cin, confirm);
@@ -1119,18 +1201,20 @@ void AdminPortal::bulkCreateStudentAccounts()
 
     if (confirm != "YES")
     {
-        std::cout << "\nBulk account creation cancelled.\n";
+        std::cout << "\n"
+                  << Colors::CYAN << "[i] Bulk account creation cancelled." << Colors::RESET << "\n";
         return;
     }
 
-    std::cout << "\nProcessing bulk account creation...\n\n";
+    std::cout << "\n"
+              << Colors::YELLOW << " Processing bulk account creation..." << Colors::RESET << "\n\n";
 
     // Get all students from ERP system
-    auto students = erpSystem->getAllStudents();
+    auto students = erpSystem->get_all_students();
 
     if (students.empty())
     {
-        std::cout << "X No students found in the database.\n";
+        std::cout << Colors::RED << "[X] " << Colors::RESET << "No students found in the __database.\n";
         return;
     }
 
@@ -1138,33 +1222,33 @@ void AdminPortal::bulkCreateStudentAccounts()
     int skipped = 0;
     const std::string defaultPassword = "abc123";
 
-    std::cout << std::left << std::setw(20) << "Roll Number"
+    std::cout << Colors::BOLD << std::left << std::setw(20) << "Roll Number"
               << std::setw(35) << "Name"
-              << "Status\n";
-    std::cout << std::string(70, '-') << "\n";
+              << "Status" << Colors::RESET << "\n";
+    OutputFormatter::print_line(70);
 
     for (const auto &student : students)
     {
-        std::string rollNumber = student->getRollNumber();
-        std::string name = student->getName();
+        std::string rollNumber = student->get_roll_number();
+        std::string name = student->get_name();
 
         try
         {
-            bool success = Auth::createStudentAccountWithPassword(rollNumber, defaultPassword);
+            bool success = Auth::create_student_account_with_password(rollNumber, defaultPassword);
 
             if (success)
             {
                 created++;
                 std::cout << std::left << std::setw(20) << rollNumber
                           << std::setw(35) << name
-                          << "Created\n";
+                          << Colors::GREEN << "[OK] Created" << Colors::RESET << "\n";
             }
             else
             {
                 skipped++;
                 std::cout << std::left << std::setw(20) << rollNumber
                           << std::setw(35) << name
-                          << "   Skipped (Already exists)\n";
+                          << Colors::DIM << "[i] Skipped (Already exists)" << Colors::RESET << "\n";
             }
         }
         catch (const std::exception &e)
@@ -1172,33 +1256,34 @@ void AdminPortal::bulkCreateStudentAccounts()
             skipped++;
             std::cout << std::left << std::setw(20) << rollNumber
                       << std::setw(35) << name
-                      << "X Error: " << e.what() << "\n";
+                      << Colors::RED << "[X] Error: " << e.what() << Colors::RESET << "\n";
         }
     }
 
-    std::cout << "\n"
-              << std::string(70, '=') << "\n";
-    std::cout << "Bulk account creation completed!\n\n";
-    std::cout << "Total Students: " << students.size() << "\n";
-    std::cout << "Accounts Created: " << created << "\n";
-    std::cout << "Skipped (Already existed): " << skipped << "\n";
+    OutputFormatter::print_double_line(70);
+    std::cout << Colors::GREEN << "[OK] Bulk account creation completed!" << Colors::RESET << "\n\n";
+    std::cout << Colors::BOLD << "Total Students: " << Colors::RESET << students.size() << "\n";
+    std::cout << Colors::GREEN << "Accounts Created: " << Colors::RESET << created << "\n";
+    std::cout << Colors::YELLOW << "Skipped (Already existed): " << Colors::RESET << skipped << "\n";
 
     if (created > 0)
     {
-        std::cout << "\n** All new accounts created with password: abc123 **\n";
-        std::cout << "** Students should change their password after first login **\n";
+        std::cout << "\n"
+                  << Colors::BOLD << "[i] All new accounts created with password: " << Colors::YELLOW << "abc123" << Colors::RESET << "\n";
+        std::cout << Colors::DIM << "[i] Students should change their password after first login" << Colors::RESET << "\n";
     }
 }
 
-void AdminPortal::manageCourses()
+void AdminPortal::manage_courses()
 {
-    std::cout << "\n=== Course Catalog Management ===\n";
-    std::cout << "1. View All Courses\n";
-    std::cout << "2. Add New Course\n";
-    std::cout << "3. View Course Details\n";
-    std::cout << "4. Search Courses\n";
-    std::cout << "5. Back to Main Menu\n";
-    std::cout << "\nEnter choice: ";
+    OutputFormatter::print_header("COURSE CATALOG MANAGEMENT");
+    OutputFormatter::print_menu_item(1, "View All Courses", Colors::CYAN);
+    OutputFormatter::print_menu_item(2, "Add New Course", Colors::GREEN);
+    OutputFormatter::print_menu_item(3, "View Course Details", Colors::CYAN);
+    OutputFormatter::print_menu_item(4, "Search Courses", Colors::CYAN);
+    OutputFormatter::print_menu_item(5, "Back to Main Menu", Colors::DIM);
+    std::cout << "\n"
+              << Colors::CYAN << "Enter choice: " << Colors::RESET;
 
     int choice;
     std::cin >> choice;
@@ -1208,45 +1293,52 @@ void AdminPortal::manageCourses()
     {
     case 1:
     {
-        auto courses = courseCatalog->getAllCourses();
-        std::cout << "\n=== All Courses (" << courses.size() << ") ===\n";
-        std::cout << std::left << std::setw(12) << "Code"
-                  << std::setw(40) << "Name"
+        auto courses = courseCatalog->get_all_courses();
+        OutputFormatter::print_header("ALL COURSES");
+        std::cout << "\n"
+                  << Colors::DIM << "> " << Colors::RESET << "Total Courses: "
+                  << Colors::BOLD << courses.size() << Colors::RESET << "\n\n";
+        OutputFormatter::print_line(115);
+        std::cout << Colors::BOLD << std::left << std::setw(12) << "Code"
+                  << std::setw(50) << "Name"
                   << std::setw(10) << "Credits"
-                  << std::setw(10) << "Type" << "\n";
-        std::cout << std::string(72, '-') << "\n";
+                  << std::setw(30) << "Instructor"
+                  << std::setw(13) << "Type" << Colors::RESET << "\n";
+        OutputFormatter::print_line(115);
 
         for (const auto &course : courses)
         {
-            std::cout << std::left << std::setw(12) << course.courseCode
-                      << std::setw(40) << course.courseName
-                      << std::setw(10) << course.credits
-                      << std::setw(10) << course.courseType << "\n";
+            std::cout << Colors::CYAN << std::left << std::setw(12) << course.courseCode << Colors::RESET
+                      << std::left << std::setw(50) << course.courseName
+                      << Colors::DIM << std::setw(10) << course.credits << Colors::RESET
+                      << Colors::DIM << std::setw(30) << course.instructor << Colors::RESET
+                      << std::left << std::setw(13) << course.courseType << "\n";
         }
+        OutputFormatter::print_line(115);
         break;
     }
     case 2:
     {
-        std::cout << "\n=== Add New Course ===\n";
+        OutputFormatter::print_header("ADD NEW COURSE");
         CourseInfo course;
 
-        std::cout << "Course Code: ";
+        std::cout << Colors::DIM << "Course Code: " << Colors::RESET;
         std::getline(std::cin, course.courseCode);
 
-        std::cout << "Course Name: ";
+        std::cout << Colors::DIM << "Course Name: " << Colors::RESET;
         std::getline(std::cin, course.courseName);
 
-        std::cout << "Credits: ";
+        std::cout << Colors::DIM << "Credits: " << Colors::RESET;
         std::cin >> course.credits;
         std::cin.ignore();
 
-        std::cout << "Instructor: ";
+        std::cout << Colors::DIM << "Instructor: " << Colors::RESET;
         std::getline(std::cin, course.instructor);
 
-        std::cout << "Type (Regular/Capstone/Research): ";
+        std::cout << Colors::DIM << "Type (Regular/Capstone/Research): " << Colors::RESET;
         std::getline(std::cin, course.courseType);
 
-        std::cout << "Eligible Levels (BTech MTech PhD, space-separated): ";
+        std::cout << Colors::DIM << "Eligible Levels (BTech MTech PhD, space-separated): " << Colors::RESET;
         std::string levels;
         std::getline(std::cin, levels);
         std::istringstream iss(levels);
@@ -1256,13 +1348,15 @@ void AdminPortal::manageCourses()
             course.eligibleLevels.insert(level);
         }
 
-        courseCatalog->addCourse(course);
-        std::cout << "\nCourse added successfully.\n";
+        courseCatalog->add_course(course);
+        std::cout << "\n"
+                  << Colors::GREEN << "[OK] Course added successfully." << Colors::RESET << "\n";
         break;
     }
     case 3:
     {
-        std::cout << "\nEnter Course Code: ";
+        std::cout << "\n"
+                  << Colors::DIM << "Enter Course Code: " << Colors::RESET;
         std::string code;
         std::getline(std::cin, code);
         code = toUpperCase(code); // Convert to uppercase
@@ -1271,44 +1365,54 @@ void AdminPortal::manageCourses()
     }
     case 4:
     {
-        std::cout << "\nEnter search query: ";
+        std::cout << "\n"
+                  << Colors::DIM << "Enter search query: " << Colors::RESET;
         std::string query;
         std::getline(std::cin, query);
         query = toUpperCase(query); // Convert to uppercase
 
-        auto results = courseCatalog->searchCourses(query);
-        std::cout << "\nFound " << results.size() << " courses:\n";
-        for (const auto &course : results)
+        auto results = courseCatalog->search_courses(query);
+        std::cout << "\n"
+                  << Colors::DIM << "> Found " << Colors::BOLD << results.size() << Colors::RESET
+                  << Colors::DIM << " course(s)" << Colors::RESET << "\n\n";
+
+        if (!results.empty())
         {
-            std::cout << course.courseCode << " - " << course.courseName << "\n";
+            OutputFormatter::print_line(70);
+            for (const auto &course : results)
+            {
+                std::cout << Colors::CYAN << "  " << std::left << std::setw(12) << course.courseCode << Colors::RESET
+                          << course.courseName << "\n";
+            }
+            OutputFormatter::print_line(70);
         }
         break;
     }
     }
 }
 
-void AdminPortal::viewBackups()
+void AdminPortal::view_backups()
 {
-    std::cout << "\n=== Database Backups ===\n";
+    OutputFormatter::print_header("DATABASE BACKUPS");
     auto backups = Database::getBackupInfo();
 
     for (const auto &backup : backups)
     {
-        std::cout << backup << "\n";
+        std::cout << Colors::CYAN << "• " << Colors::RESET << backup << "\n";
     }
 }
 
-void AdminPortal::restoreBackup()
+void AdminPortal::restore_backup()
 {
-    std::cout << "\n=== Restore from Backup ===\n";
-    std::cout << "Enter backup number (1 or 2): ";
+    OutputFormatter::print_header("RESTORE FROM BACKUP");
+    std::cout << Colors::CYAN << "Enter backup number (1 or 2): " << Colors::RESET;
 
     int backupNum;
     std::cin >> backupNum;
     std::cin.ignore();
 
-    std::cout << "Are you sure you want to restore from backup "
-              << backupNum << "? (yes/no): ";
+    std::cout << Colors::YELLOW << "\n[!] Are you sure you want to restore from backup "
+              << backupNum << "? (yes/no): " << Colors::RESET;
     std::string confirm;
     std::getline(std::cin, confirm);
 
@@ -1316,25 +1420,28 @@ void AdminPortal::restoreBackup()
     {
         if (Database::restoreFromBackup(backupNum))
         {
-            std::cout << "\nDatabase restored successfully from backup "
-                      << backupNum << ".\n";
-            std::cout << "  Please restart the application to load restored data.\n";
+            std::cout << "\n"
+                      << Colors::GREEN << "[OK] Database restored successfully from backup "
+                      << backupNum << "." << Colors::RESET << "\n";
+            std::cout << Colors::DIM << "  [i] Please restart the application to load restored data." << Colors::RESET << "\n";
         }
         else
         {
-            std::cout << "\nERROR: Failed to restore backup.\n";
+            std::cout << "\n"
+                      << Colors::RED << "[X] ERROR: " << Colors::RESET << "Failed to restore backup.\n";
         }
     }
     else
     {
-        std::cout << "\nRestore cancelled.\n";
+        std::cout << "\n"
+                  << Colors::CYAN << "[i] Restore cancelled." << Colors::RESET << "\n";
     }
 }
 
-void AdminPortal::exportData()
+void AdminPortal::export_data()
 {
-    std::cout << "\n=== Export Data to CSV ===\n";
-    std::cout << "Enter output filename: ";
+    OutputFormatter::print_header("EXPORT DATA TO CSV");
+    std::cout << Colors::CYAN << "Enter output filename: " << Colors::RESET;
 
     std::string filename;
     std::getline(std::cin, filename);
@@ -1342,21 +1449,27 @@ void AdminPortal::exportData()
     try
     {
         Database::exportToCSV(filename);
-        std::cout << "\nData exported successfully to " << filename << "\n";
+        std::cout << "\n"
+                  << Colors::GREEN << "[OK] Data exported successfully to " << Colors::BOLD << filename << Colors::RESET << "\n";
     }
     catch (const std::exception &e)
     {
-        std::cout << "\nERROR: " << e.what() << "\n";
+        std::cout << "\n"
+                  << Colors::RED << "[X] ERROR: " << Colors::RESET << e.what() << "\n";
     }
 }
 
-void AdminPortal::viewStatistics()
+void AdminPortal::view_statistics()
 {
-    std::cout << "\n=== System Statistics ===\n";
+    OutputFormatter::print_header("SYSTEM STATISTICS");
 
-    auto students = erpSystem->getAllStudents();
+    auto students = erpSystem->get_all_students();
 
-    std::cout << "Total Students: " << students.size() << "\n";
+    std::cout << "\n"
+              << Colors::BOLD << Colors::GREEN << " OVERVIEW" << Colors::RESET << "\n";
+    OutputFormatter::print_line();
+    std::cout << Colors::CYAN << "  Total Students: " << Colors::BOLD << Colors::GREEN
+              << students.size() << Colors::RESET << "\n";
 
     // Count by level
     std::map<std::string, int> levelCount;
@@ -1366,7 +1479,7 @@ void AdminPortal::viewStatistics()
     {
         // Convert StudentLevel enum to string
         std::string levelStr;
-        switch (student->getLevel())
+        switch (student->get_level())
         {
         case StudentLevel::BTECH:
             levelStr = "BTECH";
@@ -1383,178 +1496,203 @@ void AdminPortal::viewStatistics()
         }
 
         levelCount[levelStr]++;
-        branchCount[student->getBranch().getBranchName()]++;
+        branchCount[student->get_branch().get_branch_name()]++;
     }
 
-    std::cout << "\nStudents by Level:\n";
+    std::cout << "\n"
+              << Colors::BOLD << Colors::YELLOW << " STUDENTS BY LEVEL" << Colors::RESET << "\n";
+    OutputFormatter::print_line();
     for (const auto &pair : levelCount)
     {
-        std::cout << "  " << pair.first << ": " << pair.second << "\n";
+        std::cout << "  " << Colors::BOLD << Colors::CYAN << pair.first << Colors::RESET
+                  << ": " << Colors::GREEN << pair.second << Colors::RESET << "\n";
     }
 
-    std::cout << "\nStudents by Branch:\n";
+    std::cout << "\n"
+              << Colors::BOLD << Colors::YELLOW << " STUDENTS BY BRANCH" << Colors::RESET << "\n";
+    OutputFormatter::print_line();
     for (const auto &pair : branchCount)
     {
-        std::cout << "  " << pair.first << ": " << pair.second << "\n";
+        std::cout << "  " << Colors::DIM << "• " << Colors::RESET << Colors::BOLD
+                  << pair.first << Colors::RESET << ": " << Colors::GREEN << pair.second << Colors::RESET << "\n";
     }
 
-    std::cout << "\nTotal Courses in Catalog: "
-              << courseCatalog->getAllCourses().size() << "\n";
+    std::cout << "\n"
+              << Colors::BOLD << Colors::YELLOW << " COURSE INFORMATION" << Colors::RESET << "\n";
+    OutputFormatter::print_line();
+    std::cout << "  " << Colors::CYAN << "Total Courses in Catalog: " << Colors::BOLD << Colors::GREEN
+              << courseCatalog->get_all_courses().size() << Colors::RESET << "\n";
 
-    std::cout << semesterManager->getStatus();
+    std::cout << semesterManager->get_status();
 }
 
-void AdminPortal::changeOwnPassword()
+void AdminPortal::change_own_password()
 {
-    std::cout << "\n=== Change Password ===\n";
-    std::cout << "Enter current password: ";
+    OutputFormatter::print_header("CHANGE PASSWORD");
+    std::cout << Colors::CYAN << "Enter current password: " << Colors::RESET;
 
     std::string oldPassword, newPassword, confirmPassword;
     std::getline(std::cin, oldPassword);
 
-    std::cout << "Enter new password: ";
+    std::cout << Colors::CYAN << "Enter new password: " << Colors::RESET;
     std::getline(std::cin, newPassword);
 
-    std::cout << "Confirm new password: ";
+    std::cout << Colors::CYAN << "Confirm new password: " << Colors::RESET;
     std::getline(std::cin, confirmPassword);
 
     if (newPassword != confirmPassword)
     {
-        std::cout << "\nERROR: Passwords do not match.\n";
+        std::cout << "\n"
+                  << Colors::RED << "[X] ERROR: " << Colors::RESET << "Passwords do not match.\n";
         return;
     }
 
-    if (Auth::changePassword(adminUsername, oldPassword, newPassword, UserType::ADMIN))
+    if (Auth::change_password(__admin_username, oldPassword, newPassword, UserType::ADMIN))
     {
-        std::cout << "\nPassword changed successfully.\n";
+        std::cout << "\n"
+                  << Colors::GREEN << "[OK] Password changed successfully." << Colors::RESET << "\n";
     }
     else
     {
-        std::cout << "\nERROR: Failed to change password. Check your current password.\n";
+        std::cout << "\n"
+                  << Colors::RED << "[X] ERROR: " << Colors::RESET << "Failed to change password. Check your current password.\n";
     }
 }
 
-void AdminPortal::viewStudentsInsertionOrder()
+void AdminPortal::view_students_insertion_order()
 {
     std::cout << "\n";
-    std::cout << "=================================================================\n";
-    std::cout << "   Students in Insertion Order\n";
-    std::cout << "   (Shows the order in which students were added to the system)\n";
-    std::cout << "=================================================================\n";
-    std::cout << "\nUsing InsertionOrderIterator to traverse enrollment records.\n\n";
+    OutputFormatter::print_double_line(102);
+    std::cout << Colors::BOLD << "   Students in Insertion Order" << Colors::RESET << "\n";
+    std::cout << Colors::DIM << "   (Shows the order in which students were added to the system)" << Colors::RESET << "\n";
+    OutputFormatter::print_double_line(102);
+    std::cout << "\n"
+              << Colors::CYAN << "[i] Using InsertionOrderIterator to traverse enrollment records." << Colors::RESET << "\n\n";
 
     try
     {
         int count = 0;
-        std::cout << std::left << std::setw(5) << "#"
+        std::cout << Colors::BOLD << std::left << std::setw(5) << "#"
                   << std::setw(16) << "Roll No"
                   << std::setw(30) << "Name"
                   << std::setw(45) << "Branch"
-                  << std::right << std::setw(6) << "CGPA" << "\n";
-        std::cout << std::string(102, '-') << "\n";
+                  << std::right << std::setw(6) << "CGPA" << Colors::RESET << "\n";
+        OutputFormatter::print_line(102);
 
         for (auto it = erpSystem->beginInsertionOrder(); it != erpSystem->endInsertionOrder(); ++it)
         {
             auto student = *it;
             count++;
-            std::cout << std::left << std::setw(5) << count
-                      << std::setw(16) << student->getRollNumber()
-                      << std::setw(30) << student->getName()
-                      << std::setw(45) << student->getBranch().getBranchName()
-                      << std::right << std::setw(6) << std::fixed << std::setprecision(2)
-                      << student->getLoadedCGPA() << "\n";
+            std::cout << Colors::CYAN << std::left << std::setw(5) << count << Colors::RESET
+                      << std::setw(16) << student->get_roll_number()
+                      << std::setw(30) << student->get_name()
+                      << std::setw(45) << student->get_branch().get_branch_name()
+                      << Colors::GREEN << std::right << std::setw(6) << std::fixed << std::setprecision(2)
+                      << student->get_loaded_cgpa() << Colors::RESET << "\n";
 
             // Show first 50 only, then ask to continue
             if (count % 50 == 0)
             {
-                std::cout << "\nDisplayed " << count << " students. Press Enter to continue (or Ctrl+C to stop)...";
+                std::cout << "\n"
+                          << Colors::CYAN << "[i] Displayed " << count << " students. Press Enter to continue (or Ctrl+C to stop)..." << Colors::RESET;
                 std::cin.get();
             }
         }
 
-        std::cout << "\nTotal students displayed: " << count << " (in insertion order)\n";
+        OutputFormatter::print_line(102);
+        std::cout << Colors::GREEN << "[OK] Total students displayed: " << Colors::BOLD << count << Colors::RESET
+                  << Colors::GREEN << " (in insertion order)" << Colors::RESET << "\n";
     }
     catch (const std::exception &e)
     {
-        std::cout << "\nERROR: " << e.what() << "\n";
+        std::cout << "\n"
+                  << Colors::RED << "[X] ERROR: " << Colors::RESET << e.what() << "\n";
     }
 }
 
-void AdminPortal::viewStudentsSortedOrder()
+void AdminPortal::view_students_sorted_order()
 {
     std::cout << "\n";
-    std::cout << "=================================================================\n";
-    std::cout << "   Students in Sorted Order\n";
-    std::cout << "   (Displays students after sorting by name/roll/CGPA)\n";
-    std::cout << "=================================================================\n";
-    std::cout << "\nUsing SortedOrderIterator to traverse sorted records.\n";
-    std::cout << "Note: You must run the Sort option (Menu 9) before using this.\n\n";
+    OutputFormatter::print_double_line(102);
+    std::cout << Colors::BOLD << "   Students in Sorted Order" << Colors::RESET << "\n";
+    std::cout << Colors::DIM << "   (Displays students after sorting by name/roll/CGPA)" << Colors::RESET << "\n";
+    OutputFormatter::print_double_line(102);
+    std::cout << "\n"
+              << Colors::CYAN << "[i] Using SortedOrderIterator to traverse sorted records." << Colors::RESET << "\n";
+    std::cout << Colors::DIM << "[i] Note: You must run the Sort option (Menu 9) before using this." << Colors::RESET << "\n\n";
 
     try
     {
-        if (!erpSystem->getIsSorted())
+        if (!erpSystem->get_is_sorted())
         {
-            std::cout << "\nERROR: Students are not sorted yet.\n";
-            std::cout << "   Please use Menu Option 9 to sort students first.\n";
+            std::cout << "\n"
+                      << Colors::RED << "[X] ERROR: " << Colors::RESET << "Students are not sorted yet.\n";
+            std::cout << Colors::DIM << "   [i] Please use Menu Option 9 to sort students first." << Colors::RESET << "\n";
             return;
         }
 
         int count = 0;
-        std::cout << std::left << std::setw(5) << "#"
+        std::cout << Colors::BOLD << std::left << std::setw(5) << "#"
                   << std::setw(16) << "Roll No"
                   << std::setw(30) << "Name"
                   << std::setw(45) << "Branch"
-                  << std::right << std::setw(6) << "CGPA" << "\n";
-        std::cout << std::string(102, '-') << "\n";
+                  << std::right << std::setw(6) << "CGPA" << Colors::RESET << "\n";
+        OutputFormatter::print_line(102);
 
         for (auto it = erpSystem->beginSorted(); it != erpSystem->endSorted(); ++it)
         {
             auto student = *it;
             count++;
-            std::cout << std::left << std::setw(5) << count
-                      << std::setw(16) << student->getRollNumber()
-                      << std::setw(30) << student->getName()
-                      << std::setw(45) << student->getBranch().getBranchName()
-                      << std::right << std::setw(6) << std::fixed << std::setprecision(2)
-                      << student->getLoadedCGPA() << "\n";
+            std::cout << Colors::CYAN << std::left << std::setw(5) << count << Colors::RESET
+                      << std::setw(16) << student->get_roll_number()
+                      << std::setw(30) << student->get_name()
+                      << std::setw(45) << student->get_branch().get_branch_name()
+                      << Colors::GREEN << std::right << std::setw(6) << std::fixed << std::setprecision(2)
+                      << student->get_loaded_cgpa() << Colors::RESET << "\n";
 
             // Show first 50 only, then ask to continue
             if (count % 50 == 0)
             {
-                std::cout << "\nDisplayed " << count << " students. Press Enter to continue (or Ctrl+C to stop)...";
+                std::cout << "\n"
+                          << Colors::CYAN << "[i] Displayed " << count << " students. Press Enter to continue (or Ctrl+C to stop)..." << Colors::RESET;
                 std::cin.get();
             }
         }
 
-        std::cout << "\nTotal students displayed: " << count << " (in sorted order)\n";
+        OutputFormatter::print_line(102);
+        std::cout << Colors::GREEN << "[OK] Total students displayed: " << Colors::BOLD << count << Colors::RESET
+                  << Colors::GREEN << " (in sorted order)" << Colors::RESET << "\n";
     }
     catch (const std::exception &e)
     {
-        std::cout << "\nERROR: " << e.what() << "\n";
+        std::cout << "\n"
+                  << Colors::RED << "[X] ERROR: " << Colors::RESET << e.what() << "\n";
     }
 }
 
-void AdminPortal::findStudentsByGrade()
+void AdminPortal::find_students_by_grade()
 {
     std::cout << "\n";
-    std::cout << "=================================================================\n";
-    std::cout << "   Find Students by Grade in a Course\n";
-    std::cout << "=================================================================\n";
-    std::cout << "\nThis search uses a grade index for fast O(log n) lookups.\n";
-    std::cout << "Perfect for placement queries like 'Find all A-grade students'.\n\n";
+    OutputFormatter::print_double_line(80);
+    std::cout << Colors::BOLD << "   Find Students by Grade in a Course" << Colors::RESET << "\n";
+    OutputFormatter::print_double_line(80);
+    std::cout << "\n"
+              << Colors::CYAN << "[i] This search uses a grade index for fast O(log n) lookups." << Colors::RESET << "\n";
+    std::cout << Colors::CYAN << "  Perfect for placement queries like 'Find all A-grade students'." << Colors::RESET << "\n\n";
 
-    std::cout << "Enter Course Code (e.g., CSE101, CSE201, MAT101, ECE101): ";
+    std::cout << Colors::CYAN << "Enter Course Code (e.g., CSE101, CSE201, MAT101, ECE101): " << Colors::RESET;
     std::string courseCode;
     std::getline(std::cin, courseCode);
     courseCode = toUpperCase(courseCode);
 
-    std::cout << "Enter Minimum Grade Points (e.g., 9.0, 8.0, 7.0): ";
+    std::cout << Colors::CYAN << "Enter Minimum Grade Points (e.g., 9.0, 8.0, 7.0): " << Colors::RESET;
     double minGrade;
     if (!(std::cin >> minGrade))
     {
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        std::cout << "\nError: Invalid input. Please enter a number.\n";
+        std::cout << "\n"
+                  << Colors::RED << "[X] Error: " << Colors::RESET << "Invalid input. Please enter a number.\n";
         return;
     }
     std::cin.ignore();
@@ -1568,42 +1706,46 @@ void AdminPortal::findStudentsByGrade()
 
         if (results.empty())
         {
-            std::cout << "\nNo students found with grade >= " << std::fixed << std::setprecision(1)
-                      << minGrade << " in course " << courseCode << ".\n\n";
-            std::cout << "Possible reasons:\n";
-            std::cout << "  - No students have completed this course yet\n";
-            std::cout << "  - No students achieved the minimum grade threshold\n";
-            std::cout << "  - The course code might be incorrect (check spelling)\n\n";
-            std::cout << "Hint: Try popular courses like CSE101, CSE201, MAT101, ECE101\n";
+            std::cout << "\n"
+                      << Colors::YELLOW << "[!] No students found with grade >= " << std::fixed << std::setprecision(1)
+                      << minGrade << " in course " << courseCode << "." << Colors::RESET << "\n\n";
+            std::cout << Colors::DIM << "Possible reasons:" << Colors::RESET << "\n";
+            std::cout << Colors::DIM << "  • No students have completed this course yet" << Colors::RESET << "\n";
+            std::cout << Colors::DIM << "  • No students achieved the minimum grade threshold" << Colors::RESET << "\n";
+            std::cout << Colors::DIM << "  • The course code might be incorrect (check spelling)" << Colors::RESET << "\n\n";
+            std::cout << Colors::CYAN << "[i] Hint: Try popular courses like CSE101, CSE201, MAT101, ECE101" << Colors::RESET << "\n";
             return;
         }
 
-        std::cout << "\nSearch completed in " << duration << " microseconds";
-        std::cout << " (demonstrates O(log n) efficiency)\n";
-        std::cout << "\nFound " << results.size() << " student(s) with grade >= "
+        std::cout << "\n"
+                  << Colors::GREEN << "[OK] Search completed in " << Colors::BOLD << duration << " microseconds" << Colors::RESET;
+        std::cout << Colors::DIM << " (demonstrates O(log n) efficiency)" << Colors::RESET << "\n";
+        std::cout << "\n"
+                  << Colors::CYAN << "[i] Found " << Colors::BOLD << results.size() << Colors::RESET
+                  << Colors::CYAN << " student(s) with grade >= "
                   << std::fixed << std::setprecision(1) << minGrade
-                  << " in " << courseCode << ":\n\n";
+                  << " in " << courseCode << Colors::RESET << "\n\n";
 
-        std::cout << std::left << std::setw(4) << "No."
+        std::cout << Colors::BOLD << std::left << std::setw(4) << "No."
                   << std::setw(18) << "Roll Number"
                   << std::setw(28) << "Name"
                   << std::setw(10) << "Grade"
-                  << std::setw(15) << "Branch" << "\n";
-        std::cout << std::string(75, '-') << "\n";
+                  << std::setw(15) << "Branch" << Colors::RESET << "\n";
+        OutputFormatter::print_line(75);
 
         int count = 1;
         for (const auto &student : results)
         {
-            auto previousCourses = student->getPreviousCourses();
-            auto previousGrades = student->getPreviousGrades();
+            auto previousCourses = student->get_previous_courses();
+            auto previousGrades = student->get_previous_grades();
 
             std::string gradeStr = "N/A";
             for (size_t i = 0; i < previousCourses.size(); ++i)
             {
-                if (previousCourses[i].getCourseCode() == courseCode && i < previousGrades.size())
+                if (previousCourses[i].get_course_code() == courseCode && i < previousGrades.size())
                 {
-                    double pts = previousGrades[i].getGradePoint();
-                    std::string letter = previousGrades[i].getLetterGrade();
+                    double pts = previousGrades[i].get_grade_point();
+                    std::string letter = previousGrades[i].get_letter_grade();
                     std::ostringstream oss;
                     oss << std::fixed << std::setprecision(1) << pts;
                     gradeStr = oss.str() + " (" + letter + ")";
@@ -1612,72 +1754,79 @@ void AdminPortal::findStudentsByGrade()
             }
 
             std::cout << std::left << std::setw(4) << count++
-                      << std::setw(18) << student->getRollNumber()
-                      << std::setw(28) << student->getName()
-                      << std::setw(10) << gradeStr
-                      << std::setw(15) << student->getBranch().getBranchName() << "\n";
+                      << Colors::CYAN << std::setw(18) << student->get_roll_number() << Colors::RESET
+                      << std::setw(28) << student->get_name()
+                      << Colors::GREEN << std::setw(10) << gradeStr << Colors::RESET
+                      << std::setw(15) << student->get_branch().get_branch_name() << "\n";
         }
 
+        OutputFormatter::print_line(75);
+        std::cout << Colors::BOLD << "Total: " << Colors::GREEN << results.size() << Colors::RESET
+                  << Colors::BOLD << " student(s) qualified" << Colors::RESET << "\n";
         std::cout << "\n"
-                  << std::string(75, '-') << "\n";
-        std::cout << "Total: " << results.size() << " student(s) qualified\n";
-        std::cout << "\nThis fast lookup is useful for:\n";
-        std::cout << "  - Placement companies screening candidates\n";
-        std::cout << "  - Merit list generation\n";
-        std::cout << "  - Scholarship eligibility checks\n";
+                  << Colors::CYAN << "[i] This fast lookup is useful for:" << Colors::RESET << "\n";
+        std::cout << Colors::DIM << "  • Placement companies screening candidates" << Colors::RESET << "\n";
+        std::cout << Colors::DIM << "  • Merit list generation" << Colors::RESET << "\n";
+        std::cout << Colors::DIM << "  • Scholarship eligibility checks" << Colors::RESET << "\n";
     }
     catch (const std::exception &e)
     {
-        std::cout << "\nError: " << e.what() << "\n";
+        std::cout << "\n"
+                  << Colors::RED << "[X] Error: " << Colors::RESET << e.what() << "\n";
     }
 }
 
-void AdminPortal::rebuildGradeIndex()
+void AdminPortal::rebuild_grade_index()
 {
     std::cout << "\n";
-    std::cout << "=================================================================\n";
-    std::cout << "   Rebuild Grade Index\n";
-    std::cout << "=================================================================\n";
-    std::cout << "\nThis rebuilds the internal index used for fast grade searches.\n";
-    std::cout << "Useful after bulk grade updates or importing new data.\n\n";
+    OutputFormatter::print_double_line(80);
+    std::cout << Colors::BOLD << "   Rebuild Grade Index" << Colors::RESET << "\n";
+    OutputFormatter::print_double_line(80);
+    std::cout << "\n"
+              << Colors::CYAN << "[i] This rebuilds the internal index used for fast grade searches." << Colors::RESET << "\n";
+    std::cout << Colors::CYAN << "  Useful after bulk grade updates or importing new data." << Colors::RESET << "\n\n";
 
-    std::cout << "Do you want to rebuild the index now? (yes/no): ";
+    std::cout << Colors::YELLOW << "Do you want to rebuild the index now? (yes/no): " << Colors::RESET;
     std::string confirm;
     std::getline(std::cin, confirm);
 
     if (confirm != "yes" && confirm != "YES")
     {
-        std::cout << "\nCancelled.\n";
+        std::cout << "\n"
+                  << Colors::CYAN << "[i] Cancelled." << Colors::RESET << "\n";
         return;
     }
 
     try
     {
         auto startTime = std::chrono::high_resolution_clock::now();
-        erpSystem->rebuildGradeIndex();
+        erpSystem->rebuild_grade_index();
         auto endTime = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count();
 
-        std::cout << "\nGrade index rebuilt successfully in " << duration << " ms.\n";
-        std::cout << "Grade searches (Menu Option 27) are now up-to-date.\n";
+        std::cout << "\n"
+                  << Colors::GREEN << "[OK] Grade index rebuilt successfully in " << Colors::BOLD << duration << " ms" << Colors::RESET << "\n";
+        std::cout << Colors::CYAN << "[i] Grade searches (Menu Option 27) are now up-to-date." << Colors::RESET << "\n";
     }
     catch (const std::exception &e)
     {
-        std::cout << "\nError: " << e.what() << "\n";
+        std::cout << "\n"
+                  << Colors::RED << "[X] Error: " << Colors::RESET << e.what() << "\n";
     }
 }
 
-void AdminPortal::viewPendingCourseRequests()
+void AdminPortal::view_pending_course_requests()
 {
-    std::cout << "\n=== Pending Course Registration Requests ===\n";
+    OutputFormatter::print_header("PENDING COURSE REGISTRATION REQUESTS");
 
     try
     {
-        auto pendingRequests = erpSystem->getPendingRequests();
+        auto pendingRequests = erpSystem->get_pending_requests();
 
         if (pendingRequests.empty())
         {
-            std::cout << "\nNo pending course registration requests found.\n";
+            std::cout << "\n"
+                      << Colors::CYAN << "[i] No pending course registration requests found." << Colors::RESET << "\n";
             return;
         }
 
@@ -1685,7 +1834,7 @@ void AdminPortal::viewPendingCourseRequests()
         std::vector<PendingCourseRequest<std::string, std::string>> pending;
         for (const auto &req : pendingRequests)
         {
-            if (req.getStatus() == RequestStatus::PENDING)
+            if (req.get_status() == RequestStatus::PENDING)
             {
                 pending.push_back(req);
             }
@@ -1693,47 +1842,52 @@ void AdminPortal::viewPendingCourseRequests()
 
         if (pending.empty())
         {
-            std::cout << "\nNo pending requests. All requests have been processed.\n";
+            std::cout << "\n"
+                      << Colors::GREEN << "[OK] No pending requests. All requests have been processed." << Colors::RESET << "\n";
             return;
         }
 
-        std::cout << "\nTotal Pending Requests: " << pending.size() << "\n\n";
-        std::cout << std::left << std::setw(8) << "Req ID"
+        std::cout << "\n"
+                  << Colors::YELLOW << "Total Pending Requests: " << Colors::BOLD << pending.size() << Colors::RESET << "\n\n";
+        std::cout << Colors::BOLD << std::left << std::setw(8) << "Req ID"
                   << std::setw(15) << "Roll Number"
                   << std::setw(25) << "Student Name"
                   << std::setw(12) << "Course"
-                  << std::setw(20) << "Request Date" << "\n";
-        std::cout << std::string(80, '-') << "\n";
+                  << std::setw(20) << "Request Date" << Colors::RESET << "\n";
+        OutputFormatter::print_line(80);
 
         for (const auto &request : pending)
         {
-            std::cout << std::left << std::setw(8) << request.getRequestId()
-                      << std::setw(15) << request.getRollNumber()
-                      << std::setw(25) << request.getStudentName()
-                      << std::setw(12) << request.getCourseCode()
-                      << std::setw(20) << request.getRequestTimeString() << "\n";
+            std::cout << Colors::CYAN << std::left << std::setw(8) << request.get_request_id() << Colors::RESET
+                      << std::setw(15) << request.get_roll_number()
+                      << std::setw(25) << request.get_student_name()
+                      << Colors::YELLOW << std::setw(12) << request.get_course_code() << Colors::RESET
+                      << Colors::DIM << std::setw(20) << request.get_request_time_string() << Colors::RESET << "\n";
         }
 
-        std::cout << "\nUse option 12 to approve or reject these requests.\n";
+        OutputFormatter::print_line(80);
+        std::cout << Colors::DIM << "[i] Use option 15 to approve or reject these requests." << Colors::RESET << "\n";
     }
     catch (const std::exception &e)
     {
-        std::cout << "\nERROR: " << e.what() << "\n";
+        std::cout << "\n"
+                  << Colors::RED << "[X] ERROR: " << Colors::RESET << e.what() << "\n";
     }
 }
 
-void AdminPortal::approveCourseRequest()
+void AdminPortal::approve_course_request()
 {
-    std::cout << "\n=== Approve/Reject Course Registration Request ===\n";
+    OutputFormatter::print_header("APPROVE/REJECT COURSE REGISTRATION REQUEST");
 
     // First, show pending requests
     try
     {
-        auto pendingRequests = erpSystem->getPendingRequests();
+        auto pendingRequests = erpSystem->get_pending_requests();
 
         if (pendingRequests.empty())
         {
-            std::cout << "\nNo pending course registration requests found.\n";
+            std::cout << "\n"
+                      << Colors::CYAN << "[i] No pending course registration requests found." << Colors::RESET << "\n";
             return;
         }
 
@@ -1741,7 +1895,7 @@ void AdminPortal::approveCourseRequest()
         std::vector<PendingCourseRequest<std::string, std::string>> pending;
         for (const auto &req : pendingRequests)
         {
-            if (req.getStatus() == RequestStatus::PENDING)
+            if (req.get_status() == RequestStatus::PENDING)
             {
                 pending.push_back(req);
             }
@@ -1749,33 +1903,39 @@ void AdminPortal::approveCourseRequest()
 
         if (pending.empty())
         {
-            std::cout << "\nNo pending requests. All requests have been processed.\n";
+            std::cout << "\n"
+                      << Colors::GREEN << "[OK] No pending requests. All requests have been processed." << Colors::RESET << "\n";
             return;
         }
 
-        std::cout << "\nPending Requests:\n";
-        std::cout << std::left << std::setw(8) << "Req ID"
+        std::cout << "\n"
+                  << Colors::YELLOW << "> Pending Requests" << Colors::RESET << "\n";
+        OutputFormatter::print_line(60);
+        std::cout << Colors::BOLD << std::left << std::setw(8) << "Req ID"
                   << std::setw(15) << "Roll Number"
                   << std::setw(25) << "Student Name"
-                  << std::setw(12) << "Course" << "\n";
-        std::cout << std::string(60, '-') << "\n";
+                  << std::setw(12) << "Course" << Colors::RESET << "\n";
+        OutputFormatter::print_line(60);
 
         for (const auto &request : pending)
         {
-            std::cout << std::left << std::setw(8) << request.getRequestId()
-                      << std::setw(15) << request.getRollNumber()
-                      << std::setw(25) << request.getStudentName()
-                      << std::setw(12) << request.getCourseCode() << "\n";
+            std::cout << Colors::CYAN << std::left << std::setw(8) << request.get_request_id() << Colors::RESET
+                      << std::setw(15) << request.get_roll_number()
+                      << std::setw(25) << request.get_student_name()
+                      << Colors::YELLOW << std::setw(12) << request.get_course_code() << Colors::RESET << "\n";
         }
 
-        std::cout << "\nEnter Request ID to process (0 to cancel): ";
+        OutputFormatter::print_line(60);
+        std::cout << "\n"
+                  << Colors::CYAN << "Enter Request ID to process (0 to cancel): " << Colors::RESET;
         int requestId;
         std::cin >> requestId;
         std::cin.ignore();
 
         if (requestId == 0)
         {
-            std::cout << "\nOperation cancelled.\n";
+            std::cout << "\n"
+                      << Colors::CYAN << "[i] Operation cancelled." << Colors::RESET << "\n";
             return;
         }
 
@@ -1783,25 +1943,30 @@ void AdminPortal::approveCourseRequest()
         auto *request = erpSystem->findPendingRequest(requestId);
         if (!request)
         {
-            std::cout << "\nERROR: Request ID not found.\n";
+            std::cout << "\n"
+                      << Colors::RED << "[X] ERROR: " << Colors::RESET << "Request ID not found.\n";
             return;
         }
 
-        if (request->getStatus() != RequestStatus::PENDING)
+        if (request->get_status() != RequestStatus::PENDING)
         {
-            std::cout << "\nERROR: This request has already been processed.\n";
-            std::cout << "  Status: " << requestStatusToString(request->getStatus()) << "\n";
+            std::cout << "\n"
+                      << Colors::RED << "[X] ERROR: " << Colors::RESET << "This request has already been processed.\n";
+            std::cout << Colors::DIM << "  Status: " << request_status_to_string(request->get_status()) << Colors::RESET << "\n";
             return;
         }
 
         // Display request details
-        std::cout << "\n--- Request Details ---\n";
-        request->displayInfo();
+        std::cout << "\n"
+                  << Colors::YELLOW << "> Request Details" << Colors::RESET << "\n";
+        OutputFormatter::print_line();
+        request->display_info();
 
-        std::cout << "\n1. Approve\n";
-        std::cout << "2. Reject\n";
-        std::cout << "3. Cancel\n";
-        std::cout << "Enter your choice: ";
+        std::cout << "\n";
+        OutputFormatter::print_menu_item(1, "Approve", Colors::GREEN);
+        OutputFormatter::print_menu_item(2, "Reject", Colors::RED);
+        OutputFormatter::print_menu_item(3, "Cancel", Colors::DIM);
+        std::cout << Colors::CYAN << "Enter your choice: " << Colors::RESET;
 
         int action;
         std::cin >> action;
@@ -1809,27 +1974,28 @@ void AdminPortal::approveCourseRequest()
 
         if (action == 3)
         {
-            std::cout << "\nOperation cancelled.\n";
+            std::cout << "\n"
+                      << Colors::CYAN << "[i] Operation cancelled." << Colors::RESET << "\n";
             return;
         }
 
-        std::cout << "Enter remarks (optional, press Enter to skip): ";
+        std::cout << Colors::CYAN << "Enter remarks (optional, press Enter to skip): " << Colors::RESET;
         std::string remarks;
         std::getline(std::cin, remarks);
 
         if (action == 1)
         {
             // Approve - add course to student's enrollment
-            if (erpSystem->approvePendingRequest(requestId, adminUsername, remarks))
+            if (erpSystem->approve_pending_request(requestId, __admin_username, remarks))
             {
                 // Now actually add the course to the student
-                auto student = erpSystem->findStudent(request->getRollNumber());
+                auto student = erpSystem->find_student(request->get_roll_number());
                 if (student)
                 {
                     // Get course details from catalog
-                    if (courseCatalog->courseExists(request->getCourseCode()))
+                    if (courseCatalog->courseExists(request->get_course_code()))
                     {
-                        auto courseInfo = courseCatalog->getCourseInfo(request->getCourseCode());
+                        auto courseInfo = courseCatalog->getCourseInfo(request->get_course_code());
                         Course<std::string> course(
                             courseInfo.courseCode,
                             courseInfo.courseName,
@@ -1837,63 +2003,71 @@ void AdminPortal::approveCourseRequest()
                             courseInfo.credits,
                             "Monsoon 2025");
 
-                        student->addCurrentCourse(course);
+                        student->add_current_course(course);
 
-                        std::cout << "\nRequest APPROVED successfully.\n";
-                        std::cout << "  Course " << request->getCourseCode()
-                                  << " has been added to student's enrollment.\n";
+                        std::cout << "\n"
+                                  << Colors::GREEN << "[OK] Request APPROVED successfully." << Colors::RESET << "\n";
+                        std::cout << Colors::CYAN << "  [i] Course " << Colors::BOLD << request->get_course_code() << Colors::RESET
+                                  << Colors::CYAN << " has been added to student's enrollment." << Colors::RESET << "\n";
                     }
                     else
                     {
-                        std::cout << "\nERROR: Warning: Request approved but course not found in catalog.\n";
+                        std::cout << "\n"
+                                  << Colors::YELLOW << "[!] WARNING: " << Colors::RESET << "Request approved but course not found in catalog.\n";
                     }
                 }
             }
             else
             {
-                std::cout << "\nERROR: Failed to approve request.\n";
+                std::cout << "\n"
+                          << Colors::RED << "[X] ERROR: " << Colors::RESET << "Failed to approve request.\n";
             }
         }
         else if (action == 2)
         {
             // Reject
-            if (erpSystem->rejectPendingRequest(requestId, adminUsername, remarks))
+            if (erpSystem->reject_pending_request(requestId, __admin_username, remarks))
             {
-                std::cout << "\nRequest REJECTED.\n";
+                std::cout << "\n"
+                          << Colors::YELLOW << "[X] Request REJECTED." << Colors::RESET << "\n";
                 if (!remarks.empty())
                 {
-                    std::cout << "  Remarks sent to student: " << remarks << "\n";
+                    std::cout << Colors::DIM << "  [i] Remarks sent to student: " << remarks << Colors::RESET << "\n";
                 }
             }
             else
             {
-                std::cout << "\nERROR: Failed to reject request.\n";
+                std::cout << "\n"
+                          << Colors::RED << "[X] ERROR: " << Colors::RESET << "Failed to reject request.\n";
             }
         }
         else
         {
-            std::cout << "\nERROR: Invalid choice.\n";
+            std::cout << "\n"
+                      << Colors::RED << "[X] ERROR: " << Colors::RESET << "Invalid choice.\n";
         }
     }
     catch (const std::exception &e)
     {
-        std::cout << "\nERROR: " << e.what() << "\n";
+        std::cout << "\n"
+                  << Colors::RED << "[X] ERROR: " << Colors::RESET << e.what() << "\n";
     }
 }
 
-void AdminPortal::viewCourseEnrollments()
+void AdminPortal::view_course_enrollments()
 {
     std::cout << "\n";
-    std::cout << "=================================================================\n";
-    std::cout << "   Course Enrollments - Students per Course\n";
-    std::cout << "=================================================================\n\n";
+    OutputFormatter::print_double_line(102);
+    std::cout << Colors::BOLD << "   Course Enrollments - Students per Course" << Colors::RESET << "\n";
+    OutputFormatter::print_double_line(102);
+    std::cout << "\n";
 
     // Get all students
-    auto students = erpSystem->getAllStudents();
+    auto students = erpSystem->get_all_students();
 
     if (students.empty())
     {
-        std::cout << "No students found in the system.\n";
+        std::cout << Colors::YELLOW << "[!] No students found in the system." << Colors::RESET << "\n";
         return;
     }
 
@@ -1904,23 +2078,23 @@ void AdminPortal::viewCourseEnrollments()
     for (const auto &student : students)
     {
         // Get previous courses (completed courses with grades)
-        auto previousCourses = student->getPreviousCourses();
+        auto previousCourses = student->get_previous_courses();
         for (const auto &course : previousCourses)
         {
-            std::string courseCode = course.getCourseCode();
+            std::string courseCode = course.get_course_code();
             courseEnrollments[courseCode].push_back(student);
         }
 
         // Get current courses (ongoing)
-        auto currentCourses = student->getCurrentCourses();
+        auto currentCourses = student->get_current_courses();
         for (const auto &course : currentCourses)
         {
-            std::string courseCode = course.getCourseCode();
+            std::string courseCode = course.get_course_code();
             // Avoid duplicates if same course is in both
             if (std::find_if(courseEnrollments[courseCode].begin(),
                              courseEnrollments[courseCode].end(),
                              [&student](const auto &s)
-                             { return s->getRollNumber() == student->getRollNumber(); }) == courseEnrollments[courseCode].end())
+                             { return s->get_roll_number() == student->get_roll_number(); }) == courseEnrollments[courseCode].end())
             {
                 courseEnrollments[courseCode].push_back(student);
             }
@@ -1929,17 +2103,17 @@ void AdminPortal::viewCourseEnrollments()
 
     if (courseEnrollments.empty())
     {
-        std::cout << "No course enrollments found.\n";
+        std::cout << Colors::YELLOW << "[!] No course enrollments found." << Colors::RESET << "\n";
         return;
     }
 
     // Display summary of all courses
-    std::cout << "Total Courses with Enrollments: " << courseEnrollments.size() << "\n\n";
-    std::cout << std::left << std::setw(15) << "Course Code"
+    std::cout << Colors::CYAN << "Total Courses with Enrollments: " << Colors::BOLD << courseEnrollments.size() << Colors::RESET << "\n\n";
+    std::cout << Colors::BOLD << std::left << std::setw(15) << "Course Code"
               << std::setw(40) << "Course Name"
-              << std::setw(15) << "Students"
+              << std::setw(15) << "Students" << Colors::RESET
               << "\n";
-    std::cout << "---------------------------------------------------------------------------\n";
+    OutputFormatter::print_line(75);
 
     for (const auto &entry : courseEnrollments)
     {
@@ -1954,20 +2128,22 @@ void AdminPortal::viewCourseEnrollments()
             courseName = courseInfo.courseName;
         }
 
-        std::cout << std::left << std::setw(15) << courseCode
-                  << std::setw(40) << courseName
-                  << std::setw(15) << studentCount
+        std::cout << Colors::CYAN << std::left << std::setw(15) << courseCode << Colors::RESET
+                  << std::left << std::setw(40) << courseName
+                  << Colors::GREEN << std::setw(15) << studentCount << Colors::RESET
                   << "\n";
     }
 
-    std::cout << "---------------------------------------------------------------------------\n\n";
+    OutputFormatter::print_line(75);
+    std::cout << "\n";
 
     // Ask which course to view or all
-    std::cout << "Which course students would you like to view?\n";
-    std::cout << "  - Enter course code (e.g., CSE101, MAT101)\n";
-    std::cout << "  - Enter 'all' to view all courses\n";
-    std::cout << "  - Press Enter to skip\n";
-    std::cout << "\nYour choice: ";
+    std::cout << Colors::YELLOW << "> Which course students would you like to view?" << Colors::RESET << "\n";
+    std::cout << Colors::DIM << "  • Enter course code (e.g., CSE101, MAT101)" << Colors::RESET << "\n";
+    std::cout << Colors::DIM << "  • Enter 'all' to view all courses" << Colors::RESET << "\n";
+    std::cout << Colors::DIM << "  • Press Enter to skip" << Colors::RESET << "\n";
+    std::cout << "\n"
+              << Colors::CYAN << "Your choice: " << Colors::RESET;
     std::string choice;
     std::getline(std::cin, choice);
 
@@ -1997,24 +2173,26 @@ void AdminPortal::viewCourseEnrollments()
         targetCourse = choiceUpper;
         if (courseEnrollments.find(targetCourse) == courseEnrollments.end())
         {
-            std::cout << "\nError: Course '" << targetCourse << "' not found or has no enrollments.\n";
-            std::cout << "Please check the course code from the list above.\n";
+            std::cout << "\n"
+                      << Colors::RED << "[X] Error: " << Colors::RESET << "Course '" << targetCourse << "' not found or has no enrollments.\n";
+            std::cout << Colors::DIM << "[i] Please check the course code from the list above." << Colors::RESET << "\n";
             return;
         }
     }
 
     // Display students for selected course(s)
     std::cout << "\n";
-    std::cout << "=================================================================\n";
+    OutputFormatter::print_double_line(102);
     if (viewAll)
     {
-        std::cout << "   Detailed Course-wise Student List (All Courses)\n";
+        std::cout << Colors::BOLD << "   Detailed Course-wise Student List (All Courses)" << Colors::RESET << "\n";
     }
     else
     {
-        std::cout << "   Student List for " << targetCourse << "\n";
+        std::cout << Colors::BOLD << "   Student List for " << Colors::CYAN << targetCourse << Colors::RESET << "\n";
     }
-    std::cout << "=================================================================\n\n";
+    OutputFormatter::print_double_line(102);
+    std::cout << "\n";
 
     for (const auto &entry : courseEnrollments)
     {
@@ -2039,21 +2217,23 @@ void AdminPortal::viewCourseEnrollments()
             credits = courseInfo.credits;
         }
 
-        std::cout << "\n-----------------------------------------------------------------\n";
-        std::cout << "Course: " << courseCode << " - " << courseName << "\n";
-        std::cout << "Instructor: " << instructor << " | Credits: " << credits << "\n";
-        std::cout << "Total Enrolled: " << enrolledStudents.size() << " student(s)\n";
-        std::cout << "-----------------------------------------------------------------\n\n";
+        std::cout << "\n";
+        OutputFormatter::print_line(75);
+        std::cout << Colors::YELLOW << "Course: " << Colors::BOLD << courseCode << Colors::RESET << " - " << courseName << "\n";
+        std::cout << Colors::CYAN << "Instructor: " << Colors::RESET << instructor << Colors::CYAN << " | Credits: " << Colors::RESET << credits << "\n";
+        std::cout << Colors::GREEN << "Total Enrolled: " << Colors::BOLD << enrolledStudents.size() << Colors::RESET << Colors::GREEN << " student(s)" << Colors::RESET << "\n";
+        OutputFormatter::print_line(75);
+        std::cout << "\n";
 
         // Display students in a table
-        std::cout << std::left
+        std::cout << Colors::BOLD << std::left
                   << std::setw(6) << "No."
                   << std::setw(18) << "Roll Number"
                   << std::setw(30) << "Name"
                   << std::setw(12) << "Grade"
-                  << std::setw(10) << "Branch"
+                  << std::setw(10) << "Branch" << Colors::RESET
                   << "\n";
-        std::cout << "---------------------------------------------------------------------------\n";
+        OutputFormatter::print_line(75);
 
         int count = 1;
         for (const auto &student : enrolledStudents)
@@ -2063,14 +2243,14 @@ void AdminPortal::viewCourseEnrollments()
             bool found = false;
 
             // Check in previous courses
-            auto prevCourses = student->getPreviousCourses();
-            auto prevGrades = student->getPreviousGrades();
+            auto prevCourses = student->get_previous_courses();
+            auto prevGrades = student->get_previous_grades();
             for (size_t i = 0; i < prevCourses.size(); ++i)
             {
-                if (prevCourses[i].getCourseCode() == courseCode)
+                if (prevCourses[i].get_course_code() == courseCode)
                 {
-                    double pts = prevGrades[i].getGradePoint();
-                    std::string letter = prevGrades[i].getLetterGrade();
+                    double pts = prevGrades[i].get_grade_point();
+                    std::string letter = prevGrades[i].get_letter_grade();
                     std::ostringstream oss;
                     oss << std::fixed << std::setprecision(1) << pts << " (" << letter << ")";
                     gradeStr = oss.str();
@@ -2082,18 +2262,18 @@ void AdminPortal::viewCourseEnrollments()
             // If not found, check current courses
             if (!found)
             {
-                auto currCourses = student->getCurrentCourses();
-                auto currGrades = student->getCurrentGrades();
+                auto currCourses = student->get_current_courses();
+                auto currGrades = student->get_current_grades();
                 for (size_t i = 0; i < currCourses.size(); ++i)
                 {
-                    if (currCourses[i].getCourseCode() == courseCode)
+                    if (currCourses[i].get_course_code() == courseCode)
                     {
                         if (i < currGrades.size())
                         {
-                            double pts = currGrades[i].getGradePoint();
+                            double pts = currGrades[i].get_grade_point();
                             if (pts > 0.0)
                             {
-                                std::string letter = currGrades[i].getLetterGrade();
+                                std::string letter = currGrades[i].get_letter_grade();
                                 std::ostringstream oss;
                                 oss << std::fixed << std::setprecision(1) << pts << " (" << letter << ")";
                                 gradeStr = oss.str();
@@ -2105,49 +2285,52 @@ void AdminPortal::viewCourseEnrollments()
             }
 
             std::cout << std::left
-                      << std::setw(6) << count
-                      << std::setw(18) << student->getRollNumber()
-                      << std::setw(30) << student->getName()
-                      << std::setw(12) << gradeStr
-                      << std::setw(10) << student->getBranch().getBranchCode()
+                      << Colors::CYAN << std::setw(6) << count << Colors::RESET
+                      << std::setw(18) << student->get_roll_number()
+                      << std::setw(30) << student->get_name()
+                      << Colors::GREEN << std::setw(12) << gradeStr << Colors::RESET
+                      << std::setw(10) << student->get_branch().get_branch_code()
                       << "\n";
             count++;
         }
 
-        std::cout << "---------------------------------------------------------------------------\n";
+        OutputFormatter::print_line(75);
     }
 
-    std::cout << "\n=================================================================\n";
-    std::cout << "End of course enrollment report\n";
-    std::cout << "=================================================================\n";
+    std::cout << "\n";
+    OutputFormatter::print_double_line(102);
+    std::cout << Colors::GREEN << "[OK] End of course enrollment report" << Colors::RESET << "\n";
+    OutputFormatter::print_double_line(102);
 }
 
-void AdminPortal::demoIIITIITCourseIntegration()
+void AdminPortal::demo_iiit_iit_course_integration()
 {
-    std::cout << "\n╔════════════════════════════════════════════════════════════════╗\n";
-    std::cout << "║     IIIT-DELHI & IIT-DELHI COURSE INTEGRATION DEMO            ║\n";
-    std::cout << "║     Demonstrating Template Flexibility with Different         ║\n";
-    std::cout << "║     Course Code Types (String vs Integer)                     ║\n";
-    std::cout << "╚════════════════════════════════════════════════════════════════╝\n\n";
+    std::cout << "\n";
+    OutputFormatter::print_double_line(80);
+    std::cout << Colors::BOLD << Colors::MAGENTA << "     IIIT-DELHI & IIT-DELHI COURSE INTEGRATION DEMO" << Colors::RESET << "\n";
+    std::cout << Colors::CYAN << "     Demonstrating Template Flexibility with Different" << Colors::RESET << "\n";
+    std::cout << Colors::CYAN << "     Course Code Types (String vs Integer)" << Colors::RESET << "\n";
+    OutputFormatter::print_double_line(80);
+    std::cout << "\n";
+    std::cout << Colors::YELLOW << "Background:" << Colors::RESET << "\n";
+    std::cout << Colors::DIM << "  • IIIT-Delhi students can take courses from IIT-Delhi." << Colors::RESET << "\n";
+    std::cout << Colors::DIM << "  • IIIT-Delhi uses string course codes (e.g., 'CSE201', 'MTH101')" << Colors::RESET << "\n";
+    std::cout << Colors::DIM << "  • IIT-Delhi uses integer course codes (e.g., 101, 201, 305)" << Colors::RESET << "\n\n";
 
-    std::cout << "Background:\n";
-    std::cout << "  IIIT-Delhi students can take courses from IIT-Delhi.\n";
-    std::cout << "  IIIT-Delhi uses string course codes (e.g., 'CSE201', 'MTH101')\n";
-    std::cout << "  IIT-Delhi uses integer course codes (e.g., 101, 201, 305)\n\n";
+    std::cout << Colors::CYAN << "This demo showcases:" << Colors::RESET << "\n";
+    std::cout << Colors::DIM << "  1. Templates handling both string and integer course codes" << Colors::RESET << "\n";
+    std::cout << Colors::DIM << "  2. Same student managing courses from both institutions" << Colors::RESET << "\n";
+    std::cout << Colors::DIM << "  3. Type-safe operations across different course systems" << Colors::RESET << "\n\n";
 
-    std::cout << "This demo showcases:\n";
-    std::cout << "  1. Templates handling both string and integer course codes\n";
-    std::cout << "  2. Same student managing courses from both institutions\n";
-    std::cout << "  3. Type-safe operations across different course systems\n\n";
-
-    std::cout << "Press Enter to start demo...";
+    std::cout << Colors::DIM << "Press " << Colors::BOLD << "[Enter]" << Colors::RESET
+              << Colors::DIM << " to start demo..." << Colors::RESET;
     std::cin.get();
 
     // Demo 1: IIIT-Delhi Student with String Course Codes
-    std::cout << "\n"
-              << std::string(68, '=') << "\n";
-    std::cout << "DEMO 1: IIIT-Delhi Student (String Course Codes)\n";
-    std::cout << std::string(68, '=') << "\n";
+    std::cout << "\n";
+    OutputFormatter::print_double_line(68);
+    std::cout << Colors::BOLD << Colors::CYAN << "DEMO 1: IIIT-Delhi Student (String Course Codes)" << Colors::RESET << "\n";
+    OutputFormatter::print_double_line(68);
 
     Branch cse("CSE", "Computer Science and Engineering", "Engineering");
     Student<std::string, std::string> iiitStudent("Rahul Kumar", "2023CSE101", cse, StudentLevel::BTECH, 2023);
@@ -2157,28 +2340,32 @@ void AdminPortal::demoIIITIITCourseIntegration()
     Course<std::string> iiitCourse2("CSE202", "Object Oriented Programming", "Dr. Verma", 4, "Monsoon 2024");
     Course<std::string> iiitCourse3("MTH101", "Linear Algebra", "Prof. Gupta", 3, "Monsoon 2024");
 
-    iiitStudent.addCurrentCourse(iiitCourse1);
-    iiitStudent.addCurrentCourse(iiitCourse2);
-    iiitStudent.addCurrentCourse(iiitCourse3);
+    iiitStudent.add_current_course(iiitCourse1);
+    iiitStudent.add_current_course(iiitCourse2);
+    iiitStudent.add_current_course(iiitCourse3);
 
-    std::cout << "\n📚 Student: " << iiitStudent.getName() << " (" << iiitStudent.getRollNumber() << ")\n";
-    std::cout << "🏫 Institution: IIIT-Delhi\n";
-    std::cout << "📖 Enrolled IIIT-Delhi Courses:\n";
-    auto iiitCourses = iiitStudent.getCurrentCourses();
+    std::cout << "\n"
+              << Colors::BOLD << " Student: " << Colors::CYAN << iiitStudent.get_name() << Colors::RESET
+              << Colors::DIM << " (" << iiitStudent.get_roll_number() << ")" << Colors::RESET << "\n";
+    std::cout << Colors::BOLD << "🏫 Institution: " << Colors::GREEN << "IIIT-Delhi" << Colors::RESET << "\n";
+    std::cout << Colors::YELLOW << " Enrolled IIIT-Delhi Courses:" << Colors::RESET << "\n";
+    auto iiitCourses = iiitStudent.get_current_courses();
     for (const auto &course : iiitCourses)
     {
-        std::cout << "   • " << course.getCourseCode() << " - " << course.getCourseName()
-                  << " (" << course.getCredits() << " credits)\n";
+        std::cout << Colors::DIM << "   • " << Colors::RESET << Colors::CYAN << course.get_course_code() << Colors::RESET
+                  << " - " << course.get_course_name()
+                  << Colors::DIM << " (" << course.get_credits() << " credits)" << Colors::RESET << "\n";
     }
 
-    std::cout << "\nPress Enter to continue...";
+    std::cout << "\n"
+              << Colors::YELLOW << "Press Enter to continue..." << Colors::RESET;
     std::cin.get();
 
     // Demo 2: Same Student Concept with Integer Course Codes (IIT-Delhi)
-    std::cout << "\n"
-              << std::string(68, '=') << "\n";
-    std::cout << "DEMO 2: IIT-Delhi Student (Integer Course Codes)\n";
-    std::cout << std::string(68, '=') << "\n";
+    std::cout << "\n";
+    OutputFormatter::print_double_line(68);
+    std::cout << Colors::BOLD << Colors::MAGENTA << "DEMO 2: IIT-Delhi Student (Integer Course Codes)" << Colors::RESET << "\n";
+    OutputFormatter::print_double_line(68);
 
     Student<std::string, int> iitStudent("Priya Singh", "2023CSE102", cse, StudentLevel::BTECH, 2023);
 
@@ -2187,29 +2374,34 @@ void AdminPortal::demoIIITIITCourseIntegration()
     Course<int> iitCourse2(201, "Advanced Algorithms", "Dr. Joshi", 4, "Semester 1");
     Course<int> iitCourse3(305, "Database Systems", "Prof. Reddy", 4, "Semester 1");
 
-    iitStudent.addCurrentCourse(iitCourse1);
-    iitStudent.addCurrentCourse(iitCourse2);
-    iitStudent.addCurrentCourse(iitCourse3);
+    iitStudent.add_current_course(iitCourse1);
+    iitStudent.add_current_course(iitCourse2);
+    iitStudent.add_current_course(iitCourse3);
 
-    std::cout << "\n📚 Student: " << iitStudent.getName() << " (" << iitStudent.getRollNumber() << ")\n";
-    std::cout << "🏫 Institution: IIT-Delhi\n";
-    std::cout << "📖 Enrolled IIT-Delhi Courses:\n";
-    auto iitCourses = iitStudent.getCurrentCourses();
+    std::cout << "\n"
+              << Colors::BOLD << " Student: " << Colors::MAGENTA << iitStudent.get_name() << Colors::RESET
+              << Colors::DIM << " (" << iitStudent.get_roll_number() << ")" << Colors::RESET << "\n";
+    std::cout << Colors::BOLD << "🏫 Institution: " << Colors::GREEN << "IIT-Delhi" << Colors::RESET << "\n";
+    std::cout << Colors::YELLOW << " Enrolled IIT-Delhi Courses:" << Colors::RESET << "\n";
+    auto iitCourses = iitStudent.get_current_courses();
     for (const auto &course : iitCourses)
     {
-        std::cout << "   • " << course.getCourseCode() << " - " << course.getCourseName()
-                  << " (" << course.getCredits() << " credits)\n";
+        std::cout << Colors::DIM << "   • " << Colors::RESET << Colors::MAGENTA << course.get_course_code() << Colors::RESET
+                  << " - " << course.get_course_name()
+                  << Colors::DIM << " (" << course.get_credits() << " credits)" << Colors::RESET << "\n";
     }
 
-    std::cout << "\nPress Enter to continue...";
+    std::cout << "\n"
+              << Colors::DIM << "Press " << Colors::BOLD << "[Enter]" << Colors::RESET
+              << Colors::DIM << " to continue..." << Colors::RESET;
     std::cin.get();
 
     // Demo 3: IIIT Student taking IIT courses (Cross-institutional enrollment)
-    std::cout << "\n"
-              << std::string(68, '=') << "\n";
-    std::cout << "DEMO 3: IIIT-Delhi Student Taking IIT-Delhi Courses\n";
-    std::cout << "       (Demonstrates Template Flexibility)\n";
-    std::cout << std::string(68, '=') << "\n";
+    std::cout << "\n";
+    OutputFormatter::print_double_line(68);
+    std::cout << Colors::BOLD << Colors::YELLOW << "DEMO 3: IIIT-Delhi Student Taking IIT-Delhi Courses" << Colors::RESET << "\n";
+    std::cout << Colors::DIM << "       (Demonstrates Template Flexibility)" << Colors::RESET << "\n";
+    OutputFormatter::print_double_line(68);
 
     Student<std::string, int> crossStudent("Arjun Patel", "2023CSE103", cse, StudentLevel::BTECH, 2023);
 
@@ -2219,120 +2411,137 @@ void AdminPortal::demoIIITIITCourseIntegration()
     Course<int> mixCourse2(505, "Computer Vision (IIT-Delhi)", "Dr. Saxena", 3, "Winter 2024");
     Course<int> mixCourse3(301, "Operating Systems (IIT-Delhi)", "Prof. Bhatia", 4, "Winter 2024");
 
-    crossStudent.addCurrentCourse(mixCourse1);
-    crossStudent.addCurrentCourse(mixCourse2);
-    crossStudent.addCurrentCourse(mixCourse3);
+    crossStudent.add_current_course(mixCourse1);
+    crossStudent.add_current_course(mixCourse2);
+    crossStudent.add_current_course(mixCourse3);
 
-    std::cout << "\n📚 Student: " << crossStudent.getName() << " (" << crossStudent.getRollNumber() << ")\n";
-    std::cout << "🏫 Home Institution: IIIT-Delhi (Roll format: string)\n";
-    std::cout << "🎓 Taking courses at: IIT-Delhi (Course codes: integer)\n";
-    std::cout << "📖 Cross-Institutional Enrollment:\n";
-    auto mixCourses = crossStudent.getCurrentCourses();
+    std::cout << "\n"
+              << Colors::BOLD << " Student: " << Colors::YELLOW << crossStudent.get_name() << Colors::RESET
+              << Colors::DIM << " (" << crossStudent.get_roll_number() << ")" << Colors::RESET << "\n";
+    std::cout << Colors::BOLD << "🏫 Home Institution: " << Colors::CYAN << "IIIT-Delhi" << Colors::RESET
+              << Colors::DIM << " (Roll format: string)" << Colors::RESET << "\n";
+    std::cout << Colors::BOLD << " Taking courses at: " << Colors::MAGENTA << "IIT-Delhi" << Colors::RESET
+              << Colors::DIM << " (Course codes: integer)" << Colors::RESET << "\n";
+    std::cout << Colors::YELLOW << " Cross-Institutional Enrollment:" << Colors::RESET << "\n";
+    auto mixCourses = crossStudent.get_current_courses();
     for (const auto &course : mixCourses)
     {
-        std::cout << "   • Course " << course.getCourseCode() << " - " << course.getCourseName()
-                  << " (" << course.getCredits() << " credits)\n";
+        std::cout << Colors::DIM << "   • " << Colors::RESET << Colors::YELLOW << "Course " << course.get_course_code() << Colors::RESET
+                  << " - " << course.get_course_name()
+                  << Colors::DIM << " (" << course.get_credits() << " credits)" << Colors::RESET << "\n";
     }
 
-    std::cout << "\nPress Enter to continue...";
+    std::cout << "\n"
+              << Colors::DIM << "Press " << Colors::BOLD << "[Enter]" << Colors::RESET
+              << Colors::DIM << " to continue..." << Colors::RESET;
     std::cin.get();
 
     // Demo 4: Comparison and Template Demonstration
+    std::cout << "\n";
+    OutputFormatter::print_double_line(68);
+    std::cout << Colors::BOLD << Colors::BLUE << "DEMO 4: Template Type Comparison" << Colors::RESET << "\n";
+    OutputFormatter::print_double_line(68);
+
     std::cout << "\n"
-              << std::string(68, '=') << "\n";
-    std::cout << "DEMO 4: Template Type Comparison\n";
-    std::cout << std::string(68, '=') << "\n";
+              << Colors::GREEN << "[OK] Template Instantiations Demonstrated:" << Colors::RESET << "\n\n";
 
-    std::cout << "\nDONE: Template Instantiations Demonstrated:\n\n";
+    std::cout << Colors::BOLD << "1. Student<string, string> - IIIT-Delhi student" << Colors::RESET << "\n";
+    std::cout << Colors::DIM << "   • Roll Number Type: std::string" << Colors::RESET << "\n";
+    std::cout << Colors::DIM << "   • Course Code Type: std::string" << Colors::RESET << "\n";
+    std::cout << Colors::CYAN << "   • Example Roll: " << iiitStudent.get_roll_number() << Colors::RESET << "\n";
+    std::cout << Colors::CYAN << "   • Example Course: " << iiitCourse1.get_course_code() << Colors::RESET << "\n\n";
 
-    std::cout << "1. Student<string, string> - IIIT-Delhi student\n";
-    std::cout << "   • Roll Number Type: std::string\n";
-    std::cout << "   • Course Code Type: std::string\n";
-    std::cout << "   • Example Roll: " << iiitStudent.getRollNumber() << "\n";
-    std::cout << "   • Example Course: " << iiitCourse1.getCourseCode() << "\n\n";
+    std::cout << Colors::BOLD << "2. Student<string, int> - IIT-Delhi student" << Colors::RESET << "\n";
+    std::cout << Colors::DIM << "   • Roll Number Type: std::string" << Colors::RESET << "\n";
+    std::cout << Colors::DIM << "   • Course Code Type: int" << Colors::RESET << "\n";
+    std::cout << Colors::MAGENTA << "   • Example Roll: " << iitStudent.get_roll_number() << Colors::RESET << "\n";
+    std::cout << Colors::MAGENTA << "   • Example Course: " << iitCourse1.get_course_code() << Colors::RESET << "\n\n";
 
-    std::cout << "2. Student<string, int> - IIT-Delhi student\n";
-    std::cout << "   • Roll Number Type: std::string\n";
-    std::cout << "   • Course Code Type: int\n";
-    std::cout << "   • Example Roll: " << iitStudent.getRollNumber() << "\n";
-    std::cout << "   • Example Course: " << iitCourse1.getCourseCode() << "\n\n";
+    std::cout << Colors::BOLD << "3. Student<string, int> - Cross-institutional" << Colors::RESET << "\n";
+    std::cout << Colors::DIM << "   • Roll Number Type: std::string (IIIT format)" << Colors::RESET << "\n";
+    std::cout << Colors::DIM << "   • Course Code Type: int (IIT format)" << Colors::RESET << "\n";
+    std::cout << Colors::YELLOW << "   • Example Roll: " << crossStudent.get_roll_number() << Colors::RESET << "\n";
+    std::cout << Colors::YELLOW << "   • Example Course: " << mixCourse1.get_course_code() << Colors::RESET << "\n\n";
 
-    std::cout << "3. Student<string, int> - Cross-institutional\n";
-    std::cout << "   • Roll Number Type: std::string (IIIT format)\n";
-    std::cout << "   • Course Code Type: int (IIT format)\n";
-    std::cout << "   • Example Roll: " << crossStudent.getRollNumber() << "\n";
-    std::cout << "   • Example Course: " << mixCourse1.getCourseCode() << "\n\n";
-
-    std::cout << "Press Enter to continue...";
+    std::cout << Colors::DIM << "Press " << Colors::BOLD << "[Enter]" << Colors::RESET
+              << Colors::DIM << " to continue..." << Colors::RESET;
     std::cin.get();
 
     // Demo 5: Grade Assignment and CGPA Calculation
-    std::cout << "\n"
-              << std::string(68, '=') << "\n";
-    std::cout << "DEMO 5: Grade Assignment (Works with Both Systems)\n";
-    std::cout << std::string(68, '=') << "\n";
+    std::cout << "\n";
+    OutputFormatter::print_double_line(68);
+    std::cout << Colors::BOLD << Colors::GREEN << "DEMO 5: Grade Assignment (Works with Both Systems)" << Colors::RESET << "\n";
+    OutputFormatter::print_double_line(68);
 
     // Assign grades to IIIT student
     Grade g1(9.0); // A
     Grade g2(8.5); // A-
     Grade g3(9.5); // A+
 
-    iiitStudent.updateGrade(iiitCourse1.getCourseCode(), g1);
-    iiitStudent.updateGrade(iiitCourse2.getCourseCode(), g2);
-    iiitStudent.updateGrade(iiitCourse3.getCourseCode(), g3);
+    iiitStudent.update_grade(iiitCourse1.get_course_code(), g1);
+    iiitStudent.update_grade(iiitCourse2.get_course_code(), g2);
+    iiitStudent.update_grade(iiitCourse3.get_course_code(), g3);
 
-    std::cout << "\n📊 " << iiitStudent.getName() << " (IIIT-Delhi) - Grades:\n";
-    auto iiitGrades = iiitStudent.getCurrentGrades();
+    std::cout << "\n"
+              << Colors::BOLD << " " << iiitStudent.get_name() << " (IIIT-Delhi) - Grades:" << Colors::RESET << "\n";
+    auto iiitGrades = iiitStudent.get_current_grades();
     for (size_t i = 0; i < iiitCourses.size(); ++i)
     {
-        std::cout << "   • " << iiitCourses[i].getCourseCode() << ": "
-                  << iiitGrades[i].getLetterGrade() << " (GP: "
-                  << std::fixed << std::setprecision(1) << iiitGrades[i].getGradePoint() << ")\n";
+        std::cout << Colors::CYAN << "   • " << iiitCourses[i].get_course_code() << ": " << Colors::RESET
+                  << Colors::GREEN << iiitGrades[i].get_letter_grade() << Colors::RESET << Colors::DIM << " (GP: "
+                  << std::fixed << std::setprecision(1) << iiitGrades[i].get_grade_point() << ")" << Colors::RESET << "\n";
     }
-    std::cout << "   CGPA: " << std::fixed << std::setprecision(2) << iiitStudent.calculateCGPA() << "\n";
+    std::cout << Colors::BOLD << "   CGPA: " << Colors::GREEN << std::fixed << std::setprecision(2) << iiitStudent.calculate_cgpa() << Colors::RESET << "\n";
 
     // Assign grades to IIT student
     Grade g4(8.0); // B+
     Grade g5(9.0); // A
     Grade g6(7.5); // B
 
-    iitStudent.updateGrade(iitCourse1.getCourseCode(), g4);
-    iitStudent.updateGrade(iitCourse2.getCourseCode(), g5);
-    iitStudent.updateGrade(iitCourse3.getCourseCode(), g6);
+    iitStudent.update_grade(iitCourse1.get_course_code(), g4);
+    iitStudent.update_grade(iitCourse2.get_course_code(), g5);
+    iitStudent.update_grade(iitCourse3.get_course_code(), g6);
 
-    std::cout << "\n📊 " << iitStudent.getName() << " (IIT-Delhi) - Grades:\n";
-    auto iitGrades = iitStudent.getCurrentGrades();
+    std::cout << "\n"
+              << Colors::BOLD << " " << iitStudent.get_name() << " (IIT-Delhi) - Grades:" << Colors::RESET << "\n";
+    auto iitGrades = iitStudent.get_current_grades();
     for (size_t i = 0; i < iitCourses.size(); ++i)
     {
-        std::cout << "   • Course " << iitCourses[i].getCourseCode() << ": "
-                  << iitGrades[i].getLetterGrade() << " (GP: "
-                  << std::fixed << std::setprecision(1) << iitGrades[i].getGradePoint() << ")\n";
+        std::cout << Colors::MAGENTA << "   • Course " << iitCourses[i].get_course_code() << ": " << Colors::RESET
+                  << Colors::GREEN << iitGrades[i].get_letter_grade() << Colors::RESET << Colors::DIM << " (GP: "
+                  << std::fixed << std::setprecision(1) << iitGrades[i].get_grade_point() << ")" << Colors::RESET << "\n";
     }
-    std::cout << "   CGPA: " << std::fixed << std::setprecision(2) << iitStudent.calculateCGPA() << "\n";
+    std::cout << Colors::BOLD << "   CGPA: " << Colors::GREEN << std::fixed << std::setprecision(2) << iitStudent.calculate_cgpa() << Colors::RESET << "\n";
 
-    std::cout << "\nPress Enter to continue...";
+    std::cout << "\n"
+              << Colors::DIM << "Press " << Colors::BOLD << "[Enter]" << Colors::RESET
+              << Colors::DIM << " to continue..." << Colors::RESET;
     std::cin.get();
 
     // Summary
+    std::cout << "\n";
+    OutputFormatter::print_double_line(68);
+    std::cout << Colors::BOLD << Colors::MAGENTA << "SUMMARY: Template Benefits Demonstrated" << Colors::RESET << "\n";
+    OutputFormatter::print_double_line(68);
+    std::cout << "\n";
+
+    std::cout << Colors::GREEN << "[OK] " << Colors::BOLD << "Type Safety:" << Colors::RESET << " Compile-time type checking prevents mixing incompatible types\n";
+    std::cout << Colors::GREEN << "[OK] " << Colors::BOLD << "Flexibility:" << Colors::RESET << " Same Student class handles multiple course code formats\n";
+    std::cout << Colors::GREEN << "[OK] " << Colors::BOLD << "Reusability:" << Colors::RESET << " No code duplication for different institutional systems\n";
+    std::cout << Colors::GREEN << "[OK] " << Colors::BOLD << "Scalability:" << Colors::RESET << " Easy to add new institutions with different formats\n";
+    std::cout << Colors::GREEN << "[OK] " << Colors::BOLD << "Performance:" << Colors::RESET << " Zero runtime overhead compared to runtime polymorphism\n\n";
+
+    std::cout << Colors::CYAN << "Real-world Application:" << Colors::RESET << "\n";
+    std::cout << Colors::DIM << "  • IIIT-Delhi students can seamlessly take IIT-Delhi courses" << Colors::RESET << "\n";
+    std::cout << Colors::DIM << "  • System tracks courses from both institutions correctly" << Colors::RESET << "\n";
+    std::cout << Colors::DIM << "  • Type system ensures data integrity across institutions" << Colors::RESET << "\n";
+    std::cout << Colors::DIM << "  • Same codebase serves multiple course numbering systems" << Colors::RESET << "\n\n";
+
+    OutputFormatter::print_double_line(80);
     std::cout << "\n"
-              << std::string(68, '=') << "\n";
-    std::cout << "SUMMARY: Template Benefits Demonstrated\n";
-    std::cout << std::string(68, '=') << "\n\n";
-
-    std::cout << "DONE: Type Safety: Compile-time type checking prevents mixing incompatible types\n";
-    std::cout << "DONE: Flexibility: Same Student class handles multiple course code formats\n";
-    std::cout << "DONE: Reusability: No code duplication for different institutional systems\n";
-    std::cout << "DONE: Scalability: Easy to add new institutions with different formats\n";
-    std::cout << "DONE: Performance: Zero runtime overhead compared to runtime polymorphism\n\n";
-
-    std::cout << "Real-world Application:\n";
-    std::cout << "  • IIIT-Delhi students can seamlessly take IIT-Delhi courses\n";
-    std::cout << "  • System tracks courses from both institutions correctly\n";
-    std::cout << "  • Type system ensures data integrity across institutions\n";
-    std::cout << "  • Same codebase serves multiple course numbering systems\n\n";
-
-    std::cout << "╔════════════════════════════════════════════════════════════════╗\n";
-    std::cout << "║            Demo Complete - Press Enter to return              ║\n";
-    std::cout << "╚════════════════════════════════════════════════════════════════╝\n";
+              << Colors::BOLD << Colors::GREEN << "[OK] Demo Complete" << Colors::RESET << " - "
+              << Colors::DIM << "Press " << Colors::BOLD << "[Enter]" << Colors::RESET
+              << Colors::DIM << " to return" << Colors::RESET << "\n";
+    OutputFormatter::print_double_line(80);
     std::cin.get();
 }

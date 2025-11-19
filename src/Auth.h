@@ -37,27 +37,27 @@ public:
                              UserType userType);
 
     // Create new student account (returns generated password)
-    static std::string createStudentAccount(const std::string &rollNumber);
+    static std::string create_student_account(const std::string &rollNumber);
 
     // Create new student account with specific password (for bulk creation)
-    static bool createStudentAccountWithPassword(const std::string &rollNumber,
-                                                 const std::string &password);
+    static bool create_student_account_with_password(const std::string &rollNumber,
+                                                     const std::string &password);
 
     // Create new admin account
-    static bool createAdminAccount(const std::string &username,
-                                   const std::string &password);
+    static bool create_admin_account(const std::string &username,
+                                     const std::string &password);
 
     // Change password
-    static bool changePassword(const std::string &username,
-                               const std::string &oldPassword,
-                               const std::string &newPassword,
-                               UserType userType);
+    static bool change_password(const std::string &username,
+                                const std::string &oldPassword,
+                                const std::string &newPassword,
+                                UserType userType);
 
     // Generate random password
-    static std::string generateRandomPassword(int length = 8);
+    static std::string generate_random_password(int length = 8);
 
     // Check if username exists
-    static bool usernameExists(const std::string &username, UserType userType);
+    static bool username_exists(const std::string &username, UserType userType);
 
     // Initialize credential files if they don't exist
     static void initializeCredentialFiles();

@@ -16,7 +16,7 @@ enum class RequestStatus
 };
 
 // Convert RequestStatus to string
-inline std::string requestStatusToString(RequestStatus status)
+inline std::string request_status_to_string(RequestStatus status)
 {
     switch (status)
     {
@@ -32,7 +32,7 @@ inline std::string requestStatusToString(RequestStatus status)
 }
 
 // Convert string to RequestStatus
-inline RequestStatus stringToRequestStatus(const std::string &str)
+inline RequestStatus string_to_request_status(const std::string &str)
 {
     if (str == "PENDING")
         return RequestStatus::PENDING;
@@ -49,119 +49,119 @@ template <typename RollType, typename CourseCodeType>
 class PendingCourseRequest
 {
 private:
-    int requestId;
-    RollType rollNumber;
-    std::string studentName;
-    CourseCodeType courseCode;
-    std::string courseName;
-    RequestStatus status;
-    std::chrono::system_clock::time_point requestTime;
-    std::chrono::system_clock::time_point processedTime;
-    std::string processedBy; // Admin username who approved/rejected
-    std::string remarks;     // Optional remarks from admin
+    int __request_id;
+    RollType __roll_number;
+    std::string __student_name;
+    CourseCodeType __course_code;
+    std::string __course_name;
+    RequestStatus __status;
+    std::chrono::system_clock::time_point __request_time;
+    std::chrono::system_clock::time_point __processed_time;
+    std::string __processed_by; // Admin username who approved/rejected
+    std::string __remarks;      // Optional remarks from admin
 
 public:
     // Constructor
     PendingCourseRequest(int id, const RollType &roll, const std::string &name,
                          const CourseCodeType &code, const std::string &courseName)
-        : requestId(id), rollNumber(roll), studentName(name),
-          courseCode(code), courseName(courseName),
-          status(RequestStatus::PENDING),
-          requestTime(std::chrono::system_clock::now()),
-          processedTime{}, processedBy(""), remarks("")
+        : __request_id(id), __roll_number(roll), __student_name(name),
+          __course_code(code), __course_name(courseName),
+          __status(RequestStatus::PENDING),
+          __request_time(std::chrono::system_clock::now()),
+          __processed_time{}, __processed_by(""), __remarks("")
     {
     }
 
     // Default constructor
     PendingCourseRequest()
-        : requestId(0), rollNumber(RollType{}), studentName(""),
-          courseCode(CourseCodeType{}), courseName(""),
-          status(RequestStatus::PENDING),
-          requestTime(std::chrono::system_clock::now()),
-          processedTime{}, processedBy(""), remarks("")
+        : __request_id(0), __roll_number(RollType{}), __student_name(""),
+          __course_code(CourseCodeType{}), __course_name(""),
+          __status(RequestStatus::PENDING),
+          __request_time(std::chrono::system_clock::now()),
+          __processed_time{}, __processed_by(""), __remarks("")
     {
     }
 
     // Getters
-    int getRequestId() const { return requestId; }
-    RollType getRollNumber() const { return rollNumber; }
-    std::string getStudentName() const { return studentName; }
-    CourseCodeType getCourseCode() const { return courseCode; }
-    std::string getCourseName() const { return courseName; }
-    RequestStatus getStatus() const { return status; }
-    std::chrono::system_clock::time_point getRequestTime() const { return requestTime; }
-    std::chrono::system_clock::time_point getProcessedTime() const { return processedTime; }
-    std::string getProcessedBy() const { return processedBy; }
-    std::string getRemarks() const { return remarks; }
+    int get_request_id() const { return __request_id; }
+    RollType get_roll_number() const { return __roll_number; }
+    std::string get_student_name() const { return __student_name; }
+    CourseCodeType get_course_code() const { return __course_code; }
+    std::string get_course_name() const { return __course_name; }
+    RequestStatus get_status() const { return __status; }
+    std::chrono::system_clock::time_point get_request_time() const { return __request_time; }
+    std::chrono::system_clock::time_point get_processed_time() const { return __processed_time; }
+    std::string get_processed_by() const { return __processed_by; }
+    std::string get_remarks() const { return __remarks; }
 
     // Setters
-    void setRequestId(int id) { requestId = id; }
-    void setStatus(RequestStatus s) { status = s; }
-    void setProcessedTime(std::chrono::system_clock::time_point t) { processedTime = t; }
-    void setProcessedBy(const std::string &admin) { processedBy = admin; }
-    void setRemarks(const std::string &r) { remarks = r; }
+    void set_request_id(int id) { __request_id = id; }
+    void set_status(RequestStatus s) { __status = s; }
+    void set_processed_time(std::chrono::system_clock::time_point t) { __processed_time = t; }
+    void set_processed_by(const std::string &admin) { __processed_by = admin; }
+    void set_remarks(const std::string &r) { __remarks = r; }
 
     // Approve the request
     void approve(const std::string &adminUsername, const std::string &adminRemarks = "")
     {
-        status = RequestStatus::APPROVED;
-        processedTime = std::chrono::system_clock::now();
-        processedBy = adminUsername;
-        remarks = adminRemarks;
+        __status = RequestStatus::APPROVED;
+        __processed_time = std::chrono::system_clock::now();
+        __processed_by = adminUsername;
+        __remarks = adminRemarks;
     }
 
     // Reject the request
     void reject(const std::string &adminUsername, const std::string &adminRemarks = "")
     {
-        status = RequestStatus::REJECTED;
-        processedTime = std::chrono::system_clock::now();
-        processedBy = adminUsername;
-        remarks = adminRemarks;
+        __status = RequestStatus::REJECTED;
+        __processed_time = std::chrono::system_clock::now();
+        __processed_by = adminUsername;
+        __remarks = adminRemarks;
     }
 
     // Display request information
-    void displayInfo() const
+    void display_info() const
     {
-        std::cout << "Request ID: " << requestId << "\n";
-        std::cout << "Roll Number: " << rollNumber << "\n";
-        std::cout << "Student Name: " << studentName << "\n";
-        std::cout << "Course Code: " << courseCode << "\n";
-        std::cout << "Course Name: " << courseName << "\n";
-        std::cout << "Status: " << requestStatusToString(status) << "\n";
+        std::cout << "Request ID: " << __request_id << "\n";
+        std::cout << "Roll Number: " << __roll_number << "\n";
+        std::cout << "Student Name: " << __student_name << "\n";
+        std::cout << "Course Code: " << __course_code << "\n";
+        std::cout << "Course Name: " << __course_name << "\n";
+        std::cout << "Status: " << request_status_to_string(__status) << "\n";
 
         // Format request time
-        auto requestTimeT = std::chrono::system_clock::to_time_t(requestTime);
+        auto requestTimeT = std::chrono::system_clock::to_time_t(__request_time);
         std::cout << "Request Time: " << std::put_time(std::localtime(&requestTimeT), "%Y-%m-%d %H:%M:%S") << "\n";
 
-        if (status != RequestStatus::PENDING)
+        if (__status != RequestStatus::PENDING)
         {
-            auto processedTimeT = std::chrono::system_clock::to_time_t(processedTime);
+            auto processedTimeT = std::chrono::system_clock::to_time_t(__processed_time);
             std::cout << "Processed Time: " << std::put_time(std::localtime(&processedTimeT), "%Y-%m-%d %H:%M:%S") << "\n";
-            std::cout << "Processed By: " << processedBy << "\n";
+            std::cout << "Processed By: " << __processed_by << "\n";
 
-            if (!remarks.empty())
+            if (!__remarks.empty())
             {
-                std::cout << "Remarks: " << remarks << "\n";
+                std::cout << "Remarks: " << __remarks << "\n";
             }
         }
     }
 
     // Get formatted request time as string
-    std::string getRequestTimeString() const
+    std::string get_request_time_string() const
     {
-        auto requestTimeT = std::chrono::system_clock::to_time_t(requestTime);
+        auto requestTimeT = std::chrono::system_clock::to_time_t(__request_time);
         std::stringstream ss;
         ss << std::put_time(std::localtime(&requestTimeT), "%Y-%m-%d %H:%M:%S");
         return ss.str();
     }
 
     // Get formatted processed time as string
-    std::string getProcessedTimeString() const
+    std::string get_processed_time_string() const
     {
-        if (status == RequestStatus::PENDING)
+        if (__status == RequestStatus::PENDING)
             return "N/A";
 
-        auto processedTimeT = std::chrono::system_clock::to_time_t(processedTime);
+        auto processedTimeT = std::chrono::system_clock::to_time_t(__processed_time);
         std::stringstream ss;
         ss << std::put_time(std::localtime(&processedTimeT), "%Y-%m-%d %H:%M:%S");
         return ss.str();
@@ -170,7 +170,7 @@ public:
     // Comparison operator for sorting by request ID
     bool operator<(const PendingCourseRequest &other) const
     {
-        return requestId < other.requestId;
+        return __request_id < other.__request_id;
     }
 };
 

@@ -5,49 +5,49 @@
 // Constructor
 template <typename RollType, typename CourseCodeType>
 EnrollmentRecord<RollType, CourseCodeType>::EnrollmentRecord(int id, const RollType &roll, const std::string &name)
-    : recordId(id), rollNumber(roll), studentName(name),
-      enrollmentTime(std::chrono::system_clock::now()) {}
+    : __record_id(id), __roll_number(roll), __student_name(name),
+      __enrollment_time(std::chrono::system_clock::now()) {}
 
 // Getters
 template <typename RollType, typename CourseCodeType>
-int EnrollmentRecord<RollType, CourseCodeType>::getRecordId() const
+int EnrollmentRecord<RollType, CourseCodeType>::get_record_id() const
 {
-    return recordId;
+    return __record_id;
 }
 
 template <typename RollType, typename CourseCodeType>
-RollType EnrollmentRecord<RollType, CourseCodeType>::getRollNumber() const
+RollType EnrollmentRecord<RollType, CourseCodeType>::get_roll_number() const
 {
-    return rollNumber;
+    return __roll_number;
 }
 
 template <typename RollType, typename CourseCodeType>
-std::string EnrollmentRecord<RollType, CourseCodeType>::getStudentName() const
+std::string EnrollmentRecord<RollType, CourseCodeType>::get_student_name() const
 {
-    return studentName;
+    return __student_name;
 }
 
 template <typename RollType, typename CourseCodeType>
-std::chrono::system_clock::time_point EnrollmentRecord<RollType, CourseCodeType>::getEnrollmentTime() const
+std::chrono::system_clock::time_point EnrollmentRecord<RollType, CourseCodeType>::get_enrollment_time() const
 {
-    return enrollmentTime;
+    return __enrollment_time;
 }
 
 // Display
 template <typename RollType, typename CourseCodeType>
-void EnrollmentRecord<RollType, CourseCodeType>::displayInfo() const
+void EnrollmentRecord<RollType, CourseCodeType>::display_info() const
 {
-    auto time_t_now = std::chrono::system_clock::to_time_t(enrollmentTime);
-    std::cout << "Record ID: " << recordId
-              << " | Name: " << studentName
+    auto time_t_now = std::chrono::system_clock::to_time_t(__enrollment_time);
+    std::cout << "Record ID: " << __record_id
+              << " | Name: " << __student_name
               << " | Roll: ";
     if constexpr (std::is_same<RollType, std::string>::value)
     {
-        std::cout << rollNumber;
+        std::cout << __roll_number;
     }
     else
     {
-        std::cout << rollNumber;
+        std::cout << __roll_number;
     }
     std::cout << " | Enrolled: " << std::put_time(std::localtime(&time_t_now), "%Y-%m-%d %H:%M:%S")
               << std::endl;
@@ -57,7 +57,7 @@ void EnrollmentRecord<RollType, CourseCodeType>::displayInfo() const
 template <typename RollType, typename CourseCodeType>
 bool EnrollmentRecord<RollType, CourseCodeType>::operator<(const EnrollmentRecord &other) const
 {
-    return recordId < other.recordId;
+    return __record_id < other.__record_id;
 }
 
 // Explicit template instantiations

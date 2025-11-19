@@ -30,7 +30,7 @@ private:
     static const std::string CATALOG_FILE;
     static const std::string SYLLABUS_DIR;
 
-    std::map<std::string, CourseInfo> courses;
+    std::map<std::string, CourseInfo> __courses;
 
     // Load catalog from file
     void loadCatalog();
@@ -42,7 +42,7 @@ public:
     CourseCatalog();
 
     // Add a new course to catalog
-    void addCourse(const CourseInfo &course);
+    void add_course(const CourseInfo &course);
 
     // Get course information
     CourseInfo getCourseInfo(const std::string &courseCode) const;
@@ -50,11 +50,11 @@ public:
     // Check if course exists
     bool courseExists(const std::string &courseCode) const;
 
-    // Get all courses for a level
-    std::vector<CourseInfo> getCoursesByLevel(const std::string &level) const;
+    // Get all __courses for a level
+    std::vector<CourseInfo> get_courses_by_level(const std::string &level) const;
 
-    // Get all courses
-    std::vector<CourseInfo> getAllCourses() const;
+    // Get all __courses
+    std::vector<CourseInfo> get_all_courses() const;
 
     // Get syllabus for a course
     std::string getSyllabus(const std::string &courseCode) const;
@@ -65,8 +65,8 @@ public:
     // Delete a course
     bool deleteCourse(const std::string &courseCode);
 
-    // Search courses by name
-    std::vector<CourseInfo> searchCourses(const std::string &query) const;
+    // Search __courses by name
+    std::vector<CourseInfo> search_courses(const std::string &query) const;
 
     // Check if student can take course (based on level)
     bool canTakeCourse(const std::string &courseCode, const std::string &studentLevel) const;
@@ -77,7 +77,7 @@ public:
     // Get course type (Regular, Capstone, Research)
     std::string getCourseType(const std::string &courseCode) const;
 
-    // Initialize with default IIIT-Delhi courses
+    // Initialize with default IIIT-Delhi __courses
     void initializeDefaultCourses();
 
     // Display course details

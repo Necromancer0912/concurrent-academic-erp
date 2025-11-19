@@ -7,15 +7,15 @@
 class Grade
 {
 private:
-    double midSemMarks;
-    double endSemMarks;
-    double assignmentMarks;
-    double totalMarks;
-    double gradePoint;       // 0-10 scale
-    std::string letterGrade; // A, A-, B+, etc.
+    double __mid_sem_marks;
+    double __end_sem_marks;
+    double __assignment_marks;
+    double __total_marks;
+    double __grade_point;       // 0-10 scale
+    std::string __letter_grade; // A, A-, B+, etc.
 
     // Calculate grade from marks
-    void calculateGrade();
+    void __calculate_grade();
 
 public:
     // Constructor with marks
@@ -34,19 +34,19 @@ public:
     Grade &operator=(const Grade &other);
 
     // Getters
-    double getMidSemMarks() const;
-    double getEndSemMarks() const;
-    double getAssignmentMarks() const;
-    double getTotalMarks() const;
-    double getGradePoint() const;
-    std::string getLetterGrade() const;
+    double get_mid_sem_marks() const;
+    double get_end_sem_marks() const;
+    double get_assignment_marks() const;
+    double get_total_marks() const;
+    double get_grade_point() const;
+    std::string get_letter_grade() const;
 
     // Setters
-    void setMarks(double mid, double end, double assignment);
-    void setGradePoint(double gp);
+    void set_marks(double mid, double end, double assignment);
+    void set_grade_point(double gp);
 
     // Display
-    void displayInfo() const;
+    void display_info() const;
 
     // Comparison operators
     bool operator>=(double minGrade) const;
@@ -55,7 +55,7 @@ public:
     bool operator==(const Grade &other) const;
 
     // Static helper for grade calculation
-    static std::string calculateLetterGrade(double gradePoint);
+    static std::string calculate_letter_grade(double grade_point);
 };
 
 #endif // GRADE_H

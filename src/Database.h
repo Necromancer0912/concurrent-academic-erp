@@ -142,36 +142,36 @@ void Database::saveStudents(const std::vector<Student<RollType, CourseType>> &st
     for (const auto &student : students)
     {
         file << "STUDENT_START\n";
-        file << "RollNumber: " << student.getRollNumber() << "\n";
-        file << "Name: " << student.getName() << "\n";
-        file << "BranchCode: " << student.getBranch().getBranchCode() << "\n";
-        file << "BranchName: " << student.getBranch().getBranchName() << "\n";
-        file << "Department: " << student.getBranch().getDepartment() << "\n";
-        file << "Level: " << levelToString(student.getLevel()) << "\n";
-        file << "StartYear: " << student.getStartingYear() << "\n";
+        file << "RollNumber: " << student.get_roll_number() << "\n";
+        file << "Name: " << student.get_name() << "\n";
+        file << "BranchCode: " << student.get_branch().get_branch_code() << "\n";
+        file << "BranchName: " << student.get_branch().get_branch_name() << "\n";
+        file << "Department: " << student.get_branch().get_department() << "\n";
+        file << "Level: " << levelToString(student.get_level()) << "\n";
+        file << "StartYear: " << student.get_starting_year() << "\n";
 
         // Save current courses
-        auto currentCourses = student.getCurrentCourses();
-        auto currentGrades = student.getCurrentGrades();
+        auto currentCourses = student.get_current_courses();
+        auto currentGrades = student.get_current_grades();
         file << "CurrentCourses: " << currentCourses.size() << "\n";
 
         for (size_t i = 0; i < currentCourses.size(); ++i)
         {
             file << "COURSE_START\n";
-            file << "CourseCode: " << currentCourses[i].getCourseCode() << "\n";
-            file << "CourseName: " << currentCourses[i].getCourseName() << "\n";
-            file << "Instructor: " << currentCourses[i].getInstructor() << "\n";
-            file << "Credits: " << currentCourses[i].getCredits() << "\n";
-            file << "Semester: " << currentCourses[i].getSemester() << "\n";
+            file << "CourseCode: " << currentCourses[i].get_course_code() << "\n";
+            file << "CourseName: " << currentCourses[i].get_course_name() << "\n";
+            file << "Instructor: " << currentCourses[i].get_instructor() << "\n";
+            file << "Credits: " << currentCourses[i].get_credits() << "\n";
+            file << "Semester: " << currentCourses[i].get_semester() << "\n";
 
             if (i < currentGrades.size())
             {
                 auto &grade = currentGrades[i];
-                file << "MidSem: " << grade.getMidSemMarks() << "\n";
-                file << "EndSem: " << grade.getEndSemMarks() << "\n";
-                file << "Assignment: " << grade.getAssignmentMarks() << "\n";
-                file << "GradePoint: " << grade.getGradePoint() << "\n";
-                file << "LetterGrade: " << grade.getLetterGrade() << "\n";
+                file << "MidSem: " << grade.get_mid_sem_marks() << "\n";
+                file << "EndSem: " << grade.get_end_sem_marks() << "\n";
+                file << "Assignment: " << grade.get_assignment_marks() << "\n";
+                file << "GradePoint: " << grade.get_grade_point() << "\n";
+                file << "LetterGrade: " << grade.get_letter_grade() << "\n";
             }
             else
             {
@@ -186,27 +186,27 @@ void Database::saveStudents(const std::vector<Student<RollType, CourseType>> &st
         }
 
         // Save previous courses
-        auto previousCourses = student.getPreviousCourses();
-        auto previousGrades = student.getPreviousGrades();
+        auto previousCourses = student.get_previous_courses();
+        auto previousGrades = student.get_previous_grades();
         file << "PreviousCourses: " << previousCourses.size() << "\n";
 
         for (size_t i = 0; i < previousCourses.size(); ++i)
         {
             file << "COURSE_START\n";
-            file << "CourseCode: " << previousCourses[i].getCourseCode() << "\n";
-            file << "CourseName: " << previousCourses[i].getCourseName() << "\n";
-            file << "Instructor: " << previousCourses[i].getInstructor() << "\n";
-            file << "Credits: " << previousCourses[i].getCredits() << "\n";
-            file << "Semester: " << previousCourses[i].getSemester() << "\n";
+            file << "CourseCode: " << previousCourses[i].get_course_code() << "\n";
+            file << "CourseName: " << previousCourses[i].get_course_name() << "\n";
+            file << "Instructor: " << previousCourses[i].get_instructor() << "\n";
+            file << "Credits: " << previousCourses[i].get_credits() << "\n";
+            file << "Semester: " << previousCourses[i].get_semester() << "\n";
 
             if (i < previousGrades.size())
             {
                 auto &grade = previousGrades[i];
-                file << "MidSem: " << grade.getMidSemMarks() << "\n";
-                file << "EndSem: " << grade.getEndSemMarks() << "\n";
-                file << "Assignment: " << grade.getAssignmentMarks() << "\n";
-                file << "GradePoint: " << grade.getGradePoint() << "\n";
-                file << "LetterGrade: " << grade.getLetterGrade() << "\n";
+                file << "MidSem: " << grade.get_mid_sem_marks() << "\n";
+                file << "EndSem: " << grade.get_end_sem_marks() << "\n";
+                file << "Assignment: " << grade.get_assignment_marks() << "\n";
+                file << "GradePoint: " << grade.get_grade_point() << "\n";
+                file << "LetterGrade: " << grade.get_letter_grade() << "\n";
             }
 
             file << "COURSE_END\n";
@@ -330,11 +330,11 @@ std::vector<Student<RollType, CourseType>> Database::loadStudents()
                         if (midSem >= 0 && endSem >= 0 && assignment >= 0)
                         {
                             Grade grade(midSem, endSem, assignment);
-                            student.addCurrentCourse(course, grade);
+                            student.add_current_course(course, grade);
                         }
                         else
                         {
-                            student.addCurrentCourse(course);
+                            student.add_current_course(course);
                         }
                     }
 
@@ -395,8 +395,8 @@ std::vector<Student<RollType, CourseType>> Database::loadStudents()
                             if (midSem >= 0 && endSem >= 0 && assignment >= 0)
                             {
                                 Grade grade(midSem, endSem, assignment);
-                                student.addCurrentCourse(course, grade);
-                                student.moveToPreviousCourses(courseCode);
+                                student.add_current_course(course, grade);
+                                student.move_to_previous_courses(courseCode);
                             }
                         }
                     }
@@ -530,11 +530,11 @@ std::vector<Student<RollType, CourseType>> Database::loadStudentsRange(int start
                             if (midSem >= 0 && endSem >= 0 && assignment >= 0)
                             {
                                 Grade grade(midSem, endSem, assignment);
-                                student.addCurrentCourse(course, grade);
+                                student.add_current_course(course, grade);
                             }
                             else
                             {
-                                student.addCurrentCourse(course);
+                                student.add_current_course(course);
                             }
                         }
 
@@ -594,8 +594,8 @@ std::vector<Student<RollType, CourseType>> Database::loadStudentsRange(int start
                                 if (midSem >= 0 && endSem >= 0 && assignment >= 0)
                                 {
                                     Grade grade(midSem, endSem, assignment);
-                                    student.addCurrentCourse(course, grade);
-                                    student.moveToPreviousCourses(courseCode);
+                                    student.add_current_course(course, grade);
+                                    student.move_to_previous_courses(courseCode);
                                 }
                             }
                         }

@@ -6,11 +6,11 @@
 // Constructor
 template <typename RollType, typename CourseCodeType>
 CSVHandler<RollType, CourseCodeType>::CSVHandler(const std::string &fname)
-    : filename(fname) {}
+    : __filename(fname) {}
 
 // Parse a CSV line
 template <typename RollType, typename CourseCodeType>
-std::vector<std::string> CSVHandler<RollType, CourseCodeType>::parseLine(const std::string &line)
+std::vector<std::string> CSVHandler<RollType, CourseCodeType>::parse_line(const std::string &line)
 {
     std::vector<std::string> result;
     std::stringstream ss(line);
@@ -127,14 +127,14 @@ Branch CSVHandler<RollType, CourseCodeType>::parseBranch(const std::string &bran
 // Read students from CSV
 template <typename RollType, typename CourseCodeType>
 std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>>
-CSVHandler<RollType, CourseCodeType>::readStudents()
+CSVHandler<RollType, CourseCodeType>::read_students()
 {
     std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>> students;
 
-    std::ifstream file(filename);
+    std::ifstream file(__filename);
     if (!file.is_open())
     {
-        throw CSVException("Unable to open file: " + filename);
+        throw CSVException("Unable to open file: " + __filename);
     }
 
     std::string line;
@@ -145,7 +145,7 @@ CSVHandler<RollType, CourseCodeType>::readStudents()
     if (std::getline(file, line))
     {
         lineNumber++;
-        headerTokens = parseLine(line);
+        headerTokens = parse_line(line);
     }
 
     // Find cgpa column index if present (case-insensitive)
@@ -172,7 +172,7 @@ CSVHandler<RollType, CourseCodeType>::readStudents()
 
         try
         {
-            auto fields = parseLine(line);
+            auto fields = parse_line(line);
 
             // Expected format: Name,RollNumber,BranchCode,Level,StartYear[,cgpa],CourseCode1:Grade1,...
             if (fields.size() < 5)
@@ -208,7 +208,7 @@ CSVHandler<RollType, CourseCodeType>::readStudents()
                 name, rollNumber, branch, level, startYear);
 
             // Set loaded CGPA
-            student->setLoadedCGPA(loadedCgpa);
+            student->set_loaded_cgpa(loadedCgpa);
 
             // Parse courses and grades (if present)
             int coursesStart = 5;
@@ -236,8 +236,8 @@ CSVHandler<RollType, CourseCodeType>::readStudents()
                     Grade grade(gradePoint);
 
                     // Add to previous courses
-                    student->addCurrentCourse(course, grade);
-                    student->moveToPreviousCourses(courseCode);
+                    student->add_current_course(course, grade);
+                    student->move_to_previous_courses(courseCode);
                 }
             }
 
@@ -256,14 +256,14 @@ CSVHandler<RollType, CourseCodeType>::readStudents()
 
 // Write students to CSV
 template <typename RollType, typename CourseCodeType>
-void CSVHandler<RollType, CourseCodeType>::writeStudents(
+void CSVHandler<RollType, CourseCodeType>::write_students(
     const std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>> &students)
 {
 
-    std::ofstream file(filename);
+    std::ofstream file(__filename);
     if (!file.is_open())
     {
-        throw CSVException("Unable to create file: " + filename);
+        throw CSVException("Unable to create file: " + __filename);
     }
 
     // Write header
@@ -272,29 +272,29 @@ void CSVHandler<RollType, CourseCodeType>::writeStudents(
     // Write student data
     for (const auto &student : students)
     {
-        file << student->getName() << ",";
+        file << student->get_name() << ",";
 
         if constexpr (std::is_same<RollType, std::string>::value)
         {
-            file << student->getRollNumber();
+            file << student->get_roll_number();
         }
         else
         {
-            file << student->getRollNumber();
+            file << student->get_roll_number();
         }
 
-        file << "," << student->getBranch().getBranchCode()
-             << "," << Student<RollType, CourseCodeType>::levelToString(student->getLevel())
-             << "," << student->getStartingYear();
+        file << "," << student->get_branch().get_branch_code()
+             << "," << Student<RollType, CourseCodeType>::level_to_string(student->get_level())
+             << "," << student->get_starting_year();
 
         // Write previous courses with grades
-        auto prevCourses = student->getPreviousCourses();
-        auto prevGrades = student->getPreviousGrades();
+        auto prevCourses = student->get_previous_courses();
+        auto prevGrades = student->get_previous_grades();
 
         for (size_t i = 0; i < prevCourses.size(); ++i)
         {
-            file << "," << prevCourses[i].courseCodeToString()
-                 << ":" << prevGrades[i].getGradePoint();
+            file << "," << prevCourses[i].course_code_to_string()
+                 << ":" << prevGrades[i].get_grade_point();
         }
 
         file << std::endl;
@@ -306,14 +306,14 @@ void CSVHandler<RollType, CourseCodeType>::writeStudents(
 // Read a range of students from CSV (start = 0-based index after header)
 template <typename RollType, typename CourseCodeType>
 std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>>
-CSVHandler<RollType, CourseCodeType>::readStudentsRange(int start, int count)
+CSVHandler<RollType, CourseCodeType>::read_students_range(int start, int count)
 {
     std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>> students;
 
-    std::ifstream file(filename);
+    std::ifstream file(__filename);
     if (!file.is_open())
     {
-        throw CSVException("Unable to open file: " + filename);
+        throw CSVException("Unable to open file: " + __filename);
     }
 
     std::string line;
@@ -322,7 +322,7 @@ CSVHandler<RollType, CourseCodeType>::readStudentsRange(int start, int count)
     std::vector<std::string> headerTokens;
     if (std::getline(file, line))
     {
-        headerTokens = parseLine(line);
+        headerTokens = parse_line(line);
     }
 
     int cgpaIndex = -1;
@@ -357,7 +357,7 @@ CSVHandler<RollType, CourseCodeType>::readStudentsRange(int start, int count)
 
         try
         {
-            auto fields = parseLine(line);
+            auto fields = parse_line(line);
 
             if (fields.size() < 5)
             {
@@ -388,7 +388,7 @@ CSVHandler<RollType, CourseCodeType>::readStudentsRange(int start, int count)
             }
 
             auto student = std::make_shared<Student<RollType, CourseCodeType>>(name, rollNumber, branch, level, startYear);
-            student->setLoadedCGPA(loadedCgpa);
+            student->set_loaded_cgpa(loadedCgpa);
 
             // Parse courses from remaining fields (starting after known indices)
             // Determine courses start index
@@ -415,8 +415,8 @@ CSVHandler<RollType, CourseCodeType>::readStudentsRange(int start, int count)
                     Course<CourseCodeType> course(courseCode, "Course " + courseCodeStr,
                                                   "Instructor", 4, "Previous");
                     Grade grade(gradePoint);
-                    student->addCurrentCourse(course, grade);
-                    student->moveToPreviousCourses(courseCode);
+                    student->add_current_course(course, grade);
+                    student->move_to_previous_courses(courseCode);
                 }
             }
 
@@ -437,12 +437,12 @@ CSVHandler<RollType, CourseCodeType>::readStudentsRange(int start, int count)
 
 // Generate sample CSV file
 template <typename RollType, typename CourseCodeType>
-void CSVHandler<RollType, CourseCodeType>::generateSampleCSV(const std::string &filename, int numRecords)
+void CSVHandler<RollType, CourseCodeType>::generate_sample_csv(const std::string &__filename, int numRecords)
 {
-    std::ofstream file(filename);
+    std::ofstream file(__filename);
     if (!file.is_open())
     {
-        throw CSVException("Unable to create file: " + filename);
+        throw CSVException("Unable to create file: " + __filename);
     }
 
     // Write header

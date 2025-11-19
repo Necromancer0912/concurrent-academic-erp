@@ -24,31 +24,31 @@ bool SortingManager<RollType, CourseCodeType>::compare(
     switch (criteria)
     {
     case SortCriteria::BY_NAME:
-        return a->getName() < b->getName();
+        return a->get_name() < b->get_name();
 
     case SortCriteria::BY_ROLL_NUMBER:
     {
         if constexpr (std::is_same<RollType, std::string>::value)
         {
-            return a->getRollNumber() < b->getRollNumber();
+            return a->get_roll_number() < b->get_roll_number();
         }
         else
         {
-            return a->getRollNumber() < b->getRollNumber();
+            return a->get_roll_number() < b->get_roll_number();
         }
     }
 
     case SortCriteria::BY_CGPA:
-        return a->calculateCGPA() > b->calculateCGPA(); // Descending order for CGPA
+        return a->calculate_cgpa() > b->calculate_cgpa(); // Descending order for CGPA
 
     case SortCriteria::BY_STARTING_YEAR:
-        return a->getStartingYear() < b->getStartingYear();
+        return a->get_starting_year() < b->get_starting_year();
 
     case SortCriteria::BY_BRANCH:
-        return a->getBranch().getBranchCode() < b->getBranch().getBranchCode();
+        return a->get_branch().get_branch_code() < b->get_branch().get_branch_code();
 
     default:
-        return a->getName() < b->getName();
+        return a->get_name() < b->get_name();
     }
 }
 

@@ -10,23 +10,23 @@ template <typename RollType, typename CourseCodeType>
 class EnrollmentRecord
 {
 private:
-    int recordId;
-    RollType rollNumber;
-    std::string studentName;
-    std::chrono::system_clock::time_point enrollmentTime;
+    int __record_id;
+    RollType __roll_number;
+    std::string __student_name;
+    std::chrono::system_clock::time_point __enrollment_time;
 
 public:
     // Constructor
     EnrollmentRecord(int id, const RollType &roll, const std::string &name);
 
     // Getters
-    int getRecordId() const;
-    RollType getRollNumber() const;
-    std::string getStudentName() const;
-    std::chrono::system_clock::time_point getEnrollmentTime() const;
+    int get_record_id() const;
+    RollType get_roll_number() const;
+    std::string get_student_name() const;
+    std::chrono::system_clock::time_point get_enrollment_time() const;
 
     // Display
-    void displayInfo() const;
+    void display_info() const;
 
     // Comparison by record ID (insertion order)
     bool operator<(const EnrollmentRecord &other) const;

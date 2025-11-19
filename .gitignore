@@ -46,3 +46,5 @@ core.*
 
 # Dependency Files
 *.d
+*.py
+bin/

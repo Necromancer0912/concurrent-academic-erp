@@ -16,69 +16,69 @@ private:
     static const int CAPSTONE_CREDITS = 8;
     static const int RESEARCH_CREDITS = 16;
 
-    bool courseAddEnabled;
-    bool courseDropEnabled;
+    bool __course_add_enabled;
+    bool __course_drop_enabled;
 
 public:
     SemesterManager(CourseCatalog *cat);
 
     // Enable/disable course addition
-    void setCourseAddEnabled(bool enabled);
+    void set_course_add_enabled(bool enabled);
 
     // Enable/disable course drops
-    void setCourseDropEnabled(bool enabled);
+    void set_course_drop_enabled(bool enabled);
 
     // Check if course addition is enabled
-    bool isCourseAddEnabled() const;
+    bool is_course_add_enabled() const;
 
     // Check if course drop is enabled
-    bool isCourseDropEnabled() const;
+    bool is_course_drop_enabled() const;
 
     // Calculate CGPA
     template <typename RollType, typename CourseType>
-    double calculateCGPA(const Student<RollType, CourseType> &student) const;
+    double calculate_cgpa(const Student<RollType, CourseType> &student) const;
 
     // Calculate total credits
     template <typename RollType, typename CourseType>
-    int getTotalCreditsCompleted(const Student<RollType, CourseType> &student) const;
+    int get_total_credits_completed(const Student<RollType, CourseType> &student) const;
 
     // Generate transcript
     template <typename RollType, typename CourseType>
-    std::string generateTranscript(const Student<RollType, CourseType> &student) const;
+    std::string generate_transcript(const Student<RollType, CourseType> &student) const;
 
     // Get status
-    std::string getStatus() const;
+    std::string get_status() const;
 };
 
 // Template implementations
 template <typename RollType, typename CourseType>
-double SemesterManager::calculateCGPA(const Student<RollType, CourseType> &student) const
+double SemesterManager::calculate_cgpa(const Student<RollType, CourseType> &student) const
 {
-    return student.calculateCGPA();
+    return student.calculate_cgpa();
 }
 
 template <typename RollType, typename CourseType>
-int SemesterManager::getTotalCreditsCompleted(const Student<RollType, CourseType> &student) const
+int SemesterManager::get_total_credits_completed(const Student<RollType, CourseType> &student) const
 {
     int totalCredits = 0;
 
-    auto currentCourses = student.getCurrentCourses();
+    auto currentCourses = student.get_current_courses();
     for (const auto &course : currentCourses)
     {
-        totalCredits += course.getCredits();
+        totalCredits += course.get_credits();
     }
 
-    auto previousCourses = student.getPreviousCourses();
+    auto previousCourses = student.get_previous_courses();
     for (const auto &course : previousCourses)
     {
-        totalCredits += course.getCredits();
+        totalCredits += course.get_credits();
     }
 
     return totalCredits;
 }
 
 template <typename RollType, typename CourseType>
-std::string SemesterManager::generateTranscript(const Student<RollType, CourseType> &student) const
+std::string SemesterManager::generate_transcript(const Student<RollType, CourseType> &student) const
 {
     std::ostringstream transcript;
 
@@ -88,15 +88,15 @@ std::string SemesterManager::generateTranscript(const Student<RollType, CourseTy
     transcript << "                IIIT-Delhi ERP System\n";
     transcript << std::string(80, '=') << "\n\n";
 
-    transcript << "Student Name: " << student.getName() << "\n";
-    transcript << "Roll Number: " << student.getRollNumber() << "\n";
-    transcript << "Branch: " << student.getBranch().getBranchName() << "\n";
-    transcript << "Level: " << Student<RollType, CourseType>::levelToString(student.getLevel()) << "\n";
-    transcript << "Start Year: " << student.getStartingYear() << "\n\n";
+    transcript << "Student Name: " << student.get_name() << "\n";
+    transcript << "Roll Number: " << student.get_roll_number() << "\n";
+    transcript << "Branch: " << student.get_branch().get_branch_name() << "\n";
+    transcript << "Level: " << Student<RollType, CourseType>::level_to_string(student.get_level()) << "\n";
+    transcript << "Start Year: " << student.get_starting_year() << "\n\n";
 
     // Current courses
-    auto currentCourses = student.getCurrentCourses();
-    auto currentGrades = student.getCurrentGrades();
+    auto currentCourses = student.get_current_courses();
+    auto currentGrades = student.get_current_grades();
 
     if (!currentCourses.empty())
     {
@@ -112,18 +112,18 @@ std::string SemesterManager::generateTranscript(const Student<RollType, CourseTy
         for (size_t i = 0; i < currentCourses.size(); ++i)
         {
             std::ostringstream codeStream;
-            codeStream << currentCourses[i].getCourseCode();
+            codeStream << currentCourses[i].get_course_code();
 
             transcript << std::left << std::setw(12) << codeStream.str()
-                       << std::setw(30) << currentCourses[i].getCourseName()
-                       << std::setw(10) << currentCourses[i].getCredits();
+                       << std::setw(30) << currentCourses[i].get_course_name()
+                       << std::setw(10) << currentCourses[i].get_credits();
 
             if (i < currentGrades.size())
             {
                 auto grade = currentGrades[i];
-                transcript << std::setw(10) << grade.getLetterGrade()
+                transcript << std::setw(10) << grade.get_letter_grade()
                            << std::setw(10) << std::fixed << std::setprecision(2)
-                           << grade.getGradePoint();
+                           << grade.get_grade_point();
             }
             else
             {
@@ -136,8 +136,8 @@ std::string SemesterManager::generateTranscript(const Student<RollType, CourseTy
     }
 
     // Previous courses
-    auto previousCourses = student.getPreviousCourses();
-    auto previousGrades = student.getPreviousGrades();
+    auto previousCourses = student.get_previous_courses();
+    auto previousGrades = student.get_previous_grades();
 
     if (!previousCourses.empty())
     {
@@ -153,18 +153,18 @@ std::string SemesterManager::generateTranscript(const Student<RollType, CourseTy
         for (size_t i = 0; i < previousCourses.size(); ++i)
         {
             std::ostringstream codeStream;
-            codeStream << previousCourses[i].getCourseCode();
+            codeStream << previousCourses[i].get_course_code();
 
             transcript << std::left << std::setw(12) << codeStream.str()
-                       << std::setw(30) << previousCourses[i].getCourseName()
-                       << std::setw(10) << previousCourses[i].getCredits();
+                       << std::setw(30) << previousCourses[i].get_course_name()
+                       << std::setw(10) << previousCourses[i].get_credits();
 
             if (i < previousGrades.size())
             {
                 auto grade = previousGrades[i];
-                transcript << std::setw(10) << grade.getLetterGrade()
+                transcript << std::setw(10) << grade.get_letter_grade()
                            << std::setw(10) << std::fixed << std::setprecision(2)
-                           << grade.getGradePoint();
+                           << grade.get_grade_point();
             }
             else
             {
@@ -177,8 +177,8 @@ std::string SemesterManager::generateTranscript(const Student<RollType, CourseTy
     }
 
     transcript << std::string(80, '=') << "\n";
-    transcript << "Total Credits Completed: " << getTotalCreditsCompleted(student) << "\n";
-    transcript << "CGPA: " << std::fixed << std::setprecision(2) << calculateCGPA(student) << "\n";
+    transcript << "Total Credits Completed: " << get_total_credits_completed(student) << "\n";
+    transcript << "CGPA: " << std::fixed << std::setprecision(2) << calculate_cgpa(student) << "\n";
     transcript << std::string(80, '=') << "\n";
 
     return transcript.str();

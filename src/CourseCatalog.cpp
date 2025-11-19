@@ -1,4 +1,6 @@
 #include "CourseCatalog.h"
+#include "Colors.h"
+#include "OutputFormatter.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -83,7 +85,7 @@ void CourseCatalog::loadCatalog()
                 }
             }
 
-            courses[course.courseCode] = course;
+            __courses[course.courseCode] = course;
         }
     }
 
@@ -100,10 +102,10 @@ void CourseCatalog::saveCatalog()
     }
 
     file << "# Course Catalog Database\n";
-    file << "# Total Courses: " << courses.size() << "\n";
+    file << "# Total Courses: " << __courses.size() << "\n";
     file << "---\n";
 
-    for (const auto &pair : courses)
+    for (const auto &pair : __courses)
     {
         const CourseInfo &course = pair.second;
 
@@ -136,16 +138,16 @@ void CourseCatalog::saveCatalog()
     file.close();
 }
 
-void CourseCatalog::addCourse(const CourseInfo &course)
+void CourseCatalog::add_course(const CourseInfo &course)
 {
-    courses[course.courseCode] = course;
+    __courses[course.courseCode] = course;
     saveCatalog();
 }
 
 CourseInfo CourseCatalog::getCourseInfo(const std::string &courseCode) const
 {
-    auto it = courses.find(courseCode);
-    if (it != courses.end())
+    auto it = __courses.find(courseCode);
+    if (it != __courses.end())
     {
         return it->second;
     }
@@ -154,14 +156,14 @@ CourseInfo CourseCatalog::getCourseInfo(const std::string &courseCode) const
 
 bool CourseCatalog::courseExists(const std::string &courseCode) const
 {
-    return courses.find(courseCode) != courses.end();
+    return __courses.find(courseCode) != __courses.end();
 }
 
-std::vector<CourseInfo> CourseCatalog::getCoursesByLevel(const std::string &level) const
+std::vector<CourseInfo> CourseCatalog::get_courses_by_level(const std::string &level) const
 {
     std::vector<CourseInfo> result;
 
-    for (const auto &pair : courses)
+    for (const auto &pair : __courses)
     {
         if (pair.second.eligibleLevels.count(level) > 0)
         {
@@ -172,11 +174,11 @@ std::vector<CourseInfo> CourseCatalog::getCoursesByLevel(const std::string &leve
     return result;
 }
 
-std::vector<CourseInfo> CourseCatalog::getAllCourses() const
+std::vector<CourseInfo> CourseCatalog::get_all_courses() const
 {
     std::vector<CourseInfo> result;
 
-    for (const auto &pair : courses)
+    for (const auto &pair : __courses)
     {
         result.push_back(pair.second);
     }
@@ -186,8 +188,8 @@ std::vector<CourseInfo> CourseCatalog::getAllCourses() const
 
 std::string CourseCatalog::getSyllabus(const std::string &courseCode) const
 {
-    auto it = courses.find(courseCode);
-    if (it == courses.end())
+    auto it = __courses.find(courseCode);
+    if (it == __courses.end())
     {
         return "Course not found";
     }
@@ -209,19 +211,19 @@ std::string CourseCatalog::getSyllabus(const std::string &courseCode) const
 
 bool CourseCatalog::updateCourse(const CourseInfo &course)
 {
-    if (courses.find(course.courseCode) == courses.end())
+    if (__courses.find(course.courseCode) == __courses.end())
     {
         return false;
     }
 
-    courses[course.courseCode] = course;
+    __courses[course.courseCode] = course;
     saveCatalog();
     return true;
 }
 
 bool CourseCatalog::deleteCourse(const std::string &courseCode)
 {
-    if (courses.erase(courseCode) > 0)
+    if (__courses.erase(courseCode) > 0)
     {
         saveCatalog();
         return true;
@@ -229,13 +231,13 @@ bool CourseCatalog::deleteCourse(const std::string &courseCode)
     return false;
 }
 
-std::vector<CourseInfo> CourseCatalog::searchCourses(const std::string &query) const
+std::vector<CourseInfo> CourseCatalog::search_courses(const std::string &query) const
 {
     std::vector<CourseInfo> result;
     std::string lowerQuery = query;
     std::transform(lowerQuery.begin(), lowerQuery.end(), lowerQuery.begin(), ::tolower);
 
-    for (const auto &pair : courses)
+    for (const auto &pair : __courses)
     {
         std::string lowerName = pair.second.courseName;
         std::string lowerCode = pair.second.courseCode;
@@ -254,8 +256,8 @@ std::vector<CourseInfo> CourseCatalog::searchCourses(const std::string &query) c
 
 bool CourseCatalog::canTakeCourse(const std::string &courseCode, const std::string &studentLevel) const
 {
-    auto it = courses.find(courseCode);
-    if (it == courses.end())
+    auto it = __courses.find(courseCode);
+    if (it == __courses.end())
     {
         return false;
     }
@@ -265,8 +267,8 @@ bool CourseCatalog::canTakeCourse(const std::string &courseCode, const std::stri
 
 int CourseCatalog::getCourseCredits(const std::string &courseCode) const
 {
-    auto it = courses.find(courseCode);
-    if (it != courses.end())
+    auto it = __courses.find(courseCode);
+    if (it != __courses.end())
     {
         return it->second.credits;
     }
@@ -275,8 +277,8 @@ int CourseCatalog::getCourseCredits(const std::string &courseCode) const
 
 std::string CourseCatalog::getCourseType(const std::string &courseCode) const
 {
-    auto it = courses.find(courseCode);
-    if (it != courses.end())
+    auto it = __courses.find(courseCode);
+    if (it != __courses.end())
     {
         return it->second.courseType;
     }
@@ -295,7 +297,7 @@ void CourseCatalog::initializeDefaultCourses()
     dsa.courseType = "Regular";
     dsa.eligibleLevels = {"BTECH"};
     dsa.syllabus = "Arrays, Linked Lists, Stacks, Queues, Trees, Graphs, Sorting, Searching, Dynamic Programming";
-    addCourse(dsa);
+    add_course(dsa);
 
     // BTech/MTech Core Courses
     CourseInfo oopd;
@@ -307,7 +309,7 @@ void CourseCatalog::initializeDefaultCourses()
     oopd.courseType = "Regular";
     oopd.eligibleLevels = {"BTECH", "MTECH"};
     oopd.syllabus = "Classes, Objects, Inheritance, Polymorphism, Templates, Exception Handling, Design Patterns";
-    addCourse(oopd);
+    add_course(oopd);
 
     CourseInfo dbms;
     dbms.courseCode = "CSE202";
@@ -319,7 +321,7 @@ void CourseCatalog::initializeDefaultCourses()
     dbms.eligibleLevels = {"BTECH", "MTECH"};
     dbms.prerequisites = {"CSE102"};
     dbms.syllabus = "SQL, Relational Algebra, Normalization, Transactions, Concurrency Control, NoSQL";
-    addCourse(dbms);
+    add_course(dbms);
 
     CourseInfo os;
     os.courseCode = "CSE231";
@@ -331,7 +333,7 @@ void CourseCatalog::initializeDefaultCourses()
     os.eligibleLevels = {"BTECH", "MTECH"};
     os.prerequisites = {"CSE102"};
     os.syllabus = "Processes, Threads, Scheduling, Memory Management, File Systems, I/O Systems";
-    addCourse(os);
+    add_course(os);
 
     CourseInfo cn;
     cn.courseCode = "CSE232";
@@ -342,7 +344,7 @@ void CourseCatalog::initializeDefaultCourses()
     cn.courseType = "Regular";
     cn.eligibleLevels = {"BTECH", "MTECH"};
     cn.syllabus = "TCP/IP Stack, Routing Protocols, Network Security, Wireless Networks, SDN";
-    addCourse(cn);
+    add_course(cn);
 
     // Advanced Courses (All Levels)
     CourseInfo ml;
@@ -355,7 +357,7 @@ void CourseCatalog::initializeDefaultCourses()
     ml.eligibleLevels = {"BTECH", "MTECH", "PHD"};
     ml.prerequisites = {"CSE102"};
     ml.syllabus = "Supervised Learning, Unsupervised Learning, Neural Networks, Deep Learning, Reinforcement Learning";
-    addCourse(ml);
+    add_course(ml);
 
     CourseInfo ai;
     ai.courseCode = "CSE643";
@@ -366,7 +368,7 @@ void CourseCatalog::initializeDefaultCourses()
     ai.courseType = "Regular";
     ai.eligibleLevels = {"BTECH", "MTECH", "PHD"};
     ai.syllabus = "Search Algorithms, Knowledge Representation, Planning, Natural Language Processing, Computer Vision";
-    addCourse(ai);
+    add_course(ai);
 
     // MTech Specialized Courses
     CourseInfo advAlgo;
@@ -378,7 +380,7 @@ void CourseCatalog::initializeDefaultCourses()
     advAlgo.courseType = "Regular";
     advAlgo.eligibleLevels = {"MTECH", "PHD"};
     advAlgo.syllabus = "Advanced Data Structures, Graph Algorithms, Approximation Algorithms, Randomized Algorithms";
-    addCourse(advAlgo);
+    add_course(advAlgo);
 
     CourseInfo distSys;
     distSys.courseCode = "CSE502";
@@ -389,7 +391,7 @@ void CourseCatalog::initializeDefaultCourses()
     distSys.courseType = "Regular";
     distSys.eligibleLevels = {"MTECH", "PHD"};
     distSys.syllabus = "Distributed Computing Models, Consensus, Fault Tolerance, Cloud Computing, Blockchain";
-    addCourse(distSys);
+    add_course(distSys);
 
     CourseInfo infosec;
     infosec.courseCode = "CSE503";
@@ -400,7 +402,7 @@ void CourseCatalog::initializeDefaultCourses()
     infosec.courseType = "Regular";
     infosec.eligibleLevels = {"MTECH", "PHD"};
     infosec.syllabus = "Cryptography, Network Security, Web Security, Malware Analysis, Penetration Testing";
-    addCourse(infosec);
+    add_course(infosec);
 
     // Capstone Projects
     CourseInfo btechCapstone;
@@ -412,7 +414,7 @@ void CourseCatalog::initializeDefaultCourses()
     btechCapstone.courseType = "Capstone";
     btechCapstone.eligibleLevels = {"BTECH"};
     btechCapstone.syllabus = "Independent research project under faculty guidance on topics in CSE";
-    addCourse(btechCapstone);
+    add_course(btechCapstone);
 
     CourseInfo mtechCapstone;
     mtechCapstone.courseCode = "CSE599";
@@ -423,7 +425,7 @@ void CourseCatalog::initializeDefaultCourses()
     mtechCapstone.courseType = "Capstone";
     mtechCapstone.eligibleLevels = {"MTECH"};
     mtechCapstone.syllabus = "Advanced research project with industry relevance or academic contribution";
-    addCourse(mtechCapstone);
+    add_course(mtechCapstone);
 
     // Research/PhD Courses
     CourseInfo research;
@@ -435,7 +437,7 @@ void CourseCatalog::initializeDefaultCourses()
     research.courseType = "Research";
     research.eligibleLevels = {"PHD"};
     research.syllabus = "Original research leading to publication in peer-reviewed conferences/journals";
-    addCourse(research);
+    add_course(research);
 
     CourseInfo phdSeminar;
     phdSeminar.courseCode = "RES002";
@@ -446,11 +448,11 @@ void CourseCatalog::initializeDefaultCourses()
     phdSeminar.courseType = "Research";
     phdSeminar.eligibleLevels = {"PHD"};
     phdSeminar.syllabus = "PhD dissertation work, literature survey, thesis writing, defense preparation";
-    addCourse(phdSeminar);
+    add_course(phdSeminar);
 
     // ====================================================================
     // IIT-Delhi Courses (Integer-based Course Codes)
-    // IIIT-Delhi students can take these courses as per cross-registration
+    // IIIT-Delhi students can take these __courses as per cross-registration
     // ====================================================================
 
     CourseInfo iit101;
@@ -462,7 +464,7 @@ void CourseCatalog::initializeDefaultCourses()
     iit101.courseType = "Regular";
     iit101.eligibleLevels = {"BTECH", "MTECH"};
     iit101.syllabus = "Programming Fundamentals, Data Types, Control Structures, Functions, Arrays";
-    addCourse(iit101);
+    add_course(iit101);
 
     CourseInfo iit201;
     iit201.courseCode = "201";
@@ -474,7 +476,7 @@ void CourseCatalog::initializeDefaultCourses()
     iit201.eligibleLevels = {"BTECH", "MTECH", "PHD"};
     iit201.prerequisites = {"101"};
     iit201.syllabus = "Graph Theory, Dynamic Programming, Greedy Algorithms, NP-Completeness";
-    addCourse(iit201);
+    add_course(iit201);
 
     CourseInfo iit202;
     iit202.courseCode = "202";
@@ -485,7 +487,7 @@ void CourseCatalog::initializeDefaultCourses()
     iit202.courseType = "Regular";
     iit202.eligibleLevels = {"BTECH", "MTECH"};
     iit202.syllabus = "Instruction Set Architecture, Pipelining, Memory Hierarchy, I/O Systems";
-    addCourse(iit202);
+    add_course(iit202);
 
     CourseInfo iit305;
     iit305.courseCode = "305";
@@ -497,7 +499,7 @@ void CourseCatalog::initializeDefaultCourses()
     iit305.eligibleLevels = {"BTECH", "MTECH", "PHD"};
     iit305.prerequisites = {"101"};
     iit305.syllabus = "Relational Model, SQL, Query Optimization, Transaction Management, Distributed Databases";
-    addCourse(iit305);
+    add_course(iit305);
 
     CourseInfo iit401;
     iit401.courseCode = "401";
@@ -509,7 +511,7 @@ void CourseCatalog::initializeDefaultCourses()
     iit401.eligibleLevels = {"BTECH", "MTECH", "PHD"};
     iit401.prerequisites = {"201"};
     iit401.syllabus = "Search, Knowledge Representation, Machine Learning, Neural Networks, Deep Learning";
-    addCourse(iit401);
+    add_course(iit401);
 
     CourseInfo iit501;
     iit501.courseCode = "501";
@@ -520,7 +522,7 @@ void CourseCatalog::initializeDefaultCourses()
     iit501.courseType = "Regular";
     iit501.eligibleLevels = {"MTECH", "PHD"};
     iit501.syllabus = "Network Protocols, Routing Algorithms, QoS, Network Security, Software Defined Networking";
-    addCourse(iit501);
+    add_course(iit501);
 
     CourseInfo iit502;
     iit502.courseCode = "502";
@@ -531,7 +533,7 @@ void CourseCatalog::initializeDefaultCourses()
     iit502.courseType = "Regular";
     iit502.eligibleLevels = {"MTECH", "PHD"};
     iit502.syllabus = "Parallel Architectures, MPI, OpenMP, Distributed Algorithms, MapReduce, Spark";
-    addCourse(iit502);
+    add_course(iit502);
 
     CourseInfo iit601;
     iit601.courseCode = "601";
@@ -543,51 +545,63 @@ void CourseCatalog::initializeDefaultCourses()
     iit601.eligibleLevels = {"MTECH", "PHD"};
     iit601.prerequisites = {"401"};
     iit601.syllabus = "Image Processing, Object Detection, Semantic Segmentation, 3D Vision, GANs";
-    addCourse(iit601);
+    add_course(iit601);
 
-    std::cout << "Initialized course catalog with " << courses.size() << " courses.\n";
-    std::cout << "  - IIIT-Delhi courses: " << (courses.size() - 8) << "\n";
-    std::cout << "  - IIT-Delhi courses: 8 (cross-registration available)\n";
+    std::cout << "Initialized course catalog with " << __courses.size() << " __courses.\n";
+    std::cout << "  - IIIT-Delhi __courses: " << (__courses.size() - 8) << "\n";
+    std::cout << "  - IIT-Delhi __courses: 8 (cross-registration available)\n";
 }
 
 void CourseCatalog::displayCourse(const std::string &courseCode) const
 {
-    auto it = courses.find(courseCode);
-    if (it == courses.end())
+    auto it = __courses.find(courseCode);
+    if (it == __courses.end())
     {
-        std::cout << "Course not found.\n";
+        std::cout << Colors::RED << "\n[X] Course not found." << Colors::RESET << "\n";
         return;
     }
 
     const CourseInfo &course = it->second;
 
-    std::cout << "\n"
-              << std::string(60, '=') << "\n";
-    std::cout << "Course Code: " << course.courseCode << "\n";
-    std::cout << "Course Name: " << course.courseName << "\n";
-    std::cout << "Credits: " << course.credits << "\n";
-    std::cout << "Instructor: " << course.instructor << "\n";
-    std::cout << "Duration: " << course.duration << " semester(s)\n";
-    std::cout << "Type: " << course.courseType << "\n";
+    std::cout << "\n";
+    OutputFormatter::print_line(70);
+    std::cout << Colors::BOLD << "  " << course.courseCode << " - " << course.courseName << Colors::RESET << "\n";
+    OutputFormatter::print_line(70);
 
-    std::cout << "Eligible Levels: ";
+    std::cout << "\n";
+    std::cout << Colors::DIM << "  Credits:        " << Colors::RESET << Colors::BOLD << course.credits << Colors::RESET << "\n";
+    std::cout << Colors::DIM << "  Instructor:     " << Colors::RESET << course.instructor << "\n";
+    std::cout << Colors::DIM << "  Duration:       " << Colors::RESET << course.duration << " semester(s)\n";
+    std::cout << Colors::DIM << "  Type:           " << Colors::RESET << course.courseType << "\n";
+
+    std::cout << Colors::DIM << "  Eligible For:   " << Colors::RESET;
+    bool first = true;
     for (const auto &level : course.eligibleLevels)
     {
-        std::cout << level << " ";
+        if (!first)
+            std::cout << ", ";
+        std::cout << level;
+        first = false;
     }
     std::cout << "\n";
 
     if (!course.prerequisites.empty())
     {
-        std::cout << "Prerequisites: ";
+        std::cout << Colors::DIM << "  Prerequisites:  " << Colors::RESET;
+        first = true;
         for (const auto &prereq : course.prerequisites)
         {
-            std::cout << prereq << " ";
+            if (!first)
+                std::cout << ", ";
+            std::cout << Colors::CYAN << prereq << Colors::RESET;
+            first = false;
         }
         std::cout << "\n";
     }
 
-    std::cout << "\nSyllabus:\n"
-              << getSyllabus(courseCode) << "\n";
-    std::cout << std::string(60, '=') << "\n";
+    std::cout << "\n"
+              << Colors::DIM << "  Syllabus:" << Colors::RESET << "\n";
+    std::cout << "  " << getSyllabus(courseCode) << "\n";
+    std::cout << "\n";
+    OutputFormatter::print_line(70);
 }

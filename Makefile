@@ -27,7 +27,9 @@ SOURCES = $(SRC_DIR)/main.cpp \
           $(SRC_DIR)/CourseCatalog.cpp \
           $(SRC_DIR)/SemesterManager.cpp \
           $(SRC_DIR)/AdminPortal.cpp \
-          $(SRC_DIR)/StudentPortal.cpp
+          $(SRC_DIR)/StudentPortal.cpp \
+          $(SRC_DIR)/Colors.cpp \
+          $(SRC_DIR)/OutputFormatter.cpp
 
 # Generator utility (creates demo_students.csv with specified number of records)
 GENERATOR_SRC = $(SRC_DIR)/generate_demo.cpp
@@ -54,14 +56,14 @@ $(DATA_DIR):
 
 # Compile source files to object files
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp $(HEADERS) | $(BUILD_DIR)
-	@echo "Compiling $<..."
+	@echo "\033[36m[*] Compiling\033[0m $<..."
 	@$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # Link executable
 $(TARGET): $(OBJECTS) | $(DATA_DIR)
-	@echo "Linking IIIT-Delhi ERP system..."
+	@echo "\033[35m[LINK] Linking IIIT-Delhi ERP system...\033[0m"
 	@$(CXX) $(CXXFLAGS) $(OBJECTS) -o $@
-	@echo "=> IIIT-Delhi ERP system built successfully: $(TARGET)"
+	@echo "\033[1;32m[OK] IIIT-Delhi ERP system built successfully:\033[0m $(TARGET)"
 
 # Debug build
 debug: CXXFLAGS += $(DEBUGFLAGS)
@@ -69,29 +71,29 @@ debug: clean all
 
 # Run the system
 run: $(TARGET)
-	@echo "Running IIIT-Delhi ERP system..."
+	@echo "\033[1;36m▶ Running IIIT-Delhi ERP system...\033[0m"
 	@./$(TARGET)
 
 # Build and run the demo CSV generator
 .PHONY: generate-demo
 generate-demo:
-	@echo "Generating demo_students.csv with 3000 records using Python script..."
+	@echo "\033[33m[*] Generating demo_students.csv with 3000 records using Python script...\033[0m"
 	@python3 scripts/generate_demo.py
-	@echo "Generator finished. demo_students.csv updated."
+	@echo "\033[32m[OK] Generator finished. demo_students.csv updated.\033[0m"
 
 # Clean build artifacts
 clean:
-	@echo "Cleaning build artifacts..."
+	@echo "\033[33m[CLEAN] Cleaning build artifacts...\033[0m"
 	@rm -rf $(BUILD_DIR)
 	@rm -f $(TARGET)
-	@echo "=> Clean complete"
+	@echo "\033[32m[OK] Clean complete\033[0m"
 
 # Clean everything including data
 clean-all: clean
-	@echo "Cleaning data files..."
+	@echo "\033[31m🗑️  Cleaning data files...\033[0m"
 	@rm -rf $(DATA_DIR)
 # 	@rm -f *.csv *.txt *.db transcript_*.txt
-	@echo "=> Complete clean done"
+	@echo "\033[32m[OK] Complete clean done\033[0m"
 
 # Help target
 help:

@@ -8,186 +8,186 @@ const std::string Auth::ADMIN_CREDENTIALS_FILE = "data/admin_credentials.dat";
 const std::string Auth::STUDENT_CREDENTIALS_FILE = "data/student_credentials.dat";
 const std::string Auth::SALT = "IIITD_ERP_2025_SECURE";
 
-std::string Auth::hashPassword(const std::string &password)
+std::string Auth::hashPassword(const std::string &_password)
 {
     // Simple hash function (in production, use proper cryptographic hashing)
     std::hash<std::string> hasher;
-    std::string saltedPassword = password + SALT;
-    size_t hash = hasher(saltedPassword);
+    std::string _salted_password = _password + SALT;
+    size_t _hash = hasher(_salted_password);
 
-    std::stringstream ss;
-    ss << std::hex << std::setfill('0') << std::setw(16) << hash;
-    return ss.str();
+    std::stringstream _ss;
+    _ss << std::hex << std::setfill('0') << std::setw(16) << _hash;
+    return _ss.str();
 }
 
-std::map<std::string, std::string> Auth::loadCredentials(const std::string &filename)
+std::map<std::string, std::string> Auth::loadCredentials(const std::string &_filename)
 {
-    std::map<std::string, std::string> credentials;
-    std::ifstream file(filename);
+    std::map<std::string, std::string> _credentials;
+    std::ifstream _file(_filename);
 
-    if (!file.is_open())
+    if (!_file.is_open())
     {
-        return credentials;
+        return _credentials;
     }
 
-    std::string line;
-    while (std::getline(file, line))
+    std::string _line;
+    while (std::getline(_file, _line))
     {
-        if (line.empty() || line[0] == '#')
+        if (_line.empty() || _line[0] == '#')
             continue;
 
-        size_t pos = line.find(':');
-        if (pos != std::string::npos)
+        size_t _pos = _line.find(':');
+        if (_pos != std::string::npos)
         {
-            std::string username = line.substr(0, pos);
-            std::string hashedPassword = line.substr(pos + 1);
-            credentials[username] = hashedPassword;
+            std::string _username = _line.substr(0, _pos);
+            std::string _hashed_password = _line.substr(_pos + 1);
+            _credentials[_username] = _hashed_password;
         }
     }
 
-    file.close();
-    return credentials;
+    _file.close();
+    return _credentials;
 }
 
-void Auth::saveCredentials(const std::string &filename,
-                           const std::map<std::string, std::string> &credentials)
+void Auth::saveCredentials(const std::string &_filename,
+                           const std::map<std::string, std::string> &_credentials)
 {
-    std::ofstream file(filename);
+    std::ofstream _file(_filename);
 
-    if (!file.is_open())
+    if (!_file.is_open())
     {
-        throw std::runtime_error("Unable to open credentials file for writing: " + filename);
+        throw std::runtime_error("Unable to open credentials file for writing: " + _filename);
     }
 
-    file << "# Credentials File - DO NOT EDIT MANUALLY\n";
-    file << "# Format: username:hashed_password\n";
+    _file << "# Credentials File - DO NOT EDIT MANUALLY\n";
+    _file << "# Format: username:hashed_password\n";
 
-    for (const auto &pair : credentials)
+    for (const auto &_pair : _credentials)
     {
-        file << pair.first << ":" << pair.second << "\n";
+        _file << _pair.first << ":" << _pair.second << "\n";
     }
 
-    file.close();
+    _file.close();
 }
 
-bool Auth::authenticate(const std::string &username,
-                        const std::string &password,
-                        UserType userType)
+bool Auth::authenticate(const std::string &_username,
+                        const std::string &_password,
+                        UserType _user_type)
 {
-    std::string filename = (userType == UserType::ADMIN) ? ADMIN_CREDENTIALS_FILE : STUDENT_CREDENTIALS_FILE;
+    std::string _filename = (_user_type == UserType::ADMIN) ? ADMIN_CREDENTIALS_FILE : STUDENT_CREDENTIALS_FILE;
 
-    auto credentials = loadCredentials(filename);
+    auto _credentials = loadCredentials(_filename);
 
-    if (credentials.find(username) == credentials.end())
+    if (_credentials.find(_username) == _credentials.end())
     {
         return false;
     }
 
-    std::string hashedPassword = hashPassword(password);
-    return credentials[username] == hashedPassword;
+    std::string _hashed_password = hashPassword(_password);
+    return _credentials[_username] == _hashed_password;
 }
 
-std::string Auth::createStudentAccount(const std::string &rollNumber)
+std::string Auth::create_student_account(const std::string &_roll_number)
 {
-    auto credentials = loadCredentials(STUDENT_CREDENTIALS_FILE);
+    auto _credentials = loadCredentials(STUDENT_CREDENTIALS_FILE);
 
-    if (credentials.find(rollNumber) != credentials.end())
+    if (_credentials.find(_roll_number) != _credentials.end())
     {
-        throw std::runtime_error("Student account already exists: " + rollNumber);
+        throw std::runtime_error("Student account already exists: " + _roll_number);
     }
 
-    std::string password = generateRandomPassword();
-    credentials[rollNumber] = hashPassword(password);
+    std::string _password = generate_random_password();
+    _credentials[_roll_number] = hashPassword(_password);
 
-    saveCredentials(STUDENT_CREDENTIALS_FILE, credentials);
+    saveCredentials(STUDENT_CREDENTIALS_FILE, _credentials);
 
-    return password;
+    return _password;
 }
 
-bool Auth::createStudentAccountWithPassword(const std::string &rollNumber,
-                                            const std::string &password)
+bool Auth::create_student_account_with_password(const std::string &_roll_number,
+                                                const std::string &_password)
 {
-    auto credentials = loadCredentials(STUDENT_CREDENTIALS_FILE);
+    auto _credentials = loadCredentials(STUDENT_CREDENTIALS_FILE);
 
-    if (credentials.find(rollNumber) != credentials.end())
+    if (_credentials.find(_roll_number) != _credentials.end())
     {
         return false; // Account already exists
     }
 
-    credentials[rollNumber] = hashPassword(password);
-    saveCredentials(STUDENT_CREDENTIALS_FILE, credentials);
+    _credentials[_roll_number] = hashPassword(_password);
+    saveCredentials(STUDENT_CREDENTIALS_FILE, _credentials);
 
     return true;
 }
 
-bool Auth::createAdminAccount(const std::string &username,
-                              const std::string &password)
+bool Auth::create_admin_account(const std::string &_username,
+                                const std::string &_password)
 {
-    auto credentials = loadCredentials(ADMIN_CREDENTIALS_FILE);
+    auto _credentials = loadCredentials(ADMIN_CREDENTIALS_FILE);
 
-    if (credentials.find(username) != credentials.end())
+    if (_credentials.find(_username) != _credentials.end())
     {
         return false;
     }
 
-    credentials[username] = hashPassword(password);
-    saveCredentials(ADMIN_CREDENTIALS_FILE, credentials);
+    _credentials[_username] = hashPassword(_password);
+    saveCredentials(ADMIN_CREDENTIALS_FILE, _credentials);
 
     return true;
 }
 
-bool Auth::changePassword(const std::string &username,
-                          const std::string &oldPassword,
-                          const std::string &newPassword,
-                          UserType userType)
+bool Auth::change_password(const std::string &_username,
+                           const std::string &_old_password,
+                           const std::string &_new_password,
+                           UserType _user_type)
 {
-    std::string filename = (userType == UserType::ADMIN) ? ADMIN_CREDENTIALS_FILE : STUDENT_CREDENTIALS_FILE;
+    std::string _filename = (_user_type == UserType::ADMIN) ? ADMIN_CREDENTIALS_FILE : STUDENT_CREDENTIALS_FILE;
 
-    auto credentials = loadCredentials(filename);
+    auto _credentials = loadCredentials(_filename);
 
-    if (credentials.find(username) == credentials.end())
+    if (_credentials.find(_username) == _credentials.end())
     {
         return false;
     }
 
-    if (credentials[username] != hashPassword(oldPassword))
+    if (_credentials[_username] != hashPassword(_old_password))
     {
         return false;
     }
 
-    credentials[username] = hashPassword(newPassword);
-    saveCredentials(filename, credentials);
+    _credentials[_username] = hashPassword(_new_password);
+    saveCredentials(_filename, _credentials);
 
     return true;
 }
 
-std::string Auth::generateRandomPassword(int length)
+std::string Auth::generate_random_password(int _length)
 {
-    const std::string chars =
+    const std::string _chars =
         "abcdefghijklmnopqrstuvwxyz"
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         "0123456789"
         "!@#$%";
 
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dis(0, chars.length() - 1);
+    std::random_device _rd;
+    std::mt19937 _gen(_rd());
+    std::uniform_int_distribution<> _dis(0, _chars.length() - 1);
 
-    std::string password;
-    for (int i = 0; i < length; ++i)
+    std::string _password;
+    for (int _i = 0; _i < _length; ++_i)
     {
-        password += chars[dis(gen)];
+        _password += _chars[_dis(_gen)];
     }
 
-    return password;
+    return _password;
 }
 
-bool Auth::usernameExists(const std::string &username, UserType userType)
+bool Auth::username_exists(const std::string &_username, UserType _user_type)
 {
-    std::string filename = (userType == UserType::ADMIN) ? ADMIN_CREDENTIALS_FILE : STUDENT_CREDENTIALS_FILE;
+    std::string _filename = (_user_type == UserType::ADMIN) ? ADMIN_CREDENTIALS_FILE : STUDENT_CREDENTIALS_FILE;
 
-    auto credentials = loadCredentials(filename);
-    return credentials.find(username) != credentials.end();
+    auto _credentials = loadCredentials(_filename);
+    return _credentials.find(_username) != _credentials.end();
 }
 
 void Auth::initializeCredentialFiles()
@@ -196,27 +196,27 @@ void Auth::initializeCredentialFiles()
     system("mkdir -p data");
 
     // Initialize admin credentials with default admin account
-    std::ifstream adminFile(ADMIN_CREDENTIALS_FILE);
-    if (!adminFile.good())
+    std::ifstream _admin_file(ADMIN_CREDENTIALS_FILE);
+    if (!_admin_file.good())
     {
-        std::map<std::string, std::string> adminCreds;
-        adminCreds["admin"] = hashPassword("admin123");
-        adminCreds["super"] = hashPassword("super123");
-        adminCreds["sayan"] = hashPassword("sayan123"); // Creator/Super user account
-        saveCredentials(ADMIN_CREDENTIALS_FILE, adminCreds);
+        std::map<std::string, std::string> _admin_creds;
+        _admin_creds["admin"] = hashPassword("admin123");
+        _admin_creds["super"] = hashPassword("super123");
+        _admin_creds["sayan"] = hashPassword("sayan123"); // Creator/Super user account
+        saveCredentials(ADMIN_CREDENTIALS_FILE, _admin_creds);
         std::cout << "Default admin accounts created:\n";
         std::cout << "  Username: admin, Password: admin123\n";
         std::cout << "  Username: super, Password: super123\n";
         std::cout << "  Username: sayan, Password: sayan123 (Creator)\n";
     }
-    adminFile.close();
+    _admin_file.close();
 
     // Initialize student credentials file
-    std::ifstream studentFile(STUDENT_CREDENTIALS_FILE);
-    if (!studentFile.good())
+    std::ifstream _student_file(STUDENT_CREDENTIALS_FILE);
+    if (!_student_file.good())
     {
-        std::map<std::string, std::string> studentCreds;
-        saveCredentials(STUDENT_CREDENTIALS_FILE, studentCreds);
+        std::map<std::string, std::string> _student_creds;
+        saveCredentials(STUDENT_CREDENTIALS_FILE, _student_creds);
     }
-    studentFile.close();
+    _student_file.close();
 }

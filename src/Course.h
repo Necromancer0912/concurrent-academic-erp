@@ -10,11 +10,11 @@ template <typename CourseCodeType>
 class Course
 {
 private:
-    CourseCodeType courseCode;
-    std::string courseName;
-    std::string instructor;
-    int credits;
-    std::string semester; // e.g., "Monsoon 2025", "Winter 2025"
+    CourseCodeType __course_code;
+    std::string __course_name;
+    std::string __instructor;
+    int __credits;
+    std::string __semester; // e.g., "Monsoon 2025", "Winter 2025"
 
 public:
     // Constructor
@@ -31,25 +31,25 @@ public:
     Course &operator=(const Course &other);
 
     // Getters
-    CourseCodeType getCourseCode() const;
-    std::string getCourseName() const;
-    std::string getInstructor() const;
-    int getCredits() const;
-    std::string getSemester() const;
+    CourseCodeType get_course_code() const;
+    std::string get_course_name() const;
+    std::string get_instructor() const;
+    int get_credits() const;
+    std::string get_semester() const;
 
     // Setters
-    void setInstructor(const std::string &instructor);
-    void setSemester(const std::string &semester);
+    void set_instructor(const std::string &instructor);
+    void set_semester(const std::string &semester);
 
     // Display
-    void displayInfo() const;
+    void display_info() const;
 
     // Comparison operators
     bool operator==(const Course &other) const;
     bool operator!=(const Course &other) const;
 
     // Convert course code to string for display
-    std::string courseCodeToString() const;
+    std::string course_code_to_string() const;
 };
 
 #endif // COURSE_H

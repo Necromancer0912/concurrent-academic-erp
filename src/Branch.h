@@ -8,9 +8,9 @@
 class Branch
 {
 private:
-    std::string branchCode;
-    std::string branchName;
-    std::string department;
+    std::string __branch_code;
+    std::string __branch_name;
+    std::string __department;
 
 public:
     // Constructor
@@ -26,12 +26,12 @@ public:
     Branch &operator=(const Branch &other);
 
     // Getters
-    std::string getBranchCode() const;
-    std::string getBranchName() const;
-    std::string getDepartment() const;
+    std::string get_branch_code() const;
+    std::string get_branch_name() const;
+    std::string get_department() const;
 
     // Display
-    void displayInfo() const;
+    void display_info() const;
 
     // Comparison operators
     bool operator==(const Branch &other) const;

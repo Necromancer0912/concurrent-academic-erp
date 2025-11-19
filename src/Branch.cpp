@@ -1,49 +1,49 @@
 #include "Branch.h"
 
 // Constructor
-Branch::Branch(const std::string &code, const std::string &name, const std::string &dept)
-    : branchCode(code), branchName(name), department(dept) {}
+Branch::Branch(const std::string &_code, const std::string &_name, const std::string &_dept)
+    : __branch_code(_code), __branch_name(_name), __department(_dept) {}
 
 // Default constructor
-Branch::Branch() : branchCode(""), branchName(""), department("") {}
+Branch::Branch() : __branch_code(""), __branch_name(""), __department("") {}
 
 // Copy constructor
-Branch::Branch(const Branch &other)
-    : branchCode(other.branchCode), branchName(other.branchName), department(other.department) {}
+Branch::Branch(const Branch &_other)
+    : __branch_code(_other.__branch_code), __branch_name(_other.__branch_name), __department(_other.__department) {}
 
 // Assignment operator
-Branch &Branch::operator=(const Branch &other)
+Branch &Branch::operator=(const Branch &_other)
 {
-    if (this != &other)
+    if (this != &_other)
     {
-        branchCode = other.branchCode;
-        branchName = other.branchName;
-        department = other.department;
+        __branch_code = _other.__branch_code;
+        __branch_name = _other.__branch_name;
+        __department = _other.__department;
     }
     return *this;
 }
 
 // Getters
-std::string Branch::getBranchCode() const { return branchCode; }
-std::string Branch::getBranchName() const { return branchName; }
-std::string Branch::getDepartment() const { return department; }
+std::string Branch::get_branch_code() const { return __branch_code; }
+std::string Branch::get_branch_name() const { return __branch_name; }
+std::string Branch::get_department() const { return __department; }
 
 // Display
-void Branch::displayInfo() const
+void Branch::display_info() const
 {
-    std::cout << "Branch: " << branchName << " (" << branchCode << ")"
-              << " | Department: " << department << std::endl;
+    std::cout << "Branch: " << __branch_name << " (" << __branch_code << ")"
+              << " | Department: " << __department << std::endl;
 }
 
 // Comparison operators
-bool Branch::operator==(const Branch &other) const
+bool Branch::operator==(const Branch &_other) const
 {
-    return branchCode == other.branchCode;
+    return __branch_code == _other.__branch_code;
 }
 
-bool Branch::operator!=(const Branch &other) const
+bool Branch::operator!=(const Branch &_other) const
 {
-    return !(*this == other);
+    return !(*this == _other);
 }
 
 // Static factory methods for common IIIT-D branches

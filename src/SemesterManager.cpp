@@ -1,17 +1,18 @@
 #include "SemesterManager.h"
+#include "Colors.h"
 #include <iostream>
 
-SemesterManager::SemesterManager(CourseCatalog *cat)
-    : courseAddEnabled(false), courseDropEnabled(false)
+SemesterManager::SemesterManager(CourseCatalog *_cat)
+    : __course_add_enabled(false), __course_drop_enabled(false)
 {
     // Catalog parameter kept for future use
-    (void)cat; // Suppress unused parameter warning
+    (void)_cat; // Suppress unused parameter warning
 }
 
-void SemesterManager::setCourseAddEnabled(bool enabled)
+void SemesterManager::set_course_add_enabled(bool _enabled)
 {
-    courseAddEnabled = enabled;
-    if (enabled)
+    __course_add_enabled = _enabled;
+    if (_enabled)
     {
         std::cout << "Course registration is now OPEN.\n";
     }
@@ -21,10 +22,10 @@ void SemesterManager::setCourseAddEnabled(bool enabled)
     }
 }
 
-void SemesterManager::setCourseDropEnabled(bool enabled)
+void SemesterManager::set_course_drop_enabled(bool _enabled)
 {
-    courseDropEnabled = enabled;
-    if (enabled)
+    __course_drop_enabled = _enabled;
+    if (_enabled)
     {
         std::cout << "Course drop is now ENABLED.\n";
     }
@@ -34,27 +35,28 @@ void SemesterManager::setCourseDropEnabled(bool enabled)
     }
 }
 
-bool SemesterManager::isCourseAddEnabled() const
+bool SemesterManager::is_course_add_enabled() const
 {
-    return courseAddEnabled;
+    return __course_add_enabled;
 }
 
-bool SemesterManager::isCourseDropEnabled() const
+bool SemesterManager::is_course_drop_enabled() const
 {
-    return courseDropEnabled;
+    return __course_drop_enabled;
 }
 
-std::string SemesterManager::getStatus() const
+std::string SemesterManager::get_status() const
 {
-    std::ostringstream oss;
-    oss << "\n┌─ Semester Manager Status ────────────────┐\n";
-    oss << "│ Course Registration: "
-        << (courseAddEnabled ? "OPEN   =>" : "CLOSED X") << std::string(17, ' ') << "│\n";
-    oss << "│ Course Drop:         "
-        << (courseDropEnabled ? "ENABLED =>" : "DISABLED X") << std::string(15, ' ') << "│\n";
-    oss << "│ Max Credits/Sem:     16" << std::string(19, ' ') << "│\n";
-    oss << "│ Capstone Credits:    8" << std::string(20, ' ') << "│\n";
-    oss << "│ Research Credits:    16" << std::string(19, ' ') << "│\n";
-    oss << "└───────────────────────────────────────────┘\n";
-    return oss.str();
+    std::ostringstream _oss;
+    _oss << "\n"
+         << Colors::BOLD << Colors::YELLOW << " SEMESTER SETTINGS" << Colors::RESET << "\n";
+    _oss << std::string(80, '-') << "\n";
+    _oss << Colors::CYAN << "  Course Registration: " << Colors::RESET
+         << (__course_add_enabled ? Colors::GREEN + "[OK] OPEN" : Colors::RED + "[X] CLOSED") << Colors::RESET << "\n";
+    _oss << Colors::CYAN << "  Course Drop:         " << Colors::RESET
+         << (__course_drop_enabled ? Colors::GREEN + "[OK] ENABLED" : Colors::RED + "[X] DISABLED") << Colors::RESET << "\n";
+    _oss << Colors::CYAN << "  Max Credits/Sem:     " << Colors::RESET << Colors::BOLD << "16" << Colors::RESET << " credits\n";
+    _oss << Colors::CYAN << "  Capstone Credits:    " << Colors::RESET << Colors::BOLD << "8" << Colors::RESET << " credits\n";
+    _oss << Colors::CYAN << "  Research Credits:    " << Colors::RESET << Colors::BOLD << "16" << Colors::RESET << " credits\n";
+    return _oss.str();
 }

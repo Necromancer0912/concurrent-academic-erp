@@ -3,20 +3,20 @@
 #include <iomanip>
 #include <regex>
 
-// Validate name format - must be "firstName secondName"
+// Validate __name format - must be "firstName secondName"
 template <typename RollType, typename CourseCodeType>
-void Student<RollType, CourseCodeType>::validateName(const std::string &n)
+void Student<RollType, CourseCodeType>::__validate_name(const std::string &n)
 {
     std::regex namePattern("^[A-Za-z]+\\s[A-Za-z]+(\\s[A-Za-z]+)*$");
     if (!std::regex_match(n, namePattern))
     {
-        throw InvalidNameException("Invalid name format. Must be in 'FirstName SecondName' format with only alphabetic characters.");
+        throw InvalidNameException("Invalid __name format. Must be in 'FirstName SecondName' format with only alphabetic characters.");
     }
 }
 
 // Validate roll number format - no spaces, max 15 characters
 template <typename RollType, typename CourseCodeType>
-void Student<RollType, CourseCodeType>::validateRollNumber(const RollType &roll)
+void Student<RollType, CourseCodeType>::__validate_roll_number(const RollType &roll)
 {
     std::string rollStr;
     if constexpr (std::is_same<RollType, std::string>::value)
@@ -48,36 +48,36 @@ void Student<RollType, CourseCodeType>::validateRollNumber(const RollType &roll)
 template <typename RollType, typename CourseCodeType>
 Student<RollType, CourseCodeType>::Student(const std::string &n, const RollType &roll,
                                            const Branch &br, StudentLevel lvl, int year)
-    : branch(br), level(lvl), startingYear(year)
+    : __branch(br), __level(lvl), __starting_year(year)
 {
-    validateName(n);
-    validateRollNumber(roll);
-    name = n;
-    rollNumber = roll;
-    loadedCGPA = 0.0;
+    __validate_name(n);
+    __validate_roll_number(roll);
+    __name = n;
+    __roll_number = roll;
+    __loaded_cgpa = 0.0;
 }
 
 // Loaded CGPA accessors
 template <typename RollType, typename CourseCodeType>
-double Student<RollType, CourseCodeType>::getLoadedCGPA() const
+double Student<RollType, CourseCodeType>::get_loaded_cgpa() const
 {
-    return loadedCGPA;
+    return __loaded_cgpa;
 }
 
 template <typename RollType, typename CourseCodeType>
-void Student<RollType, CourseCodeType>::setLoadedCGPA(double cgpa)
+void Student<RollType, CourseCodeType>::set_loaded_cgpa(double cgpa)
 {
-    loadedCGPA = cgpa;
+    __loaded_cgpa = cgpa;
 }
 
 // Copy constructor
 template <typename RollType, typename CourseCodeType>
 Student<RollType, CourseCodeType>::Student(const Student &other)
-    : name(other.name), rollNumber(other.rollNumber), branch(other.branch),
-      level(other.level), startingYear(other.startingYear),
-      currentCourses(other.currentCourses), currentGrades(other.currentGrades),
-      previousCourses(other.previousCourses), previousGrades(other.previousGrades),
-      loadedCGPA(other.loadedCGPA) {}
+    : __name(other.__name), __roll_number(other.__roll_number), __branch(other.__branch),
+      __level(other.__level), __starting_year(other.__starting_year),
+      __current_courses(other.__current_courses), __current_grades(other.__current_grades),
+      __previous_courses(other.__previous_courses), __previous_grades(other.__previous_grades),
+      __loaded_cgpa(other.__loaded_cgpa) {}
 
 // Assignment operator
 template <typename RollType, typename CourseCodeType>
@@ -85,98 +85,98 @@ Student<RollType, CourseCodeType> &Student<RollType, CourseCodeType>::operator=(
 {
     if (this != &other)
     {
-        name = other.name;
-        rollNumber = other.rollNumber;
-        branch = other.branch;
-        level = other.level;
-        startingYear = other.startingYear;
-        currentCourses = other.currentCourses;
-        currentGrades = other.currentGrades;
-        previousCourses = other.previousCourses;
-        previousGrades = other.previousGrades;
-        loadedCGPA = other.loadedCGPA;
+        __name = other.__name;
+        __roll_number = other.__roll_number;
+        __branch = other.__branch;
+        __level = other.__level;
+        __starting_year = other.__starting_year;
+        __current_courses = other.__current_courses;
+        __current_grades = other.__current_grades;
+        __previous_courses = other.__previous_courses;
+        __previous_grades = other.__previous_grades;
+        __loaded_cgpa = other.__loaded_cgpa;
     }
     return *this;
 }
 
 // Getters
 template <typename RollType, typename CourseCodeType>
-std::string Student<RollType, CourseCodeType>::getName() const { return name; }
+std::string Student<RollType, CourseCodeType>::get_name() const { return __name; }
 
 template <typename RollType, typename CourseCodeType>
-RollType Student<RollType, CourseCodeType>::getRollNumber() const { return rollNumber; }
+RollType Student<RollType, CourseCodeType>::get_roll_number() const { return __roll_number; }
 
 template <typename RollType, typename CourseCodeType>
-Branch Student<RollType, CourseCodeType>::getBranch() const { return branch; }
+Branch Student<RollType, CourseCodeType>::get_branch() const { return __branch; }
 
 template <typename RollType, typename CourseCodeType>
-StudentLevel Student<RollType, CourseCodeType>::getLevel() const { return level; }
+StudentLevel Student<RollType, CourseCodeType>::get_level() const { return __level; }
 
 template <typename RollType, typename CourseCodeType>
-int Student<RollType, CourseCodeType>::getStartingYear() const { return startingYear; }
+int Student<RollType, CourseCodeType>::get_starting_year() const { return __starting_year; }
 
 template <typename RollType, typename CourseCodeType>
-std::vector<Course<CourseCodeType>> Student<RollType, CourseCodeType>::getCurrentCourses() const
+std::vector<Course<CourseCodeType>> Student<RollType, CourseCodeType>::get_current_courses() const
 {
-    return currentCourses;
+    return __current_courses;
 }
 
 template <typename RollType, typename CourseCodeType>
-std::vector<Grade> Student<RollType, CourseCodeType>::getCurrentGrades() const
+std::vector<Grade> Student<RollType, CourseCodeType>::get_current_grades() const
 {
-    return currentGrades;
+    return __current_grades;
 }
 
 template <typename RollType, typename CourseCodeType>
-std::vector<Course<CourseCodeType>> Student<RollType, CourseCodeType>::getPreviousCourses() const
+std::vector<Course<CourseCodeType>> Student<RollType, CourseCodeType>::get_previous_courses() const
 {
-    return previousCourses;
+    return __previous_courses;
 }
 
 template <typename RollType, typename CourseCodeType>
-std::vector<Grade> Student<RollType, CourseCodeType>::getPreviousGrades() const
+std::vector<Grade> Student<RollType, CourseCodeType>::get_previous_grades() const
 {
-    return previousGrades;
+    return __previous_grades;
 }
 
 // Setters
 template <typename RollType, typename CourseCodeType>
-void Student<RollType, CourseCodeType>::setName(const std::string &n)
+void Student<RollType, CourseCodeType>::set_name(const std::string &n)
 {
-    validateName(n);
-    name = n;
+    __validate_name(n);
+    __name = n;
 }
 
 template <typename RollType, typename CourseCodeType>
-void Student<RollType, CourseCodeType>::setBranch(const Branch &br)
+void Student<RollType, CourseCodeType>::set_branch(const Branch &br)
 {
-    branch = br;
+    __branch = br;
 }
 
 // Course management
 template <typename RollType, typename CourseCodeType>
-void Student<RollType, CourseCodeType>::addCurrentCourse(const Course<CourseCodeType> &course)
+void Student<RollType, CourseCodeType>::add_current_course(const Course<CourseCodeType> &course)
 {
-    currentCourses.push_back(course);
-    currentGrades.push_back(Grade()); // Add empty grade
+    __current_courses.push_back(course);
+    __current_grades.push_back(Grade()); // Add empty grade
 }
 
 template <typename RollType, typename CourseCodeType>
-void Student<RollType, CourseCodeType>::addCurrentCourse(const Course<CourseCodeType> &course, const Grade &grade)
+void Student<RollType, CourseCodeType>::add_current_course(const Course<CourseCodeType> &course, const Grade &grade)
 {
-    currentCourses.push_back(course);
-    currentGrades.push_back(grade);
+    __current_courses.push_back(course);
+    __current_grades.push_back(grade);
 }
 
 template <typename RollType, typename CourseCodeType>
-void Student<RollType, CourseCodeType>::removeCurrentCourse(const CourseCodeType &courseCode)
+void Student<RollType, CourseCodeType>::remove_current_course(const CourseCodeType &courseCode)
 {
-    for (size_t i = 0; i < currentCourses.size(); ++i)
+    for (size_t i = 0; i < __current_courses.size(); ++i)
     {
-        if (currentCourses[i].getCourseCode() == courseCode)
+        if (__current_courses[i].get_course_code() == courseCode)
         {
-            currentCourses.erase(currentCourses.begin() + i);
-            currentGrades.erase(currentGrades.begin() + i);
+            __current_courses.erase(__current_courses.begin() + i);
+            __current_grades.erase(__current_grades.begin() + i);
             break;
         }
     }
@@ -184,47 +184,47 @@ void Student<RollType, CourseCodeType>::removeCurrentCourse(const CourseCodeType
 
 // Grade management
 template <typename RollType, typename CourseCodeType>
-void Student<RollType, CourseCodeType>::updateGrade(const CourseCodeType &courseCode, const Grade &grade)
+void Student<RollType, CourseCodeType>::update_grade(const CourseCodeType &courseCode, const Grade &grade)
 {
-    for (size_t i = 0; i < currentCourses.size(); ++i)
+    for (size_t i = 0; i < __current_courses.size(); ++i)
     {
-        if (currentCourses[i].getCourseCode() == courseCode)
+        if (__current_courses[i].get_course_code() == courseCode)
         {
-            currentGrades[i] = grade;
+            __current_grades[i] = grade;
             return;
         }
     }
 
-    for (size_t i = 0; i < previousCourses.size(); ++i)
+    for (size_t i = 0; i < __previous_courses.size(); ++i)
     {
-        if (previousCourses[i].getCourseCode() == courseCode)
+        if (__previous_courses[i].get_course_code() == courseCode)
         {
-            previousGrades[i] = grade;
+            __previous_grades[i] = grade;
             return;
         }
     }
 }
 
 template <typename RollType, typename CourseCodeType>
-void Student<RollType, CourseCodeType>::updateGradeFromMarks(const CourseCodeType &courseCode,
-                                                             double midSem, double endSem, double assignment)
+void Student<RollType, CourseCodeType>::update_grade_from_marks(const CourseCodeType &course_code,
+                                                                double mid_sem, double end_sem, double assignment)
 {
-    Grade newGrade(midSem, endSem, assignment);
-    updateGrade(courseCode, newGrade);
+    Grade newGrade(mid_sem, end_sem, assignment);
+    update_grade(course_code, newGrade);
 }
 
 // Move course from current to previous
 template <typename RollType, typename CourseCodeType>
-void Student<RollType, CourseCodeType>::moveToPreviousCourses(const CourseCodeType &courseCode)
+void Student<RollType, CourseCodeType>::move_to_previous_courses(const CourseCodeType &courseCode)
 {
-    for (size_t i = 0; i < currentCourses.size(); ++i)
+    for (size_t i = 0; i < __current_courses.size(); ++i)
     {
-        if (currentCourses[i].getCourseCode() == courseCode)
+        if (__current_courses[i].get_course_code() == courseCode)
         {
-            previousCourses.push_back(currentCourses[i]);
-            previousGrades.push_back(currentGrades[i]);
-            currentCourses.erase(currentCourses.begin() + i);
-            currentGrades.erase(currentGrades.begin() + i);
+            __previous_courses.push_back(__current_courses[i]);
+            __previous_grades.push_back(__current_grades[i]);
+            __current_courses.erase(__current_courses.begin() + i);
+            __current_grades.erase(__current_grades.begin() + i);
             break;
         }
     }
@@ -232,21 +232,21 @@ void Student<RollType, CourseCodeType>::moveToPreviousCourses(const CourseCodeTy
 
 // Get specific grade
 template <typename RollType, typename CourseCodeType>
-Grade Student<RollType, CourseCodeType>::getGradeForCourse(const CourseCodeType &courseCode) const
+Grade Student<RollType, CourseCodeType>::get_grade_for_course(const CourseCodeType &courseCode) const
 {
-    for (size_t i = 0; i < currentCourses.size(); ++i)
+    for (size_t i = 0; i < __current_courses.size(); ++i)
     {
-        if (currentCourses[i].getCourseCode() == courseCode)
+        if (__current_courses[i].get_course_code() == courseCode)
         {
-            return currentGrades[i];
+            return __current_grades[i];
         }
     }
 
-    for (size_t i = 0; i < previousCourses.size(); ++i)
+    for (size_t i = 0; i < __previous_courses.size(); ++i)
     {
-        if (previousCourses[i].getCourseCode() == courseCode)
+        if (__previous_courses[i].get_course_code() == courseCode)
         {
-            return previousGrades[i];
+            return __previous_grades[i];
         }
     }
 
@@ -255,36 +255,36 @@ Grade Student<RollType, CourseCodeType>::getGradeForCourse(const CourseCodeType 
 
 // CGPA calculation
 template <typename RollType, typename CourseCodeType>
-double Student<RollType, CourseCodeType>::calculateCGPA() const
+double Student<RollType, CourseCodeType>::calculate_cgpa() const
 {
-    if (previousCourses.empty())
+    if (__previous_courses.empty())
         return 0.0;
 
     double totalGradePoints = 0.0;
     int totalCredits = 0;
 
-    for (size_t i = 0; i < previousCourses.size(); ++i)
+    for (size_t i = 0; i < __previous_courses.size(); ++i)
     {
-        totalGradePoints += previousGrades[i].getGradePoint() * previousCourses[i].getCredits();
-        totalCredits += previousCourses[i].getCredits();
+        totalGradePoints += __previous_grades[i].get_grade_point() * __previous_courses[i].get_credits();
+        totalCredits += __previous_courses[i].get_credits();
     }
 
     return totalCredits > 0 ? totalGradePoints / totalCredits : 0.0;
 }
 
 template <typename RollType, typename CourseCodeType>
-double Student<RollType, CourseCodeType>::calculateSGPA() const
+double Student<RollType, CourseCodeType>::calculate_sgpa() const
 {
-    if (currentCourses.empty())
+    if (__current_courses.empty())
         return 0.0;
 
     double totalGradePoints = 0.0;
     int totalCredits = 0;
 
-    for (size_t i = 0; i < currentCourses.size(); ++i)
+    for (size_t i = 0; i < __current_courses.size(); ++i)
     {
-        totalGradePoints += currentGrades[i].getGradePoint() * currentCourses[i].getCredits();
-        totalCredits += currentCourses[i].getCredits();
+        totalGradePoints += __current_grades[i].get_grade_point() * __current_courses[i].get_credits();
+        totalCredits += __current_courses[i].get_credits();
     }
 
     return totalCredits > 0 ? totalGradePoints / totalCredits : 0.0;
@@ -292,13 +292,13 @@ double Student<RollType, CourseCodeType>::calculateSGPA() const
 
 // Search functionality
 template <typename RollType, typename CourseCodeType>
-bool Student<RollType, CourseCodeType>::hasGradeInCourse(const CourseCodeType &courseCode, double minGrade) const
+bool Student<RollType, CourseCodeType>::has_grade_in_course(const CourseCodeType &courseCode, double minGrade) const
 {
-    for (size_t i = 0; i < previousCourses.size(); ++i)
+    for (size_t i = 0; i < __previous_courses.size(); ++i)
     {
-        if (previousCourses[i].getCourseCode() == courseCode)
+        if (__previous_courses[i].get_course_code() == courseCode)
         {
-            return previousGrades[i].getGradePoint() >= minGrade;
+            return __previous_grades[i].get_grade_point() >= minGrade;
         }
     }
     return false;
@@ -306,67 +306,67 @@ bool Student<RollType, CourseCodeType>::hasGradeInCourse(const CourseCodeType &c
 
 // Display
 template <typename RollType, typename CourseCodeType>
-void Student<RollType, CourseCodeType>::displayInfo() const
+void Student<RollType, CourseCodeType>::display_info() const
 {
-    std::cout << "Name: " << name << " | Roll: ";
+    std::cout << "Name: " << __name << " | Roll: ";
     if constexpr (std::is_same<RollType, std::string>::value)
     {
-        std::cout << rollNumber;
+        std::cout << __roll_number;
     }
     else
     {
-        std::cout << rollNumber;
+        std::cout << __roll_number;
     }
-    double cgpaToShow = loadedCGPA > 0.0 ? loadedCGPA : calculateCGPA();
-    std::cout << " | Branch: " << branch.getBranchCode()
-              << " | Level: " << levelToString(level)
-              << " | Year: " << startingYear
+    double cgpaToShow = __loaded_cgpa > 0.0 ? __loaded_cgpa : calculate_cgpa();
+    std::cout << " | Branch: " << __branch.get_branch_code()
+              << " | Level: " << level_to_string(__level)
+              << " | Year: " << __starting_year
               << " | CGPA: " << std::fixed << std::setprecision(2) << cgpaToShow << std::endl;
 }
 
 template <typename RollType, typename CourseCodeType>
-void Student<RollType, CourseCodeType>::displayDetailed() const
+void Student<RollType, CourseCodeType>::display_detailed() const
 {
     std::cout << "\n========================================" << std::endl;
     std::cout << "Student Details" << std::endl;
     std::cout << "========================================" << std::endl;
-    std::cout << "Name: " << name << std::endl;
+    std::cout << "Name: " << __name << std::endl;
     std::cout << "Roll Number: ";
     if constexpr (std::is_same<RollType, std::string>::value)
     {
-        std::cout << rollNumber;
+        std::cout << __roll_number;
     }
     else
     {
-        std::cout << rollNumber;
+        std::cout << __roll_number;
     }
     std::cout << std::endl;
-    std::cout << "Branch: " << branch.getBranchName() << " (" << branch.getBranchCode() << ")" << std::endl;
-    std::cout << "Level: " << levelToString(level) << std::endl;
-    std::cout << "Starting Year: " << startingYear << std::endl;
-    double cgpaToShow = loadedCGPA > 0.0 ? loadedCGPA : calculateCGPA();
+    std::cout << "Branch: " << __branch.get_branch_name() << " (" << __branch.get_branch_code() << ")" << std::endl;
+    std::cout << "Level: " << level_to_string(__level) << std::endl;
+    std::cout << "Starting Year: " << __starting_year << std::endl;
+    double cgpaToShow = __loaded_cgpa > 0.0 ? __loaded_cgpa : calculate_cgpa();
     std::cout << "CGPA: " << std::fixed << std::setprecision(2) << cgpaToShow << std::endl;
-    std::cout << "SGPA: " << std::fixed << std::setprecision(2) << calculateSGPA() << std::endl;
+    std::cout << "SGPA: " << std::fixed << std::setprecision(2) << calculate_sgpa() << std::endl;
 
-    if (!currentCourses.empty())
+    if (!__current_courses.empty())
     {
         std::cout << "\nCurrent Courses:" << std::endl;
-        for (size_t i = 0; i < currentCourses.size(); ++i)
+        for (size_t i = 0; i < __current_courses.size(); ++i)
         {
-            std::cout << "  - " << currentCourses[i].courseCodeToString()
-                      << ": " << currentCourses[i].getCourseName()
-                      << " (Grade: " << currentGrades[i].getLetterGrade() << ")" << std::endl;
+            std::cout << "  - " << __current_courses[i].course_code_to_string()
+                      << ": " << __current_courses[i].get_course_name()
+                      << " (Grade: " << __current_grades[i].get_letter_grade() << ")" << std::endl;
         }
     }
 
-    if (!previousCourses.empty())
+    if (!__previous_courses.empty())
     {
         std::cout << "\nPrevious Courses:" << std::endl;
-        for (size_t i = 0; i < previousCourses.size(); ++i)
+        for (size_t i = 0; i < __previous_courses.size(); ++i)
         {
-            std::cout << "  - " << previousCourses[i].courseCodeToString()
-                      << ": " << previousCourses[i].getCourseName()
-                      << " (Grade: " << previousGrades[i].getLetterGrade() << ")" << std::endl;
+            std::cout << "  - " << __previous_courses[i].course_code_to_string()
+                      << ": " << __previous_courses[i].get_course_name()
+                      << " (Grade: " << __previous_grades[i].get_letter_grade() << ")" << std::endl;
         }
     }
     std::cout << "========================================\n"
@@ -377,26 +377,26 @@ void Student<RollType, CourseCodeType>::displayDetailed() const
 template <typename RollType, typename CourseCodeType>
 bool Student<RollType, CourseCodeType>::operator<(const Student &other) const
 {
-    return name < other.name;
+    return __name < other.__name;
 }
 
 template <typename RollType, typename CourseCodeType>
 bool Student<RollType, CourseCodeType>::operator>(const Student &other) const
 {
-    return name > other.name;
+    return __name > other.__name;
 }
 
 template <typename RollType, typename CourseCodeType>
 bool Student<RollType, CourseCodeType>::operator==(const Student &other) const
 {
-    return rollNumber == other.rollNumber;
+    return __roll_number == other.__roll_number;
 }
 
 // Static helper
 template <typename RollType, typename CourseCodeType>
-std::string Student<RollType, CourseCodeType>::levelToString(StudentLevel level)
+std::string Student<RollType, CourseCodeType>::level_to_string(StudentLevel __level)
 {
-    switch (level)
+    switch (__level)
     {
     case StudentLevel::BTECH:
         return "B.Tech";

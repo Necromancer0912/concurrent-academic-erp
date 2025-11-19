@@ -38,28 +38,28 @@ template <typename RollType, typename CourseCodeType>
 class Student
 {
 private:
-    std::string name;
-    RollType rollNumber;
-    Branch branch;
-    StudentLevel level;
-    int startingYear;
+    std::string __name;
+    RollType __roll_number;
+    Branch __branch;
+    StudentLevel __level;
+    int __starting_year;
 
     // Current courses with grades (marks)
-    std::vector<Course<CourseCodeType>> currentCourses;
-    std::vector<Grade> currentGrades;
+    std::vector<Course<CourseCodeType>> __current_courses;
+    std::vector<Grade> __current_grades;
 
     // Previous courses with grades
-    std::vector<Course<CourseCodeType>> previousCourses;
-    std::vector<Grade> previousGrades;
+    std::vector<Course<CourseCodeType>> __previous_courses;
+    std::vector<Grade> __previous_grades;
 
     // Loaded CGPA from import (0 if not provided)
-    double loadedCGPA;
+    double __loaded_cgpa;
 
     // Validate name format
-    void validateName(const std::string &n);
+    void __validate_name(const std::string &n);
 
     // Validate roll number format
-    void validateRollNumber(const RollType &roll);
+    void __validate_roll_number(const RollType &roll);
 
 public:
     // Constructor
@@ -73,50 +73,50 @@ public:
     Student &operator=(const Student &other);
 
     // Getters
-    std::string getName() const;
-    RollType getRollNumber() const;
-    Branch getBranch() const;
-    StudentLevel getLevel() const;
-    int getStartingYear() const;
-    std::vector<Course<CourseCodeType>> getCurrentCourses() const;
-    std::vector<Grade> getCurrentGrades() const;
-    std::vector<Course<CourseCodeType>> getPreviousCourses() const;
-    std::vector<Grade> getPreviousGrades() const;
+    std::string get_name() const;
+    RollType get_roll_number() const;
+    Branch get_branch() const;
+    StudentLevel get_level() const;
+    int get_starting_year() const;
+    std::vector<Course<CourseCodeType>> get_current_courses() const;
+    std::vector<Grade> get_current_grades() const;
+    std::vector<Course<CourseCodeType>> get_previous_courses() const;
+    std::vector<Grade> get_previous_grades() const;
 
     // Setters
-    void setName(const std::string &n);
-    void setBranch(const Branch &br);
+    void set_name(const std::string &n);
+    void set_branch(const Branch &br);
 
     // Course management
-    void addCurrentCourse(const Course<CourseCodeType> &course);
-    void addCurrentCourse(const Course<CourseCodeType> &course, const Grade &grade);
-    void removeCurrentCourse(const CourseCodeType &courseCode);
+    void add_current_course(const Course<CourseCodeType> &course);
+    void add_current_course(const Course<CourseCodeType> &course, const Grade &grade);
+    void remove_current_course(const CourseCodeType &course_code);
 
     // Grade management
-    void updateGrade(const CourseCodeType &courseCode, const Grade &grade);
-    void updateGradeFromMarks(const CourseCodeType &courseCode,
-                              double midSem, double endSem, double assignment);
+    void update_grade(const CourseCodeType &course_code, const Grade &grade);
+    void update_grade_from_marks(const CourseCodeType &course_code,
+                                 double mid_sem, double end_sem, double assignment);
 
     // Move course from current to previous
-    void moveToPreviousCourses(const CourseCodeType &courseCode);
+    void move_to_previous_courses(const CourseCodeType &course_code);
 
     // Get specific grade
-    Grade getGradeForCourse(const CourseCodeType &courseCode) const;
+    Grade get_grade_for_course(const CourseCodeType &course_code) const;
 
     // Loaded CGPA accessor
-    double getLoadedCGPA() const;
-    void setLoadedCGPA(double cgpa);
+    double get_loaded_cgpa() const;
+    void set_loaded_cgpa(double cgpa);
 
     // CGPA calculation
-    double calculateCGPA() const;
-    double calculateSGPA() const; // For current semester
+    double calculate_cgpa() const;
+    double calculate_sgpa() const; // For current semester
 
     // Search functionality
-    bool hasGradeInCourse(const CourseCodeType &courseCode, double minGrade) const;
+    bool has_grade_in_course(const CourseCodeType &course_code, double min_grade) const;
 
     // Display
-    void displayInfo() const;
-    void displayDetailed() const;
+    void display_info() const;
+    void display_detailed() const;
 
     // Comparison operators for sorting
     bool operator<(const Student &other) const;
@@ -124,7 +124,7 @@ public:
     bool operator==(const Student &other) const;
 
     // Static helper
-    static std::string levelToString(StudentLevel level);
+    static std::string level_to_string(StudentLevel level);
 };
 
 // Type aliases for convenience

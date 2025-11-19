@@ -4,10 +4,10 @@
 #include <cstdio>
 #include <sys/stat.h>
 
-const std::string Database::STUDENT_DB_FILE = "data/students.db";
+const std::string Database::STUDENT_DB_FILE = "data/__students.db";
 const std::string Database::INSERTION_ORDER_FILE = "data/insertion_order.db";
-const std::string Database::STUDENT_DB_BACKUP_1 = "data/students.db.backup1";
-const std::string Database::STUDENT_DB_BACKUP_2 = "data/students.db.backup2";
+const std::string Database::STUDENT_DB_BACKUP_1 = "data/__students.db.backup1";
+const std::string Database::STUDENT_DB_BACKUP_2 = "data/__students.db.backup2";
 
 void Database::createBackup()
 {

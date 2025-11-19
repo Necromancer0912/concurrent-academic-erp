@@ -9,17 +9,18 @@
 #include "AdminPortal.h"
 #include "StudentPortal.h"
 #include "CSVHandler.h"
+#include "Colors.h"
+#include "OutputFormatter.h"
 
 void displayWelcome()
 {
-    std::cout << "\n";
-    std::cout << "╔═══════════════════════════════════════════════════════════════╗\n";
-    std::cout << "║                                                               ║\n";
-    std::cout << "║         IIIT-DELHI UNIVERSITY ERP SYSTEM                      ║\n";
-    std::cout << "║         Object-Oriented Programming & Design                  ║\n";
-    std::cout << "║         Assignment 4 - Templates and Threads                  ║\n";
-    std::cout << "║                                                               ║\n";
-    std::cout << "╚═══════════════════════════════════════════════════════════════╝\n";
+    std::cout << Colors::BOLD << Colors::CYAN << "\n";
+    std::cout << std::string(80, '=') << "\n";
+    std::cout << std::string(15, ' ') << "IIIT-DELHI UNIVERSITY ERP SYSTEM\n";
+    std::cout << std::string(15, ' ') << "Object-Oriented Programming & Design\n";
+    std::cout << std::string(15, ' ') << "Assignment 4 - Templates and Threads\n";
+    std::cout << std::string(80, '=') << "\n";
+    std::cout << Colors::RESET;
 }
 
 UserType getUserType()
@@ -28,12 +29,15 @@ UserType getUserType()
 
     while (true)
     {
-        std::cout << "\n┌─ Select User Type ───────────────────┐\n";
-        std::cout << "│ 1. Student Portal                    │\n";
-        std::cout << "│ 2. Admin/Authority Portal            │\n";
-        std::cout << "│ 3. Exit                              │\n";
-        std::cout << "└──────────────────────────────────────┘\n";
-        std::cout << "Enter your choice: ";
+        OutputFormatter::print_sub_header("SELECT USER TYPE");
+
+        std::cout << "\n";
+        OutputFormatter::print_menu_item(1, "Student Portal", Colors::CYAN);
+        OutputFormatter::print_menu_item(2, "Admin/Authority Portal", Colors::YELLOW);
+        OutputFormatter::print_menu_item(3, "Exit", Colors::RED);
+
+        std::cout << "\n"
+                  << Colors::CYAN << "Enter your choice: " << Colors::RESET;
 
         if (!(std::cin >> choice))
         {
@@ -46,7 +50,7 @@ UserType getUserType()
 
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::cout << "Invalid input. Please enter a number.\n";
+            std::cout << Colors::RED << "[X] Invalid input. Please enter a number." << Colors::RESET << "\n";
             continue;
         }
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -61,12 +65,13 @@ UserType getUserType()
         }
         else if (choice == 3)
         {
-            std::cout << "\nThank you for using IIIT-Delhi ERP System!\n";
+            std::cout << "\n"
+                      << Colors::GREEN << "[OK] Thank you for using IIIT-Delhi ERP System!" << Colors::RESET << "\n";
             exit(0);
         }
         else
         {
-            std::cout << "Invalid choice. Please try again.\n";
+            std::cout << Colors::YELLOW << "[!] Invalid choice. Please try again." << Colors::RESET << "\n";
         }
     }
 }
@@ -76,36 +81,38 @@ bool performLogin(UserType userType, std::string &username)
     int attempts = 0;
     const int maxAttempts = 3;
 
-    std::cout << "\n┌─ " << (userType == UserType::STUDENT ? "Student" : "Admin")
-              << " Login ────────────────────────┐\n";
+    std::string title = (userType == UserType::STUDENT ? "STUDENT" : "ADMIN");
+    OutputFormatter::print_section(title + " LOGIN");
 
     while (attempts < maxAttempts)
     {
-        std::cout << "│ Username/Roll No: ";
+        std::cout << Colors::CYAN << "  Username/Roll No: " << Colors::RESET;
         std::getline(std::cin, username);
 
-        std::cout << "│ Password: ";
+        std::cout << Colors::CYAN << "  Password: " << Colors::RESET;
         std::string password;
         std::getline(std::cin, password);
 
         if (Auth::authenticate(username, password, userType))
         {
-            std::cout << "└────────────────────────────────────────┘\n";
-            std::cout << "\nLogin successful. Welcome, " << username << ".\n";
+            std::cout << "\n"
+                      << Colors::GREEN << Colors::BOLD
+                      << "[OK] Login successful. Welcome, " << username << "."
+                      << Colors::RESET << "\n";
             return true;
         }
         else
         {
             attempts++;
-            std::cout << "│ ERROR: Invalid credentials. ";
+            std::cout << "  " << Colors::RED << "[X] Invalid credentials. " << Colors::RESET;
             if (attempts < maxAttempts)
             {
-                std::cout << "Attempts remaining: " << (maxAttempts - attempts) << "\n";
+                std::cout << Colors::YELLOW << "Attempts remaining: "
+                          << (maxAttempts - attempts) << Colors::RESET << "\n\n";
             }
             else
             {
-                std::cout << "Maximum attempts reached.\n";
-                std::cout << "└────────────────────────────────────────┘\n";
+                std::cout << Colors::RED << "Maximum attempts reached." << Colors::RESET << "\n";
             }
         }
     }
@@ -115,7 +122,8 @@ bool performLogin(UserType userType, std::string &username)
 
 void initializeSystem()
 {
-    std::cout << "\nInitializing system...\n";
+    std::cout << "\n"
+              << Colors::CYAN << "[i] Initializing system..." << Colors::RESET << "\n";
 
     // Initialize authentication files
     Auth::initializeCredentialFiles();
@@ -123,7 +131,7 @@ void initializeSystem()
     // Initialize database
     Database::initializeDatabaseFiles();
 
-    std::cout << "System initialized successfully.\n";
+    std::cout << Colors::GREEN << "[OK] System initialized successfully." << Colors::RESET << "\n";
 }
 
 int main()
@@ -146,11 +154,12 @@ int main()
             // If no students in database, auto-load demo_students.csv
             if (students.empty())
             {
-                std::cout << "\nNo students found in database. Loading demo_students.csv...\n";
+                std::cout << "\n"
+                          << Colors::YELLOW << "[i] No students found in database. Loading demo_students.csv..." << Colors::RESET << "\n";
                 try
                 {
                     CSVHandler<std::string, std::string> csvHandler("demo_students.csv");
-                    auto csvStudentsPtr = csvHandler.readStudents();
+                    auto csvStudentsPtr = csvHandler.read_students();
 
                     std::vector<Student<std::string, std::string>> csvStudents;
                     csvStudents.reserve(csvStudentsPtr.size());
@@ -161,29 +170,30 @@ int main()
                         for (const auto &studentPtr : csvStudentsPtr)
                         {
                             csvStudents.push_back(*studentPtr);
-                            erpSystem->addStudent(studentPtr);
+                            erpSystem->add_student(studentPtr);
                         }
 
                         // Save to database
                         Database::saveStudents(csvStudents);
 
                         // Save insertion order to file
-                        erpSystem->saveInsertionOrderToFile();
+                        erpSystem->save_insertion_order_to_file();
 
-                        std::cout << "Successfully loaded " << csvStudents.size()
-                                  << " students from demo_students.csv.\n";
+                        std::cout << Colors::GREEN << "[OK] Successfully loaded " << csvStudents.size()
+                                  << " students from demo_students.csv." << Colors::RESET << "\n";
                         students = csvStudents; // Update for the rest of the loading logic
                     }
                 }
                 catch (const std::exception &csvError)
                 {
-                    std::cout << "WARNING: Could not load demo_students.csv: "
-                              << csvError.what() << "\n";
+                    std::cout << Colors::YELLOW << "[!] WARNING: Could not load demo_students.csv: "
+                              << csvError.what() << Colors::RESET << "\n";
                 }
             }
             else
             {
-                std::cout << "\nLoaded " << students.size() << " students from database.\n";
+                std::cout << "\n"
+                          << Colors::CYAN << "[i] Loaded " << students.size() << " students from database." << Colors::RESET << "\n";
             }
 
             // Convert to shared_ptr and maintain the order from database
@@ -193,16 +203,16 @@ int main()
             for (auto &student : students)
             {
                 // Only add if not already added (to avoid duplicates from CSV loading above)
-                if (erpSystem->findStudent(student.getRollNumber()) == nullptr)
+                if (erpSystem->find_student(student.get_roll_number()) == nullptr)
                 {
                     auto ptr = std::make_shared<Student<std::string, std::string>>(student);
-                    erpSystem->addStudent(ptr);
+                    erpSystem->add_student(ptr);
                     studentPtrs.push_back(ptr);
                 }
                 else
                 {
                     // Already added, just get the pointer
-                    studentPtrs.push_back(erpSystem->findStudent(student.getRollNumber()));
+                    studentPtrs.push_back(erpSystem->find_student(student.get_roll_number()));
                 }
             }
 
@@ -213,15 +223,15 @@ int main()
             {
                 // Load insertion order from file if it exists
                 // This will reorganize enrollmentRecords to match the saved insertion order
-                erpSystem->loadInsertionOrderFromFile();
+                erpSystem->load_insertion_order_from_file();
 
-                std::cout << "Students loaded from database.\n";
-                std::cout << "Note: Use Sort option (9) to enable sorted order viewing.\n";
+                std::cout << Colors::GREEN << "[OK] Students loaded from database." << Colors::RESET << "\n";
+                std::cout << Colors::DIM << "Note: Use Sort option (9) to enable sorted order viewing." << Colors::RESET << "\n";
             }
         }
         catch (const std::exception &e)
         {
-            std::cout << "NOTE: Could not load existing students: " << e.what() << "\n";
+            std::cout << Colors::YELLOW << "[!] NOTE: Could not load existing students: " << e.what() << Colors::RESET << "\n";
         }
 
         // Main application loop
@@ -242,18 +252,20 @@ int main()
                     // Save students to database after admin session
                     try
                     {
-                        auto students = erpSystem->getAllStudents();
+                        auto students = erpSystem->get_all_students();
                         std::vector<Student<std::string, std::string>> studentVec;
                         for (const auto &studentPtr : students)
                         {
                             studentVec.push_back(*studentPtr);
                         }
                         Database::saveStudents(studentVec);
-                        std::cout << "\nDatabase saved successfully.\n";
+                        std::cout << "\n"
+                                  << Colors::GREEN << "[OK] Database saved successfully." << Colors::RESET << "\n";
                     }
                     catch (const std::exception &e)
                     {
-                        std::cout << "\nWARNING: Could not save database: " << e.what() << "\n";
+                        std::cout << "\n"
+                                  << Colors::RED << "[X] WARNING: Could not save database: " << e.what() << Colors::RESET << "\n";
                     }
                 }
                 else
@@ -266,16 +278,20 @@ int main()
             }
             else
             {
-                std::cout << "\nLogin failed. Returning to main menu...\n";
+                std::cout << "\n"
+                          << Colors::RED << "[X] Login failed. Returning to main menu..." << Colors::RESET << "\n";
             }
 
-            std::cout << "\nPress Enter to continue...";
+            std::cout << "\n"
+                      << Colors::DIM << "Press " << Colors::BOLD << "[Enter]" << Colors::RESET
+                      << Colors::DIM << " to continue" << Colors::RESET;
             std::cin.get();
         }
     }
     catch (const std::exception &e)
     {
-        std::cerr << "\nFATAL ERROR: " << e.what() << "\n";
+        std::cerr << "\n"
+                  << Colors::RED << Colors::BOLD << "[X] FATAL ERROR: " << e.what() << Colors::RESET << "\n";
         return 1;
     }
 

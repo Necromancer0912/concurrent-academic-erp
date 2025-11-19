@@ -23,10 +23,10 @@ template <typename RollType, typename CourseCodeType>
 class CSVHandler
 {
 private:
-    std::string filename;
+    std::string __filename;
 
     // Parse a CSV line
-    std::vector<std::string> parseLine(const std::string &line);
+    std::vector<std::string> parse_line(const std::string &line);
 
     // Convert string to appropriate type
     RollType parseRollNumber(const std::string &rollStr);
@@ -43,16 +43,16 @@ public:
     CSVHandler(const std::string &filename);
 
     // Read students from CSV
-    std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>> readStudents();
+    std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>> read_students();
 
     // Read a range of student lines (start = 0-based line index after header)
-    std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>> readStudentsRange(int start, int count);
+    std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>> read_students_range(int start, int count);
 
     // Write students to CSV
-    void writeStudents(const std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>> &students);
+    void write_students(const std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>> &students);
 
     // Generate sample CSV file
-    static void generateSampleCSV(const std::string &filename, int numRecords);
+    static void generate_sample_csv(const std::string &filename, int numRecords);
 };
 
 #endif // CSV_HANDLER_H

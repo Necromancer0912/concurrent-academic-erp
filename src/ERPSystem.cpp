@@ -20,11 +20,11 @@ InsertionOrderIterator<RollType, CourseCodeType>::operator*() const
     std::string rollStr;
     if constexpr (std::is_same<RollType, std::string>::value)
     {
-        rollStr = it->getRollNumber();
+        rollStr = it->get_roll_number();
     }
     else
     {
-        rollStr = std::to_string(it->getRollNumber());
+        rollStr = std::to_string(it->get_roll_number());
     }
     return studentsMap->at(rollStr);
 }
@@ -91,11 +91,11 @@ bool SortedOrderIterator<RollType, CourseCodeType>::operator==(const SortedOrder
 
 template <typename RollType, typename CourseCodeType>
 ERPSystem<RollType, CourseCodeType>::ERPSystem()
-    : isSorted(false), nextRecordId(1), nextRequestId(1) {}
+    : __is_sorted(false), nextRecordId(1), nextRequestId(1) {}
 
 // Helper to convert roll number to string key
 template <typename RollType, typename CourseCodeType>
-std::string ERPSystem<RollType, CourseCodeType>::rollToString(const RollType &roll) const
+std::string ERPSystem<RollType, CourseCodeType>::roll_to_string(const RollType &roll) const
 {
     if constexpr (std::is_same<RollType, std::string>::value)
     {
@@ -109,55 +109,55 @@ std::string ERPSystem<RollType, CourseCodeType>::rollToString(const RollType &ro
 
 // Add student
 template <typename RollType, typename CourseCodeType>
-void ERPSystem<RollType, CourseCodeType>::addStudent(std::shared_ptr<Student<RollType, CourseCodeType>> student)
+void ERPSystem<RollType, CourseCodeType>::add_student(std::shared_ptr<Student<RollType, CourseCodeType>> student)
 {
     std::lock_guard<std::mutex> lock(systemMutex);
 
-    std::string rollKey = rollToString(student->getRollNumber());
+    std::string rollKey = roll_to_string(student->get_roll_number());
 
-    if (students.find(rollKey) != students.end())
+    if (__students.find(rollKey) != __students.end())
     {
         throw std::runtime_error("Student with roll number " + rollKey + " already exists.");
     }
 
-    students[rollKey] = student;
-    enrollmentRecords.emplace_back(nextRecordId++, student->getRollNumber(), student->getName());
+    __students[rollKey] = student;
+    __enrollment_records.emplace_back(nextRecordId++, student->get_roll_number(), student->get_name());
 
     // Update grade index
-    updateGradeIndex(student);
+    update_grade_index(student);
 
     // Mark as unsorted
-    isSorted = false;
+    __is_sorted = false;
 }
 
 // Remove student
 template <typename RollType, typename CourseCodeType>
-bool ERPSystem<RollType, CourseCodeType>::removeStudent(const RollType &rollNumber)
+bool ERPSystem<RollType, CourseCodeType>::remove_student(const RollType &rollNumber)
 {
     std::lock_guard<std::mutex> lock(systemMutex);
 
-    std::string rollKey = rollToString(rollNumber);
-    auto it = students.find(rollKey);
+    std::string rollKey = roll_to_string(rollNumber);
+    auto it = __students.find(rollKey);
 
-    if (it == students.end())
+    if (it == __students.end())
     {
         return false;
     }
 
     // Remove from enrollment records
-    enrollmentRecords.erase(
-        std::remove_if(enrollmentRecords.begin(), enrollmentRecords.end(),
+    __enrollment_records.erase(
+        std::remove_if(__enrollment_records.begin(), __enrollment_records.end(),
                        [&rollNumber](const EnrollmentRecord<RollType, CourseCodeType> &record)
                        {
-                           return record.getRollNumber() == rollNumber;
+                           return record.get_roll_number() == rollNumber;
                        }),
-        enrollmentRecords.end());
+        __enrollment_records.end());
 
-    // Remove from students map
-    students.erase(it);
+    // Remove from __students map
+    __students.erase(it);
 
     // Mark as unsorted (sorted list may need updating)
-    isSorted = false;
+    __is_sorted = false;
 
     return true;
 }
@@ -165,14 +165,14 @@ bool ERPSystem<RollType, CourseCodeType>::removeStudent(const RollType &rollNumb
 // Find student
 template <typename RollType, typename CourseCodeType>
 std::shared_ptr<Student<RollType, CourseCodeType>>
-ERPSystem<RollType, CourseCodeType>::findStudent(const RollType &rollNumber) const
+ERPSystem<RollType, CourseCodeType>::find_student(const RollType &rollNumber) const
 {
     std::lock_guard<std::mutex> lock(systemMutex);
 
-    std::string rollKey = rollToString(rollNumber);
-    auto it = students.find(rollKey);
+    std::string rollKey = roll_to_string(rollNumber);
+    auto it = __students.find(rollKey);
 
-    if (it != students.end())
+    if (it != __students.end())
     {
         return it->second;
     }
@@ -182,76 +182,76 @@ ERPSystem<RollType, CourseCodeType>::findStudent(const RollType &rollNumber) con
 
 // Update student grade and refresh index
 template <typename RollType, typename CourseCodeType>
-void ERPSystem<RollType, CourseCodeType>::updateStudentGrade(
+void ERPSystem<RollType, CourseCodeType>::update_student_grade(
     const RollType &rollNumber, const CourseCodeType &courseCode, const Grade &grade)
 {
     std::lock_guard<std::mutex> lock(systemMutex);
 
-    auto student = findStudent(rollNumber);
+    auto student = find_student(rollNumber);
     if (student)
     {
-        student->updateGrade(courseCode, grade);
-        updateGradeIndex(student);
+        student->update_grade(courseCode, grade);
+        update_grade_index(student);
     }
 }
 
 // Update grade index
 template <typename RollType, typename CourseCodeType>
-void ERPSystem<RollType, CourseCodeType>::updateGradeIndex(
+void ERPSystem<RollType, CourseCodeType>::update_grade_index(
     std::shared_ptr<Student<RollType, CourseCodeType>> student)
 {
 
     // Get all previous courses (completed courses with grades)
-    auto prevCourses = student->getPreviousCourses();
-    auto prevGrades = student->getPreviousGrades();
+    auto prevCourses = student->get_previous_courses();
+    auto prevGrades = student->get_previous_grades();
 
     for (size_t i = 0; i < prevCourses.size(); ++i)
     {
-        CourseCodeType courseCode = prevCourses[i].getCourseCode();
-        double gradePoint = prevGrades[i].getGradePoint();
+        CourseCodeType courseCode = prevCourses[i].get_course_code();
+        double gradePoint = prevGrades[i].get_grade_point();
 
         // Add to grade index
-        gradeIndex[courseCode].insert({gradePoint, student});
+        __grade_index[courseCode].insert({gradePoint, student});
     }
 }
 
-// Get all students
+// Get all __students
 template <typename RollType, typename CourseCodeType>
 std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>>
-ERPSystem<RollType, CourseCodeType>::getAllStudents() const
+ERPSystem<RollType, CourseCodeType>::get_all_students() const
 {
     std::lock_guard<std::mutex> lock(systemMutex);
 
     // If we have a sorted list, return it
-    if (isSorted && !sortedStudents.empty())
+    if (__is_sorted && !__sorted_students.empty())
     {
-        return sortedStudents;
+        return __sorted_students;
     }
 
     // Otherwise return from the map
     std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>> result;
-    for (const auto &pair : students)
+    for (const auto &pair : __students)
     {
         result.push_back(pair.second);
     }
     return result;
 }
 
-// Set sorted students
+// Set sorted __students
 template <typename RollType, typename CourseCodeType>
-void ERPSystem<RollType, CourseCodeType>::setSortedStudents(
+void ERPSystem<RollType, CourseCodeType>::set_sorted_students(
     std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>> sorted)
 {
     std::lock_guard<std::mutex> lock(systemMutex);
-    sortedStudents = sorted;
-    isSorted = true;
+    __sorted_students = sorted;
+    __is_sorted = true;
 }
 
 // Check if sorted
 template <typename RollType, typename CourseCodeType>
-bool ERPSystem<RollType, CourseCodeType>::getIsSorted() const
+bool ERPSystem<RollType, CourseCodeType>::get_is_sorted() const
 {
-    return isSorted;
+    return __is_sorted;
 }
 
 // Iterators for insertion order
@@ -259,14 +259,14 @@ template <typename RollType, typename CourseCodeType>
 InsertionOrderIterator<RollType, CourseCodeType>
 ERPSystem<RollType, CourseCodeType>::beginInsertionOrder() const
 {
-    return InsertionOrderIterator<RollType, CourseCodeType>(enrollmentRecords.begin(), &students);
+    return InsertionOrderIterator<RollType, CourseCodeType>(__enrollment_records.begin(), &__students);
 }
 
 template <typename RollType, typename CourseCodeType>
 InsertionOrderIterator<RollType, CourseCodeType>
 ERPSystem<RollType, CourseCodeType>::endInsertionOrder() const
 {
-    return InsertionOrderIterator<RollType, CourseCodeType>(enrollmentRecords.end(), &students);
+    return InsertionOrderIterator<RollType, CourseCodeType>(__enrollment_records.end(), &__students);
 }
 
 // Iterators for sorted order
@@ -274,17 +274,17 @@ template <typename RollType, typename CourseCodeType>
 SortedOrderIterator<RollType, CourseCodeType>
 ERPSystem<RollType, CourseCodeType>::beginSorted() const
 {
-    return SortedOrderIterator<RollType, CourseCodeType>(sortedStudents.begin());
+    return SortedOrderIterator<RollType, CourseCodeType>(__sorted_students.begin());
 }
 
 template <typename RollType, typename CourseCodeType>
 SortedOrderIterator<RollType, CourseCodeType>
 ERPSystem<RollType, CourseCodeType>::endSorted() const
 {
-    return SortedOrderIterator<RollType, CourseCodeType>(sortedStudents.end());
+    return SortedOrderIterator<RollType, CourseCodeType>(__sorted_students.end());
 }
 
-// Search students with grade >= threshold in a course
+// Search __students with grade >= threshold in a course
 template <typename RollType, typename CourseCodeType>
 std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>>
 ERPSystem<RollType, CourseCodeType>::findStudentsWithGrade(
@@ -294,10 +294,10 @@ ERPSystem<RollType, CourseCodeType>::findStudentsWithGrade(
 
     std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>> result;
 
-    auto courseIt = gradeIndex.find(courseCode);
-    if (courseIt != gradeIndex.end())
+    auto courseIt = __grade_index.find(courseCode);
+    if (courseIt != __grade_index.end())
     {
-        // Use lower_bound to find students with grade >= minGrade
+        // Use lower_bound to find __students with grade >= minGrade
         auto start = courseIt->second.lower_bound(minGrade);
         for (auto it = start; it != courseIt->second.end(); ++it)
         {
@@ -310,15 +310,15 @@ ERPSystem<RollType, CourseCodeType>::findStudentsWithGrade(
 
 // Rebuild grade index
 template <typename RollType, typename CourseCodeType>
-void ERPSystem<RollType, CourseCodeType>::rebuildGradeIndex()
+void ERPSystem<RollType, CourseCodeType>::rebuild_grade_index()
 {
     std::lock_guard<std::mutex> lock(systemMutex);
 
-    gradeIndex.clear();
+    __grade_index.clear();
 
-    for (const auto &pair : students)
+    for (const auto &pair : __students)
     {
-        updateGradeIndex(pair.second);
+        update_grade_index(pair.second);
     }
 }
 
@@ -327,12 +327,12 @@ template <typename RollType, typename CourseCodeType>
 size_t ERPSystem<RollType, CourseCodeType>::getStudentCount() const
 {
     std::lock_guard<std::mutex> lock(systemMutex);
-    return students.size();
+    return __students.size();
 }
 
-// Display all students in insertion order
+// Display all __students in insertion order
 template <typename RollType, typename CourseCodeType>
-void ERPSystem<RollType, CourseCodeType>::displayAllInsertionOrder() const
+void ERPSystem<RollType, CourseCodeType>::display_all_insertion_order() const
 {
     std::cout << "\n========================================" << std::endl;
     std::cout << "Students in Insertion Order" << std::endl;
@@ -342,18 +342,18 @@ void ERPSystem<RollType, CourseCodeType>::displayAllInsertionOrder() const
     for (auto it = beginInsertionOrder(); it != endInsertionOrder(); ++it)
     {
         std::cout << count++ << ". ";
-        (*it)->displayInfo();
+        (*it)->display_info();
     }
 
     std::cout << "========================================\n"
               << std::endl;
 }
 
-// Display all students in sorted order
+// Display all __students in sorted order
 template <typename RollType, typename CourseCodeType>
-void ERPSystem<RollType, CourseCodeType>::displayAllSorted() const
+void ERPSystem<RollType, CourseCodeType>::display_all_sorted() const
 {
-    if (!isSorted)
+    if (!__is_sorted)
     {
         std::cout << "Students are not sorted yet. Please sort first." << std::endl;
         return;
@@ -367,7 +367,7 @@ void ERPSystem<RollType, CourseCodeType>::displayAllSorted() const
     for (auto it = beginSorted(); it != endSorted(); ++it)
     {
         std::cout << count++ << ". ";
-        (*it)->displayInfo();
+        (*it)->display_info();
     }
 
     std::cout << "========================================\n"
@@ -377,15 +377,15 @@ void ERPSystem<RollType, CourseCodeType>::displayAllSorted() const
 // Search by name
 template <typename RollType, typename CourseCodeType>
 std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>>
-ERPSystem<RollType, CourseCodeType>::searchByName(const std::string &name) const
+ERPSystem<RollType, CourseCodeType>::search_by_name(const std::string &name) const
 {
     std::lock_guard<std::mutex> lock(systemMutex);
 
     std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>> result;
 
-    for (const auto &pair : students)
+    for (const auto &pair : __students)
     {
-        if (pair.second->getName().find(name) != std::string::npos)
+        if (pair.second->get_name().find(name) != std::string::npos)
         {
             result.push_back(pair.second);
         }
@@ -397,15 +397,15 @@ ERPSystem<RollType, CourseCodeType>::searchByName(const std::string &name) const
 // Search by branch
 template <typename RollType, typename CourseCodeType>
 std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>>
-ERPSystem<RollType, CourseCodeType>::searchByBranch(const Branch &branch) const
+ERPSystem<RollType, CourseCodeType>::search_by_branch(const Branch &branch) const
 {
     std::lock_guard<std::mutex> lock(systemMutex);
 
     std::vector<std::shared_ptr<Student<RollType, CourseCodeType>>> result;
 
-    for (const auto &pair : students)
+    for (const auto &pair : __students)
     {
-        if (pair.second->getBranch() == branch)
+        if (pair.second->get_branch() == branch)
         {
             result.push_back(pair.second);
         }
@@ -424,7 +424,7 @@ int ERPSystem<RollType, CourseCodeType>::addPendingRequest(
     const RollType &rollNumber, const CourseCodeType &courseCode)
 {
     // Find the student first (this locks and unlocks internally)
-    auto student = findStudent(rollNumber);
+    auto student = find_student(rollNumber);
     if (!student)
     {
         throw std::runtime_error("Student not found");
@@ -448,36 +448,36 @@ int ERPSystem<RollType, CourseCodeType>::addPendingRequest(
     PendingCourseRequest<RollType, CourseCodeType> request(
         nextRequestId++,
         rollNumber,
-        student->getName(),
+        student->get_name(),
         courseCode,
         courseName);
 
-    pendingRequests.push_back(request);
+    __pending_requests.push_back(request);
 
-    return request.getRequestId();
+    return request.get_request_id();
 }
 
 // Get all pending requests
 template <typename RollType, typename CourseCodeType>
 std::vector<PendingCourseRequest<RollType, CourseCodeType>>
-ERPSystem<RollType, CourseCodeType>::getPendingRequests() const
+ERPSystem<RollType, CourseCodeType>::get_pending_requests() const
 {
     std::lock_guard<std::mutex> lock(systemMutex);
-    return pendingRequests;
+    return __pending_requests;
 }
 
 // Get pending requests for a specific student
 template <typename RollType, typename CourseCodeType>
 std::vector<PendingCourseRequest<RollType, CourseCodeType>>
-ERPSystem<RollType, CourseCodeType>::getPendingRequestsByStudent(const RollType &rollNumber) const
+ERPSystem<RollType, CourseCodeType>::get_pending_requests_by_student(const RollType &rollNumber) const
 {
     std::lock_guard<std::mutex> lock(systemMutex);
 
     std::vector<PendingCourseRequest<RollType, CourseCodeType>> result;
 
-    for (const auto &request : pendingRequests)
+    for (const auto &request : __pending_requests)
     {
-        if (request.getRollNumber() == rollNumber)
+        if (request.get_roll_number() == rollNumber)
         {
             result.push_back(request);
         }
@@ -491,9 +491,9 @@ template <typename RollType, typename CourseCodeType>
 PendingCourseRequest<RollType, CourseCodeType> *
 ERPSystem<RollType, CourseCodeType>::findPendingRequest(int requestId)
 {
-    for (auto &request : pendingRequests)
+    for (auto &request : __pending_requests)
     {
-        if (request.getRequestId() == requestId)
+        if (request.get_request_id() == requestId)
         {
             return &request;
         }
@@ -503,13 +503,13 @@ ERPSystem<RollType, CourseCodeType>::findPendingRequest(int requestId)
 
 // Approve a pending request
 template <typename RollType, typename CourseCodeType>
-bool ERPSystem<RollType, CourseCodeType>::approvePendingRequest(
+bool ERPSystem<RollType, CourseCodeType>::approve_pending_request(
     int requestId, const std::string &adminUsername, const std::string &remarks)
 {
     std::lock_guard<std::mutex> lock(systemMutex);
 
     auto *request = findPendingRequest(requestId);
-    if (!request || request->getStatus() != RequestStatus::PENDING)
+    if (!request || request->get_status() != RequestStatus::PENDING)
     {
         return false;
     }
@@ -522,13 +522,13 @@ bool ERPSystem<RollType, CourseCodeType>::approvePendingRequest(
 
 // Reject a pending request
 template <typename RollType, typename CourseCodeType>
-bool ERPSystem<RollType, CourseCodeType>::rejectPendingRequest(
+bool ERPSystem<RollType, CourseCodeType>::reject_pending_request(
     int requestId, const std::string &adminUsername, const std::string &remarks)
 {
     std::lock_guard<std::mutex> lock(systemMutex);
 
     auto *request = findPendingRequest(requestId);
-    if (!request || request->getStatus() != RequestStatus::PENDING)
+    if (!request || request->get_status() != RequestStatus::PENDING)
     {
         return false;
     }
@@ -541,22 +541,22 @@ bool ERPSystem<RollType, CourseCodeType>::rejectPendingRequest(
 
 // Remove a pending request (after processing)
 template <typename RollType, typename CourseCodeType>
-void ERPSystem<RollType, CourseCodeType>::removePendingRequest(int requestId)
+void ERPSystem<RollType, CourseCodeType>::remove_pending_request(int requestId)
 {
     std::lock_guard<std::mutex> lock(systemMutex);
 
-    pendingRequests.erase(
-        std::remove_if(pendingRequests.begin(), pendingRequests.end(),
+    __pending_requests.erase(
+        std::remove_if(__pending_requests.begin(), __pending_requests.end(),
                        [requestId](const PendingCourseRequest<RollType, CourseCodeType> &req)
                        {
-                           return req.getRequestId() == requestId;
+                           return req.get_request_id() == requestId;
                        }),
-        pendingRequests.end());
+        __pending_requests.end());
 }
 
-// Load insertion order from file and rebuild enrollmentRecords
+// Load insertion order from file and rebuild __enrollment_records
 template <typename RollType, typename CourseCodeType>
-void ERPSystem<RollType, CourseCodeType>::loadInsertionOrderFromFile()
+void ERPSystem<RollType, CourseCodeType>::load_insertion_order_from_file()
 {
     std::lock_guard<std::mutex> lock(systemMutex);
 
@@ -568,31 +568,31 @@ void ERPSystem<RollType, CourseCodeType>::loadInsertionOrderFromFile()
         return; // No insertion order file exists or is empty
     }
 
-    // Rebuild enrollmentRecords in the correct order
-    enrollmentRecords.clear();
+    // Rebuild __enrollment_records in the correct order
+    __enrollment_records.clear();
     nextRecordId = 1;
 
     for (const auto &roll : rollNumbers)
     {
-        std::string rollKey = rollToString(roll);
-        auto it = students.find(rollKey);
-        if (it != students.end())
+        std::string rollKey = roll_to_string(roll);
+        auto it = __students.find(rollKey);
+        if (it != __students.end())
         {
-            enrollmentRecords.emplace_back(nextRecordId++, roll, it->second->getName());
+            __enrollment_records.emplace_back(nextRecordId++, roll, it->second->get_name());
         }
     }
 }
 
 // Save current insertion order to file
 template <typename RollType, typename CourseCodeType>
-void ERPSystem<RollType, CourseCodeType>::saveInsertionOrderToFile()
+void ERPSystem<RollType, CourseCodeType>::save_insertion_order_to_file()
 {
     std::lock_guard<std::mutex> lock(systemMutex);
 
     std::vector<RollType> rollNumbers;
-    for (const auto &record : enrollmentRecords)
+    for (const auto &record : __enrollment_records)
     {
-        rollNumbers.push_back(record.getRollNumber());
+        rollNumbers.push_back(record.get_roll_number());
     }
 
     Database db;

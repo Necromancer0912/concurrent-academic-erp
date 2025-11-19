@@ -11,25 +11,25 @@
 class StudentPortal
 {
 private:
-    std::string rollNumber;
-    ERPSystem<std::string, std::string> *erpSystem;
+    std::string __roll_number;
+    ERPSystem<std::string, std::string> *__erp_system;
     CourseCatalog *courseCatalog;
     SemesterManager *semesterManager;
 
     // Helper methods
-    void displayMenu();
-    void viewPersonalInfo();
-    void viewEnrollments();
-    void viewPendingRequests();
-    void registerForCourse();
-    void dropCourse();
-    void viewCoursesList();
-    void viewCourseDetails();
-    void searchCourses();
-    void viewGrades();
-    void viewTranscript();
-    void downloadTranscript();
-    void changePassword();
+    void display_menu();
+    void view_personal_info();
+    void view_enrollments();
+    void view_pending_requests();
+    void register_for_course();
+    void drop_course();
+    void view_courses_list();
+    void view_course_details();
+    void search_courses();
+    void view_grades();
+    void view_transcript();
+    void download_transcript();
+    void change_password();
     Student<std::string, std::string> getCurrentStudent();
 
 public:

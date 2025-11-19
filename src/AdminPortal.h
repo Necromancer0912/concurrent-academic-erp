@@ -12,46 +12,46 @@
 class AdminPortal
 {
 private:
-    std::string adminUsername;
+    std::string __admin_username;
     ERPSystem<std::string, std::string> *erpSystem;
     CourseCatalog *courseCatalog;
     SemesterManager *semesterManager;
 
     // Helper methods
-    void displayMenu();
-    void addSingleStudent();
-    void addBulkStudents();
-    void viewAllStudents();
-    void searchStudent();
-    void updateStudentMarks();
-    void deleteStudent();
-    void deleteBulkStudents();
-    void deleteAllStudents();
-    void manageCourses();
-    void manageSemesterSettings();
-    void viewBackups();
-    void restoreBackup();
-    void exportData();
-    void viewStatistics();
-    void createStudentAccount();
-    void bulkCreateStudentAccounts();
-    void changeOwnPassword();
-    void viewPendingCourseRequests();
-    void approveCourseRequest();
-    void sortStudentsMenu();
-    void sortStudents(int criteria, bool multiThreaded);
+    void display_menu();
+    void add_single_student();
+    void add_bulk_students();
+    void view_all_students();
+    void search_student();
+    void update_student_marks();
+    void delete_student();
+    void delete_bulk_students();
+    void delete_all_students();
+    void manage_courses();
+    void manage_semester_settings();
+    void view_backups();
+    void restore_backup();
+    void export_data();
+    void view_statistics();
+    void create_student_account();
+    void bulk_create_student_accounts();
+    void change_own_password();
+    void view_pending_course_requests();
+    void approve_course_request();
+    void sort_students_menu();
+    void sort_students(int criteria, bool multiThreaded);
 
     // Iterator and Grade Search methods (Assignment Requirements #4 and #5)
-    void viewStudentsInsertionOrder();
-    void viewStudentsSortedOrder();
-    void findStudentsByGrade();
-    void rebuildGradeIndex();
+    void view_students_insertion_order();
+    void view_students_sorted_order();
+    void find_students_by_grade();
+    void rebuild_grade_index();
 
     // Course enrollment view
-    void viewCourseEnrollments();
+    void view_course_enrollments();
 
     // IIIT-IIT Course Integration Demo
-    void demoIIITIITCourseIntegration();
+    void demo_iiit_iit_course_integration();
 
 public:
     AdminPortal(const std::string &username,
