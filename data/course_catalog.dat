@@ -1,0 +1,245 @@
+# Course Catalog Database
+# Total Courses: 22
+---
+COURSE_START
+Code: 101
+Name: Introduction to Computing
+Credits: 4
+Instructor: Prof. Subhashis Banerjee (IIT-Delhi)
+Duration: 1
+Type: Regular
+Levels: BTECH MTECH 
+Prerequisites: 
+Syllabus: Programming Fundamentals, Data Types, Control Structures, Functions, Arrays
+COURSE_END
+COURSE_START
+Code: 201
+Name: Advanced Algorithms
+Credits: 4
+Instructor: Prof. Mausam (IIT-Delhi)
+Duration: 1
+Type: Regular
+Levels: BTECH MTECH PHD 
+Prerequisites: 101 
+Syllabus: Graph Theory, Dynamic Programming, Greedy Algorithms, NP-Completeness
+COURSE_END
+COURSE_START
+Code: 202
+Name: Computer Architecture
+Credits: 4
+Instructor: Prof. Anshul Kumar (IIT-Delhi)
+Duration: 1
+Type: Regular
+Levels: BTECH MTECH 
+Prerequisites: 
+Syllabus: Instruction Set Architecture, Pipelining, Memory Hierarchy, I/O Systems
+COURSE_END
+COURSE_START
+Code: 305
+Name: Database Systems
+Credits: 4
+Instructor: Prof. S. Sudarshan (IIT-Delhi)
+Duration: 1
+Type: Regular
+Levels: BTECH MTECH PHD 
+Prerequisites: 101 
+Syllabus: Relational Model, SQL, Query Optimization, Transaction Management, Distributed Databases
+COURSE_END
+COURSE_START
+Code: 401
+Name: Artificial Intelligence and Machine Learning
+Credits: 4
+Instructor: Prof. Parag Singla (IIT-Delhi)
+Duration: 1
+Type: Regular
+Levels: BTECH MTECH PHD 
+Prerequisites: 201 
+Syllabus: Search, Knowledge Representation, Machine Learning, Neural Networks, Deep Learning
+COURSE_END
+COURSE_START
+Code: 501
+Name: Advanced Computer Networks
+Credits: 4
+Instructor: Prof. Huzur Saran (IIT-Delhi)
+Duration: 1
+Type: Regular
+Levels: MTECH PHD 
+Prerequisites: 
+Syllabus: Network Protocols, Routing Algorithms, QoS, Network Security, Software Defined Networking
+COURSE_END
+COURSE_START
+Code: 502
+Name: Parallel and Distributed Computing
+Credits: 4
+Instructor: Prof. Kolin Paul (IIT-Delhi)
+Duration: 1
+Type: Regular
+Levels: MTECH PHD 
+Prerequisites: 
+Syllabus: Parallel Architectures, MPI, OpenMP, Distributed Algorithms, MapReduce, Spark
+COURSE_END
+COURSE_START
+Code: 601
+Name: Advanced Topics in Computer Vision
+Credits: 4
+Instructor: Prof. Chetan Arora (IIT-Delhi)
+Duration: 1
+Type: Regular
+Levels: MTECH PHD 
+Prerequisites: 401 
+Syllabus: Image Processing, Object Detection, Semantic Segmentation, 3D Vision, GANs
+COURSE_END
+COURSE_START
+Code: CSE102
+Name: Data Structures and Algorithms
+Credits: 4
+Instructor: Dr. Rajiv Ratn Shah
+Duration: 1
+Type: Regular
+Levels: BTECH 
+Prerequisites: 
+Syllabus: Arrays, Linked Lists, Stacks, Queues, Trees, Graphs, Sorting, Searching, Dynamic Programming
+COURSE_END
+COURSE_START
+Code: CSE201
+Name: Object-Oriented Programming and Design
+Credits: 4
+Instructor: Dr. Arani Bhattacharya
+Duration: 1
+Type: Regular
+Levels: BTECH MTECH 
+Prerequisites: 
+Syllabus: Classes, Objects, Inheritance, Polymorphism, Templates, Exception Handling, Design Patterns
+COURSE_END
+COURSE_START
+Code: CSE202
+Name: Database Management Systems
+Credits: 4
+Instructor: Dr. Tanmoy Chakraborty
+Duration: 1
+Type: Regular
+Levels: BTECH MTECH 
+Prerequisites: CSE102 
+Syllabus: SQL, Relational Algebra, Normalization, Transactions, Concurrency Control, NoSQL
+COURSE_END
+COURSE_START
+Code: CSE231
+Name: Operating Systems
+Credits: 4
+Instructor: Dr. Sambuddho Chakravarty
+Duration: 1
+Type: Regular
+Levels: BTECH MTECH 
+Prerequisites: CSE102 
+Syllabus: Processes, Threads, Scheduling, Memory Management, File Systems, I/O Systems
+COURSE_END
+COURSE_START
+Code: CSE232
+Name: Computer Networks
+Credits: 4
+Instructor: Dr. Mukulika Maity
+Duration: 1
+Type: Regular
+Levels: BTECH MTECH 
+Prerequisites: 
+Syllabus: TCP/IP Stack, Routing Protocols, Network Security, Wireless Networks, SDN
+COURSE_END
+COURSE_START
+Code: CSE343
+Name: Machine Learning
+Credits: 4
+Instructor: Dr. Ganesh Bagler
+Duration: 1
+Type: Regular
+Levels: BTECH MTECH PHD 
+Prerequisites: CSE102 
+Syllabus: Supervised Learning, Unsupervised Learning, Neural Networks, Deep Learning, Reinforcement Learning
+COURSE_END
+COURSE_START
+Code: CSE499
+Name: BTech Capstone Project
+Credits: 8
+Instructor: Various Faculty
+Duration: 2
+Type: Capstone
+Levels: BTECH 
+Prerequisites: 
+Syllabus: Independent research project under faculty guidance on topics in CSE
+COURSE_END
+COURSE_START
+Code: CSE501
+Name: Advanced Algorithms
+Credits: 4
+Instructor: Dr. Sanjit Kaul
+Duration: 1
+Type: Regular
+Levels: MTECH PHD 
+Prerequisites: 
+Syllabus: Advanced Data Structures, Graph Algorithms, Approximation Algorithms, Randomized Algorithms
+COURSE_END
+COURSE_START
+Code: CSE502
+Name: Distributed Systems
+Credits: 4
+Instructor: Dr. Pravesh Biyani
+Duration: 1
+Type: Regular
+Levels: MTECH PHD 
+Prerequisites: 
+Syllabus: Distributed Computing Models, Consensus, Fault Tolerance, Cloud Computing, Blockchain
+COURSE_END
+COURSE_START
+Code: CSE503
+Name: Information Security
+Credits: 4
+Instructor: Dr. Sambuddho Chakravarty
+Duration: 1
+Type: Regular
+Levels: MTECH PHD 
+Prerequisites: 
+Syllabus: Cryptography, Network Security, Web Security, Malware Analysis, Penetration Testing
+COURSE_END
+COURSE_START
+Code: CSE599
+Name: MTech Thesis/Capstone
+Credits: 8
+Instructor: Various Faculty
+Duration: 2
+Type: Capstone
+Levels: MTECH 
+Prerequisites: 
+Syllabus: Advanced research project with industry relevance or academic contribution
+COURSE_END
+COURSE_START
+Code: CSE643
+Name: Artificial Intelligence
+Credits: 4
+Instructor: Dr. Koteswar Rao Jerripothula
+Duration: 1
+Type: Regular
+Levels: BTECH MTECH PHD 
+Prerequisites: 
+Syllabus: Search Algorithms, Knowledge Representation, Planning, Natural Language Processing, Computer Vision
+COURSE_END
+COURSE_START
+Code: RES001
+Name: Research Methodology & Publication
+Credits: 16
+Instructor: PhD Advisor
+Duration: 2
+Type: Research
+Levels: PHD 
+Prerequisites: 
+Syllabus: Original research leading to publication in peer-reviewed conferences/journals
+COURSE_END
+COURSE_START
+Code: RES002
+Name: PhD Seminar & Thesis
+Credits: 16
+Instructor: PhD Committee
+Duration: 2
+Type: Research
+Levels: PHD 
+Prerequisites: 
+Syllabus: PhD dissertation work, literature survey, thesis writing, defense preparation
+COURSE_END
