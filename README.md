@@ -1,4 +1,4 @@
-# 🎓 IIIT-Delhi ERP System
+# IIIT-Delhi ERP System
 
 <div align="center">
 
@@ -8,10 +8,10 @@
 
 ---
 
-**👨‍💻 Developed by:** Sayan Das  
-**🆔 Roll Number:** MT25041  
-**🏛️ Institution:** IIIT-Delhi  
-**📚 Course:** Object-Oriented Programming & Design
+**Developed by:** Sayan Das  
+**Roll Number:** MT25041  
+**Institution:** IIIT-Delhi  
+**Course:** Object-Oriented Programming & Design
 
 ---
 
@@ -23,70 +23,116 @@
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
-- [Overview](#-overview)
-- [Key Features](#-key-features)
-- [Technical Highlights](#-technical-highlights)
-- [Project Structure](#-project-structure)
-- [Installation & Setup](#-installation--setup)
-- [Usage Guide](#-usage-guide)
-- [Functional Modules](#-functional-modules)
-- [System Architecture](#-system-architecture)
-- [Assignment Requirements](#-assignment-requirements)
-- [Credits](#-credits)
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Recent Updates](#recent-updates)
+- [Technical Highlights](#technical-highlights)
+- [Project Structure](#project-structure)
+- [Installation & Setup](#installation--setup)
+- [Usage Guide](#usage-guide)
+- [Functional Modules](#functional-modules)
+- [System Architecture](#system-architecture)
+- [Assignment Requirements](#assignment-requirements)
+- [Credits](#credits)
 
 ---
 
-## 🎯 Overview
+## Overview
 
 A comprehensive **Enterprise Resource Planning (ERP) System** designed for IIIT-Delhi, built with advanced C++ features including **template metaprogramming**, **multithreading**, and **STL algorithms**. The system manages student records, course enrollment, grading, and administrative tasks with high performance and type safety.
 
-### 🌟 Core Capabilities
+### Core Capabilities
 
 - **Dual-Portal Architecture**: Separate interfaces for Students and Administrators
 - **Cross-Institutional Integration**: Supports both IIIT-Delhi (string course codes) and IIT-Delhi (integer course codes)
 - **High-Performance Sorting**: Parallel sorting with dynamic thread allocation (2-6 threads based on dataset size)
 - **Persistent Storage**: Custom binary database with insertion order preservation
 - **Template-Based Design**: Type-safe operations across different institutional systems
+- **Clean UI**: Professional, elegant interface with softer colors and proper table formatting
+- **Standard Output**: Uses standard ASCII symbols for maximum compatibility
 
 ---
 
-## ✨ Key Features
+## Key Features
 
-### 👨‍🎓 Student Portal
+### Student Portal
 
-- 📊 **Academic Dashboard** - View CGPA, enrolled courses, and academic standing
-- 📝 **Course Registration** - Request enrollment with credit validation
-- 🗑️ **Course Management** - Drop courses (when enabled by administration)
-- 📄 **Transcript Generation** - Download detailed academic transcript
-- 🔒 **Account Security** - Change password and manage credentials
-- 🎯 **Grade Tracking** - Real-time grade updates and CGPA calculation
+- **Academic Dashboard** - View CGPA, enrolled courses, and academic standing
+- **Course Registration** - Request enrollment with credit validation
+- **Course Management** - Drop courses (when enabled by administration)
+- **Transcript Generation** - Download detailed academic transcript
+- **Account Security** - Change password and manage credentials
+- **Grade Tracking** - Real-time grade updates and CGPA calculation
 
-### 👨‍💼 Admin Portal
+### Admin Portal
 
 #### Student Management
-- ➕ **Add Students** - Single or bulk CSV import (10,000+ records supported)
-- 🔍 **Search & Filter** - Find students by roll number, name, branch, or CGPA
-- ✏️ **Update Records** - Modify student information and grades
-- 🗑️ **Delete Operations** - Remove individual or bulk students
-- 🔄 **Sorting Engine** - Multi-threaded sorting by Name/Roll/CGPA
+- **Add Students** - Single or bulk CSV import (10,000+ records supported)
+- **Search & Filter** - Find students by roll number, name, branch, or CGPA
+- **Update Records** - Modify student information and grades
+- **Delete Operations** - Remove individual or bulk students
+- **Sorting Engine** - Multi-threaded sorting by Name/Roll/CGPA
 
 #### Course Management
-- 📚 **Course Catalog** - Manage IIIT-Delhi and IIT-Delhi courses
-- 📊 **Enrollment Analytics** - View course-wise student statistics
-- ✅ **Registration Approval** - Review and process course requests
-- 🔧 **Semester Controls** - Toggle registration and drop periods
+- **Course Catalog** - Manage IIIT-Delhi and IIT-Delhi courses with proper table formatting
+- **Enrollment Analytics** - View course-wise student statistics
+- **Registration Approval** - Review and process course requests
+- **Semester Controls** - Toggle registration and drop periods with clean display
 
 #### System Administration
-- 👤 **Account Creation** - Generate student credentials (bulk supported)
-- 💾 **Database Operations** - Backup, restore, and export functionality
-- 📈 **System Statistics** - View enrollment distribution and analytics
-- 🔐 **Security Management** - Admin password controls
+- **Account Creation** - Generate student credentials (bulk supported)
+- **Database Operations** - Backup, restore, and export functionality
+- **System Statistics** - View enrollment distribution with organized sections
+- **Security Management** - Admin password controls
 
 ---
 
-## 🔬 Technical Highlights
+## Recent Updates
+
+### UI Beautification & Enhancement
+
+The system has been comprehensively redesigned with a focus on **elegance, professionalism, and readability**:
+
+#### Color Scheme Improvements
+- **Softer, More Elegant Colors**: Replaced excessive bold/bright colors with a refined palette
+- **Dim Gray Labels**: Field labels use dim text for better visual hierarchy
+- **Selective Bold**: Values and important information highlighted with bold (not entire lines)
+- **Professional Cyan**: Used sparingly for emphasis (roll numbers, prerequisites, section headers)
+
+#### Table Formatting Standards
+- **Proper Column Spacing**: All tables now have well-defined column widths
+  - Student List: 121 characters total (Roll:15, Name:40, Branch:15, CGPA:8)
+  - Course Catalog: 115 characters total (Code:12, Name:50, Credits:10, Instructor:30, Type:13)
+  - Current Courses: 90 characters
+  - Completed Courses: 75 characters
+  - Course Requests: 100 characters
+- **Aligned Headers**: Column headers perfectly aligned with data
+- **Clean Separators**: Horizontal lines with proper width using ASCII characters
+
+#### Symbol Convention
+- **Standard ASCII Only**: No Unicode/emoji symbols for maximum compatibility
+- **Status Indicators**: `[OK]` for success, `[X]` for errors, `[!]` for warnings, `[i]` for info
+- **Build Messages**: `[*]` compiling, `[LINK]` linking, `[CLEAN]` cleanup
+- **Navigation**: `>` for bullet points and menus
+- **Removed Decorative Emoji**: All emoji symbols replaced with text equivalents
+
+#### Enhanced Displays
+- **Course Details**: Card-style layout with organized fields and clean lines
+- **Semester Status**: Clean display without box-drawing characters, using dashes and text indicators
+- **Statistics View**: Organized sections with clear labels and proper spacing
+- **Student List**: Total count display and styled headers
+- **Search Interface**: Softer prompts in dim gray instead of bright cyan
+
+#### Consistency Improvements
+- **Standardized Messages**: All "Press [Enter] to continue..." prompts use consistent formatting (dim text with bold [Enter])
+- **Unified Color Palette**: Consistent use of cyan, dim, bold, and reset across all modules
+- **Professional Tone**: Removed casual/playful elements in favor of enterprise-grade appearance
+
+---
+
+## Technical Highlights
 
 ### Template Programming
 
@@ -120,63 +166,63 @@ Course<int>          // IIT-Delhi courses (101, 201, 305)
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 Assignment_4_not_tested_without_sql/
 │
-├── 📄 Makefile                     # Build configuration with clean targets
-├── 📝 README.md                    # This file
-├── 🚫 .gitignore                   # Version control exclusions
-├── 📊 demo_students.csv            # Sample dataset (10,000 students)
+├── Makefile                        # Build configuration with clean targets
+├── README.md                       # This file
+├── .gitignore                      # Version control exclusions
+├── demo_students.csv               # Sample dataset (10,000 students)
 │
-├── 📂 src/                         # Source code directory
-│   ├── 🎯 main.cpp                 # Application entry point
+├── src/                            # Source code directory
+│   ├── main.cpp                    # Application entry point
 │   │
-│   ├── 👤 Student Management
+│   ├── Student Management
 │   │   ├── Student.h / .cpp        # Template-based student class
 │   │   ├── EnrollmentRecord.h / .cpp
 │   │   └── Grade.h / .cpp          # Grade and CGPA calculations
 │   │
-│   ├── 📚 Course Management
+│   ├── Course Management
 │   │   ├── Course.h / .cpp         # Template-based course class
 │   │   ├── CourseCatalog.h / .cpp  # Catalog with IIIT+IIT courses
 │   │   └── Branch.h / .cpp         # Academic branches
 │   │
-│   ├── 🖥️ System Core
+│   ├── System Core
 │   │   ├── ERPSystem.h / .cpp      # Main ERP logic with templates
 │   │   ├── Database.h / .cpp       # Binary file I/O operations
 │   │   └── CSVHandler.h / .cpp     # CSV import/export
 │   │
-│   ├── 🔐 Authentication
+│   ├── Authentication
 │   │   └── Auth.h / .cpp           # User authentication system
 │   │
-│   ├── 🎨 User Interfaces
+│   ├── User Interfaces
 │   │   ├── AdminPortal.h / .cpp    # Administrator interface
 │   │   └── StudentPortal.h / .cpp  # Student interface
 │   │
-│   ├── ⚙️ Advanced Features
+│   ├── Advanced Features
 │   │   ├── SortingManager.h / .cpp # Parallel sorting engine
 │   │   ├── SemesterManager.h / .cpp # Academic semester controls
 │   │   └── PendingCourseRequest.h  # Course request queue
 │   │
-│   └── 📂 obj/                     # Compiled object files (generated)
+│   └── obj/                        # Compiled object files (generated)
 │
-├── 📂 data/                        # Runtime data (auto-created)
+├── data/                           # Runtime data (auto-created)
 │   ├── students.db                 # Student database
 │   ├── insertion_order.db          # Insertion order tracker
 │   ├── course_catalog.dat          # Course definitions
 │   ├── admin_credentials.dat       # Admin accounts
 │   └── student_credentials.dat     # Student accounts
 │
-└── 📂 docs/                        # Documentation (optional)
+└── docs/                           # Documentation (optional)
     ├── IIIT_IIT_DEMO.md           # Template demo guide
     └── PRINT_CLEANUP_SUMMARY.md   # Code style documentation
 ```
 
 ---
 
-## 🚀 Installation & Setup
+## Installation & Setup
 
 ### Prerequisites
 
@@ -213,12 +259,22 @@ On first execution, the system will:
 
 ---
 
-## 📖 Usage Guide
+## Usage Guide
 
 ### Starting the Application
 
 ```bash
-$ make run
+make run
+```
+
+**Build Output:**
+```
+[*] Compiling main.cpp
+[*] Compiling Student.cpp
+[*] Compiling Course.cpp
+...
+[LINK] Creating executable: iiit_erp
+[OK] Build complete!
 ```
 
 ### Login Credentials
@@ -248,9 +304,9 @@ $ make run
 
 ---
 
-## 🔧 Functional Modules
+## Functional Modules
 
-### 1️⃣ Student Management System
+### 1. Student Management System
 
 **Operations:**
 - Add students (single or bulk via CSV)
@@ -265,7 +321,7 @@ $ make run
 - Branch-wise filtering
 - Level-wise filtering (BTech, MTech, PhD, Dual Degree)
 
-### 2️⃣ Course Registration System
+### 2. Course Registration System
 
 **Workflow:**
 1. Student submits course request
@@ -282,7 +338,7 @@ $ make run
 - Capstone: 8 credits
 - Research: 16 credits
 
-### 3️⃣ IIIT-IIT Course Integration
+### 3. IIIT-IIT Course Integration
 
 **Demonstration (Option 23 in Admin Portal):**
 
@@ -292,7 +348,7 @@ Shows template flexibility with:
 - Cross-institutional enrollment
 - Grade assignment across both systems
 
-### 4️⃣ Parallel Sorting Engine
+### 4. Parallel Sorting Engine
 
 **Algorithm:**
 1. Determine optimal thread count based on dataset size
@@ -307,7 +363,7 @@ Shows template flexibility with:
 - Merge operation time
 - Total sorting time
 
-### 5️⃣ Authentication System
+### 5. Authentication System
 
 **Features:**
 - Separate admin and student credential stores
@@ -318,7 +374,7 @@ Shows template flexibility with:
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 ### Design Patterns
 
@@ -378,7 +434,7 @@ Merge sorted segments
 
 ---
 
-## 📝 Assignment Requirements Implementation
+## Assignment Requirements Implementation
 
 This section comprehensively maps the implementation to each question in Assignment 4.
 
@@ -388,7 +444,7 @@ This section comprehensively maps the implementation to each question in Assignm
 
 **Requirement:** Design a template class for a University ERP system to accommodate student records from various universities with different data types for roll numbers (e.g., string, unsigned int) and course codes (e.g., string, int). The class should be flexible enough to handle fields like name, roll number, branch, level, starting year, current courses, and previous courses along with respective grades. Implement necessary functions for managing student data and calculating CGPA.
 
-#### ✅ **Implementation Details**
+#### Implementation Details
 
 **Template Class Definition (`Student.h`):**
 
@@ -506,7 +562,7 @@ template class Course<int>;          // For IIT-Delhi
 
 **Requirement:** Write a program to create objects of the class for both IIIT-Delhi and IIT-Delhi students. IIIT-Delhi uses string-based course codes (e.g., "CSE201", "MTH101"), while IIT-Delhi uses integer course codes (e.g., 101, 201, 305, 401, 501, 502, 601). Demonstrate the flexibility and reusability of your template design.
 
-#### ✅ **Implementation Details**
+#### Implementation Details
 
 **Course Catalog Setup:**
 
@@ -644,7 +700,7 @@ std::cout << "IIT Student CGPA: " << iitStudent->calculateCGPA() << "\n";
 
 **Requirement:** Implement a feature to load a CSV file containing details of 3000 students. After loading, provide functionality to sort the data by roll number, name, or CGPA using parallel programming. Use threads for sorting segments of data concurrently. Log the time taken by each thread, and implement measures to prevent race conditions during concurrent access to shared data structures.
 
-#### ✅ **Implementation Details**
+#### Implementation Details
 
 #### **Part A: CSV Bulk Loading (`CSVHandler.cpp`)**
 
@@ -1037,7 +1093,7 @@ bool SortingManager::compare(
 
 The iterator should not copy the entire dataset, and the implementation should efficiently support both orders.
 
-#### ✅ **Implementation Details**
+#### Implementation Details
 
 #### **Architecture: Two-File Persistence System**
 
@@ -1451,7 +1507,7 @@ erpSystem->loadFromDatabase();
 
 **Requirement:** Implement an efficient data structure to support quick queries like: "Find all students who scored A or above in a specific course." The solution should avoid linear searches through the entire dataset.
 
-#### ✅ **Implementation Details**
+#### Implementation Details
 
 #### **Grade Index Data Structure**
 
@@ -1912,15 +1968,15 @@ std::map<std::string, int> ERPSystem::getGradeDistribution(
 
 ---
 
-### ✅ Summary: All Requirements Completed
+### Summary: All Requirements Completed
 
 | Question | Feature | Status | Key Files |
 |----------|---------|--------|-----------|
-| **1** | Template Class for University ERP | ✅ Complete | Student.h/cpp, Course.h/cpp, ERPSystem.h/cpp |
-| **2** | IIIT-IIT Integration Demo | ✅ Complete | AdminPortal.cpp (lines 728-958), CourseCatalog.cpp |
-| **3** | CSV Bulk Loading + Parallel Sorting | ✅ Complete | CSVHandler.h/cpp, SortingManager.h/cpp |
-| **4** | Insertion & Sorted Order Iterators | ✅ Complete | ERPSystem.h/cpp (lines 7-89), EnrollmentRecord.h/cpp |
-| **5** | Optimized Grade Search | ✅ Complete | ERPSystem.h/cpp (grade index), Grade.h/cpp |
+| **1** | Template Class for University ERP | Complete | Student.h/cpp, Course.h/cpp, ERPSystem.h/cpp |
+| **2** | IIIT-IIT Integration Demo | Complete | AdminPortal.cpp (lines 728-958), CourseCatalog.cpp |
+| **3** | CSV Bulk Loading + Parallel Sorting | Complete | CSVHandler.h/cpp, SortingManager.h/cpp |
+| **4** | Insertion & Sorted Order Iterators | Complete | ERPSystem.h/cpp (lines 7-89), EnrollmentRecord.h/cpp |
+| **5** | Optimized Grade Search | Complete | ERPSystem.h/cpp (grade index), Grade.h/cpp |
 
 ---
 
@@ -1939,7 +1995,7 @@ std::map<std::string, int> ERPSystem::getGradeDistribution(
 
 ---
 
-## 🎓 Course Information
+## Course Information
 
 ### IIIT-Delhi Courses (String Codes)
 
@@ -1967,14 +2023,17 @@ std::map<std::string, int> ERPSystem::getGradeDistribution(
 
 ---
 
-## 🛠️ Development Notes
+## Development Notes
 
-### Code Style
+### Code Style & UI Design
 
-- **No AI-style markers** - Clean, professional output
-- **No emojis in output** - Serious, academic tone
-- **Consistent error format** - `ERROR: description.`
-- **Clear success messages** - `Operation completed successfully.`
+- **ASCII Symbols Only** - No Unicode/emoji for maximum compatibility
+- **Status Indicators** - `[OK]`, `[X]`, `[!]`, `[i]` for clear feedback
+- **Elegant Colors** - Softer palette with dim labels and selective bold
+- **Professional Tone** - Enterprise-grade appearance throughout
+- **Proper Table Formatting** - Well-defined column widths and alignment
+- **Consistent Messaging** - Standardized "Press [Enter] to continue..." format
+- **Clean Separators** - ASCII lines instead of box-drawing characters
 
 ### Testing
 
@@ -1994,7 +2053,7 @@ The system has been tested with:
 
 ---
 
-## 📚 Credits
+## Credits
 
 **Developer:** Sayan Das  
 **Roll Number:** MT25041  
@@ -2005,7 +2064,7 @@ The system has been tested with:
 
 ---
 
-## 📄 License
+## License
 
 This project is submitted as part of academic coursework at IIIT-Delhi.
 
