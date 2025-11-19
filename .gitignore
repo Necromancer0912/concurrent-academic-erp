@@ -1,0 +1,48 @@
+# Compiled Object Files
+*.o
+*.obj
+
+# Executables
+erp_system
+*.exe
+*.out
+
+# Data Files and Database
+data/
+*.db
+*.dat
+*.csv
+!demo_students.csv
+
+# IDE and Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Build Artifacts
+*.a
+*.so
+*.dylib
+
+# Backup Files
+*.bak
+*.backup
+*_backup.*
+
+# Log Files
+*.log
+
+# Temporary Files
+*.tmp
+temp/
+tmp/
+
+# Core Dumps
+core
+core.*
+
+# Dependency Files
+*.d

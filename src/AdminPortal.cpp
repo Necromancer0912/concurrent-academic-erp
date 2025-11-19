@@ -955,11 +955,11 @@ void AdminPortal::deleteAllStudents()
 {
     std::cout << "\n";
     std::cout << "╔════════════════════════════════════════════════════════════════╗\n";
-    std::cout << "║                WARNING: DELETE ALL STUDENTS                ║\n";
+    std::cout << "║                WARNING: DELETE ALL STUDENTS                   ║\n";
     std::cout << "╠════════════════════════════════════════════════════════════════╣\n";
     std::cout << "║  This action will PERMANENTLY DELETE ALL STUDENTS from the    ║\n";
     std::cout << "║  database. This operation CANNOT be undone!                   ║\n";
-    std::cout << "║                                                                ║\n";
+    std::cout << "║                                                               ║\n";
     std::cout << "║  All student records, enrollment data, and grades will be     ║\n";
     std::cout << "║  removed from the system.                                     ║\n";
     std::cout << "╚════════════════════════════════════════════════════════════════╝\n";
@@ -988,13 +988,13 @@ void AdminPortal::deleteAllStudents()
     }
 
     // Second confirmation with exact phrase
-    std::cout << "\n FINAL WARNING ⚠️\n";
-    std::cout << "To confirm, type exactly: DELETE ALL STUDENTS\n";
+    std::cout << "\n FINAL WARNING!\n";
+    std::cout << "To confirm, type exactly: DELETE ALL\n";
     std::cout << "> ";
     std::string confirm2;
     std::getline(std::cin, confirm2);
 
-    if (confirm2 != "DELETE ALL STUDENTS")
+    if (confirm2 != "DELETE ALL")
     {
         std::cout << "\nDeletion cancelled. (Confirmation phrase did not match)\n";
         return;
