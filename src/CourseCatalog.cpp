@@ -22,7 +22,9 @@ void CourseCatalog::loadCatalog()
 
     if (!file.is_open())
     {
+        std::cout << Colors::YELLOW << "[i] Course catalog not found. Initializing with 27 default courses..." << Colors::RESET << std::endl;
         initializeDefaultCourses();
+        std::cout << Colors::GREEN << "[OK] Course catalog initialized with " << __courses.size() << " courses." << Colors::RESET << std::endl;
         return;
     }
 
@@ -287,6 +289,62 @@ std::string CourseCatalog::getCourseType(const std::string &courseCode) const
 
 void CourseCatalog::initializeDefaultCourses()
 {
+    // Foundational Courses (First Year)
+    CourseInfo intro;
+    intro.courseCode = "CSE101";
+    intro.courseName = "Introduction to Programming";
+    intro.credits = 4;
+    intro.instructor = "Dr. Pankaj Jalote";
+    intro.duration = 1;
+    intro.courseType = "Regular";
+    intro.eligibleLevels = {"BTECH", "MTECH", "DUAL", "PHD"};
+    intro.syllabus = "Programming Basics, Control Structures, Functions, Arrays, Basic Data Structures";
+    add_course(intro);
+
+    CourseInfo math;
+    math.courseCode = "MAT101";
+    math.courseName = "Mathematics I (Linear Algebra & Calculus)";
+    math.credits = 4;
+    math.instructor = "Dr. Debarka Sengupta";
+    math.duration = 1;
+    math.courseType = "Regular";
+    math.eligibleLevels = {"BTECH", "MTECH", "DUAL", "PHD"};
+    math.syllabus = "Linear Algebra, Matrices, Eigenvalues, Calculus, Differential Equations";
+    add_course(math);
+
+    CourseInfo ece;
+    ece.courseCode = "ECE101";
+    ece.courseName = "Digital Circuits and Logic Design";
+    ece.credits = 4;
+    ece.instructor = "Dr. Sneh Saurabh";
+    ece.duration = 1;
+    ece.courseType = "Regular";
+    ece.eligibleLevels = {"BTECH", "DUAL", "ECE"};
+    ece.syllabus = "Boolean Algebra, Logic Gates, Sequential Circuits, Memory Elements, Microprocessors";
+    add_course(ece);
+
+    CourseInfo phy;
+    phy.courseCode = "PHY101";
+    phy.courseName = "Physics I (Mechanics & Thermodynamics)";
+    phy.credits = 4;
+    phy.instructor = "Dr. Satyajit Sahu";
+    phy.duration = 1;
+    phy.courseType = "Regular";
+    phy.eligibleLevels = {"BTECH", "DUAL"};
+    phy.syllabus = "Mechanics, Thermodynamics, Wave Motion, Optics";
+    add_course(phy);
+
+    CourseInfo hss;
+    hss.courseCode = "HSS101";
+    hss.courseName = "Communication Skills & Technical Writing";
+    hss.credits = 2;
+    hss.instructor = "Dr. Jainendra Shukla";
+    hss.duration = 1;
+    hss.courseType = "Regular";
+    hss.eligibleLevels = {"BTECH", "MTECH", "DUAL"};
+    hss.syllabus = "Professional Communication, Technical Writing, Presentation Skills, Documentation";
+    add_course(hss);
+
     // BTech Core Courses
     CourseInfo dsa;
     dsa.courseCode = "CSE102";
@@ -296,6 +354,7 @@ void CourseCatalog::initializeDefaultCourses()
     dsa.duration = 1;
     dsa.courseType = "Regular";
     dsa.eligibleLevels = {"BTECH"};
+    dsa.prerequisites = {"CSE101"};
     dsa.syllabus = "Arrays, Linked Lists, Stacks, Queues, Trees, Graphs, Sorting, Searching, Dynamic Programming";
     add_course(dsa);
 

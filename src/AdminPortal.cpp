@@ -806,9 +806,9 @@ void AdminPortal::update_student_marks()
         std::cin >> assignment;
         std::cin.ignore();
 
-        // Calculate grade from marks
-        double total = (midSem * 0.3) + (endSem * 0.5) + (assignment * 0.2);
-        Grade grade(total);
+        // Create grade from individual marks (constructor will calculate total and grade point)
+        Grade grade(midSem, endSem, assignment);
+        double total = grade.get_total_marks();
 
         // Update grade through ERP system
         erpSystem->update_student_grade(rollNumber, currentCourses[courseNum - 1].get_course_code(), grade);
@@ -1298,23 +1298,23 @@ void AdminPortal::manage_courses()
         std::cout << "\n"
                   << Colors::DIM << "> " << Colors::RESET << "Total Courses: "
                   << Colors::BOLD << courses.size() << Colors::RESET << "\n\n";
-        OutputFormatter::print_line(115);
+        OutputFormatter::print_line(120);
         std::cout << Colors::BOLD << std::left << std::setw(12) << "Code"
-                  << std::setw(50) << "Name"
+                  << std::setw(48) << "Name"
                   << std::setw(10) << "Credits"
-                  << std::setw(30) << "Instructor"
-                  << std::setw(13) << "Type" << Colors::RESET << "\n";
-        OutputFormatter::print_line(115);
+                  << std::setw(38) << "Instructor"
+                  << std::setw(12) << "Type" << Colors::RESET << "\n";
+        OutputFormatter::print_line(120);
 
         for (const auto &course : courses)
         {
             std::cout << Colors::CYAN << std::left << std::setw(12) << course.courseCode << Colors::RESET
-                      << std::left << std::setw(50) << course.courseName
+                      << std::left << std::setw(48) << course.courseName
                       << Colors::DIM << std::setw(10) << course.credits << Colors::RESET
-                      << Colors::DIM << std::setw(30) << course.instructor << Colors::RESET
-                      << std::left << std::setw(13) << course.courseType << "\n";
+                      << Colors::DIM << std::setw(38) << course.instructor << Colors::RESET
+                      << std::left << std::setw(12) << course.courseType << "\n";
         }
-        OutputFormatter::print_line(115);
+        OutputFormatter::print_line(120);
         break;
     }
     case 2:
@@ -2110,8 +2110,8 @@ void AdminPortal::view_course_enrollments()
     // Display summary of all courses
     std::cout << Colors::CYAN << "Total Courses with Enrollments: " << Colors::BOLD << courseEnrollments.size() << Colors::RESET << "\n\n";
     std::cout << Colors::BOLD << std::left << std::setw(15) << "Course Code"
-              << std::setw(40) << "Course Name"
-              << std::setw(15) << "Students" << Colors::RESET
+              << std::setw(50) << "Course Name"
+              << std::setw(20) << "Students" << Colors::RESET
               << "\n";
     OutputFormatter::print_line(75);
 
@@ -2129,8 +2129,8 @@ void AdminPortal::view_course_enrollments()
         }
 
         std::cout << Colors::CYAN << std::left << std::setw(15) << courseCode << Colors::RESET
-                  << std::left << std::setw(40) << courseName
-                  << Colors::GREEN << std::setw(15) << studentCount << Colors::RESET
+                  << std::left << std::setw(50) << courseName
+                  << Colors::GREEN << std::setw(20) << studentCount << Colors::RESET
                   << "\n";
     }
 
