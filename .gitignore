@@ -13,6 +13,7 @@ data/
 *.dat
 *.csv
 !demo_students.csv
+!demo_students_10000.csv
 
 # IDE and Editor Files
 .vscode/
