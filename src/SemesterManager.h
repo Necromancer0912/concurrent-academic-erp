@@ -85,7 +85,7 @@ std::string SemesterManager::generate_transcript(const Student<RollType, CourseT
     transcript << "\n"
                << std::string(80, '=') << "\n";
     transcript << "                        ACADEMIC TRANSCRIPT\n";
-    transcript << "                IIIT-Delhi ERP System\n";
+    transcript << "                Apex University ERP System\n";
     transcript << std::string(80, '=') << "\n\n";
 
     transcript << "Student Name: " << student.get_name() << "\n";

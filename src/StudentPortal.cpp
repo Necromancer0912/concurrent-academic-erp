@@ -43,7 +43,7 @@ void StudentPortal::display_menu()
     double cgpa = semesterManager->calculate_cgpa(student);
     int creditsCompleted = semesterManager->get_total_credits_completed(student);
 
-    OutputFormatter::print_header("STUDENT PORTAL - IIIT-Delhi ERP");
+    OutputFormatter::print_header("STUDENT PORTAL - Apex University ERP");
 
     std::cout << "  " << Colors::BOLD << Colors::CYAN << student.get_name() << Colors::RESET << "\n";
     std::cout << Colors::DIM << "  Roll: " << Colors::RESET << __roll_number << "\n";

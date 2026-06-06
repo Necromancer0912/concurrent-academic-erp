@@ -37,7 +37,7 @@ AdminPortal::AdminPortal(const std::string &username,
 
 void AdminPortal::display_menu()
 {
-    OutputFormatter::print_header("ADMIN PORTAL - IIIT-Delhi ERP");
+    OutputFormatter::print_header("ADMIN PORTAL - Apex University ERP");
 
     std::cout << Colors::DIM << "  Logged in as: " << Colors::BOLD << Colors::CYAN
               << __admin_username << Colors::RESET << "\n\n";
@@ -98,7 +98,7 @@ void AdminPortal::display_menu()
     // course enrollment & analysis
     std::cout << Colors::YELLOW << "  COURSE ENROLLMENT & ANALYSIS" << Colors::RESET << "\n";
     OutputFormatter::print_menu_item(22, "View Course Enrollments (Students per Course)", Colors::CYAN);
-    OutputFormatter::print_menu_item(23, "IIIT-IIT Course Integration Demo (Template Demo)", Colors::MAGENTA);
+    OutputFormatter::print_menu_item(23, "Apex-Vertex Course Integration Demo (Template Demo)", Colors::MAGENTA);
 
     OutputFormatter::print_menu_separator();
 
@@ -208,7 +208,7 @@ void AdminPortal::run()
             view_course_enrollments();
             break;
         case 23:
-            demo_iiit_iit_course_integration();
+            demo_apex_vertex_course_integration();
             break;
         case 24:
             change_own_password();
@@ -2303,19 +2303,19 @@ void AdminPortal::view_course_enrollments()
     OutputFormatter::print_double_line(102);
 }
 
-void AdminPortal::demo_iiit_iit_course_integration()
+void AdminPortal::demo_apex_vertex_course_integration()
 {
     std::cout << "\n";
     OutputFormatter::print_double_line(80);
-    std::cout << Colors::BOLD << Colors::MAGENTA << "     IIIT-DELHI & IIT-DELHI COURSE INTEGRATION DEMO" << Colors::RESET << "\n";
+    std::cout << Colors::BOLD << Colors::MAGENTA << "     APEX UNIVERSITY & VERTEX INSTITUTE COURSE INTEGRATION DEMO" << Colors::RESET << "\n";
     std::cout << Colors::CYAN << "     Demonstrating Template Flexibility with Different" << Colors::RESET << "\n";
     std::cout << Colors::CYAN << "     Course Code Types (String vs Integer)" << Colors::RESET << "\n";
     OutputFormatter::print_double_line(80);
     std::cout << "\n";
     std::cout << Colors::YELLOW << "Background:" << Colors::RESET << "\n";
-    std::cout << Colors::DIM << "  • IIIT-Delhi students can take courses from IIT-Delhi." << Colors::RESET << "\n";
-    std::cout << Colors::DIM << "  • IIIT-Delhi uses string course codes (e.g., 'CSE201', 'MTH101')" << Colors::RESET << "\n";
-    std::cout << Colors::DIM << "  • IIT-Delhi uses integer course codes (e.g., 101, 201, 305)" << Colors::RESET << "\n\n";
+    std::cout << Colors::DIM << "  • Apex University students can take courses from Vertex Institute." << Colors::RESET << "\n";
+    std::cout << Colors::DIM << "  • Apex University uses string course codes (e.g., 'CSE201', 'MTH101')" << Colors::RESET << "\n";
+    std::cout << Colors::DIM << "  • Vertex Institute uses integer course codes (e.g., 101, 201, 305)" << Colors::RESET << "\n\n";
 
     std::cout << Colors::CYAN << "This demo showcases:" << Colors::RESET << "\n";
     std::cout << Colors::DIM << "  1. Templates handling both string and integer course codes" << Colors::RESET << "\n";
@@ -2326,31 +2326,31 @@ void AdminPortal::demo_iiit_iit_course_integration()
               << Colors::DIM << " to start demo..." << Colors::RESET;
     std::cin.get();
 
-    // Demo 1: IIIT-Delhi Student with String Course Codes
+    // Demo 1: Apex University Student with String Course Codes
     std::cout << "\n";
     OutputFormatter::print_double_line(68);
-    std::cout << Colors::BOLD << Colors::CYAN << "DEMO 1: IIIT-Delhi Student (String Course Codes)" << Colors::RESET << "\n";
+    std::cout << Colors::BOLD << Colors::CYAN << "DEMO 1: Apex University Student (String Course Codes)" << Colors::RESET << "\n";
     OutputFormatter::print_double_line(68);
 
     Branch cse("CSE", "Computer Science and Engineering", "Engineering");
-    Student<std::string, std::string> iiitStudent("Rahul Kumar", "2023CSE101", cse, StudentLevel::BTECH, 2023);
+    Student<std::string, std::string> apexStudent("Rahul Kumar", "2023CSE101", cse, StudentLevel::BTECH, 2023);
 
-    // Add IIIT-Delhi courses with string codes
-    Course<std::string> iiitCourse1("CSE201", "Data Structures", "Dr. Sharma", 4, "Monsoon 2024");
-    Course<std::string> iiitCourse2("CSE202", "Object Oriented Programming", "Dr. Verma", 4, "Monsoon 2024");
-    Course<std::string> iiitCourse3("MTH101", "Linear Algebra", "Prof. Gupta", 3, "Monsoon 2024");
+    // Add Apex University courses with string codes
+    Course<std::string> apexCourse1("CSE201", "Data Structures", "Dr. Sharma", 4, "Monsoon 2024");
+    Course<std::string> apexCourse2("CSE202", "Object Oriented Programming", "Dr. Verma", 4, "Monsoon 2024");
+    Course<std::string> apexCourse3("MTH101", "Linear Algebra", "Prof. Gupta", 3, "Monsoon 2024");
 
-    iiitStudent.add_current_course(iiitCourse1);
-    iiitStudent.add_current_course(iiitCourse2);
-    iiitStudent.add_current_course(iiitCourse3);
+    apexStudent.add_current_course(apexCourse1);
+    apexStudent.add_current_course(apexCourse2);
+    apexStudent.add_current_course(apexCourse3);
 
     std::cout << "\n"
-              << Colors::BOLD << " Student: " << Colors::CYAN << iiitStudent.get_name() << Colors::RESET
-              << Colors::DIM << " (" << iiitStudent.get_roll_number() << ")" << Colors::RESET << "\n";
-    std::cout << Colors::BOLD << "🏫 Institution: " << Colors::GREEN << "IIIT-Delhi" << Colors::RESET << "\n";
-    std::cout << Colors::YELLOW << " Enrolled IIIT-Delhi Courses:" << Colors::RESET << "\n";
-    auto iiitCourses = iiitStudent.get_current_courses();
-    for (const auto &course : iiitCourses)
+              << Colors::BOLD << " Student: " << Colors::CYAN << apexStudent.get_name() << Colors::RESET
+              << Colors::DIM << " (" << apexStudent.get_roll_number() << ")" << Colors::RESET << "\n";
+    std::cout << Colors::BOLD << "🏫 Institution: " << Colors::GREEN << "Apex University" << Colors::RESET << "\n";
+    std::cout << Colors::YELLOW << " Enrolled Apex University Courses:" << Colors::RESET << "\n";
+    auto apexCourses = apexStudent.get_current_courses();
+    for (const auto &course : apexCourses)
     {
         std::cout << Colors::DIM << "   • " << Colors::RESET << Colors::CYAN << course.get_course_code() << Colors::RESET
                   << " - " << course.get_course_name()
@@ -2361,30 +2361,30 @@ void AdminPortal::demo_iiit_iit_course_integration()
               << Colors::YELLOW << "Press Enter to continue..." << Colors::RESET;
     std::cin.get();
 
-    // Demo 2: Same Student Concept with Integer Course Codes (IIT-Delhi)
+    // Demo 2: Same Student Concept with Integer Course Codes (Vertex Institute)
     std::cout << "\n";
     OutputFormatter::print_double_line(68);
-    std::cout << Colors::BOLD << Colors::MAGENTA << "DEMO 2: IIT-Delhi Student (Integer Course Codes)" << Colors::RESET << "\n";
+    std::cout << Colors::BOLD << Colors::MAGENTA << "DEMO 2: Vertex Institute Student (Integer Course Codes)" << Colors::RESET << "\n";
     OutputFormatter::print_double_line(68);
 
-    Student<std::string, int> iitStudent("Priya Singh", "2023CSE102", cse, StudentLevel::BTECH, 2023);
+    Student<std::string, int> vertexStudent("Priya Singh", "2023CSE102", cse, StudentLevel::BTECH, 2023);
 
-    // Add IIT-Delhi courses with integer codes
-    Course<int> iitCourse1(101, "Introduction to Computing", "Prof. Mehta", 3, "Semester 1");
-    Course<int> iitCourse2(201, "Advanced Algorithms", "Dr. Joshi", 4, "Semester 1");
-    Course<int> iitCourse3(305, "Database Systems", "Prof. Reddy", 4, "Semester 1");
+    // Add Vertex Institute courses with integer codes
+    Course<int> vertexCourse1(101, "Introduction to Computing", "Prof. Mehta", 3, "Semester 1");
+    Course<int> vertexCourse2(201, "Advanced Algorithms", "Dr. Joshi", 4, "Semester 1");
+    Course<int> vertexCourse3(305, "Database Systems", "Prof. Reddy", 4, "Semester 1");
 
-    iitStudent.add_current_course(iitCourse1);
-    iitStudent.add_current_course(iitCourse2);
-    iitStudent.add_current_course(iitCourse3);
+    vertexStudent.add_current_course(vertexCourse1);
+    vertexStudent.add_current_course(vertexCourse2);
+    vertexStudent.add_current_course(vertexCourse3);
 
     std::cout << "\n"
-              << Colors::BOLD << " Student: " << Colors::MAGENTA << iitStudent.get_name() << Colors::RESET
-              << Colors::DIM << " (" << iitStudent.get_roll_number() << ")" << Colors::RESET << "\n";
-    std::cout << Colors::BOLD << "🏫 Institution: " << Colors::GREEN << "IIT-Delhi" << Colors::RESET << "\n";
-    std::cout << Colors::YELLOW << " Enrolled IIT-Delhi Courses:" << Colors::RESET << "\n";
-    auto iitCourses = iitStudent.get_current_courses();
-    for (const auto &course : iitCourses)
+              << Colors::BOLD << " Student: " << Colors::MAGENTA << vertexStudent.get_name() << Colors::RESET
+              << Colors::DIM << " (" << vertexStudent.get_roll_number() << ")" << Colors::RESET << "\n";
+    std::cout << Colors::BOLD << "🏫 Institution: " << Colors::GREEN << "Vertex Institute" << Colors::RESET << "\n";
+    std::cout << Colors::YELLOW << " Enrolled Vertex Institute Courses:" << Colors::RESET << "\n";
+    auto vertexCourses = vertexStudent.get_current_courses();
+    for (const auto &course : vertexCourses)
     {
         std::cout << Colors::DIM << "   • " << Colors::RESET << Colors::MAGENTA << course.get_course_code() << Colors::RESET
                   << " - " << course.get_course_name()
@@ -2396,20 +2396,20 @@ void AdminPortal::demo_iiit_iit_course_integration()
               << Colors::DIM << " to continue..." << Colors::RESET;
     std::cin.get();
 
-    // Demo 3: IIIT Student taking IIT courses (Cross-institutional enrollment)
+    // Demo 3: Apex Student taking Vertex courses (Cross-institutional enrollment)
     std::cout << "\n";
     OutputFormatter::print_double_line(68);
-    std::cout << Colors::BOLD << Colors::YELLOW << "DEMO 3: IIIT-Delhi Student Taking IIT-Delhi Courses" << Colors::RESET << "\n";
+    std::cout << Colors::BOLD << Colors::YELLOW << "DEMO 3: Apex University Student Taking Vertex Institute Courses" << Colors::RESET << "\n";
     std::cout << Colors::DIM << "       (Demonstrates Template Flexibility)" << Colors::RESET << "\n";
     OutputFormatter::print_double_line(68);
 
     Student<std::string, int> crossStudent("Arjun Patel", "2023CSE103", cse, StudentLevel::BTECH, 2023);
 
-    // Enroll in both IIIT (string) and IIT (int) style courses
+    // Enroll in both Apex (string) and Vertex (int) style courses
     // But Student template is <string, int> so it handles integer course codes
-    Course<int> mixCourse1(401, "Machine Learning (IIT-Delhi)", "Prof. Kumar", 4, "Winter 2024");
-    Course<int> mixCourse2(505, "Computer Vision (IIT-Delhi)", "Dr. Saxena", 3, "Winter 2024");
-    Course<int> mixCourse3(301, "Operating Systems (IIT-Delhi)", "Prof. Bhatia", 4, "Winter 2024");
+    Course<int> mixCourse1(401, "Machine Learning (Vertex Institute)", "Prof. Kumar", 4, "Winter 2024");
+    Course<int> mixCourse2(505, "Computer Vision (Vertex Institute)", "Dr. Saxena", 3, "Winter 2024");
+    Course<int> mixCourse3(301, "Operating Systems (Vertex Institute)", "Prof. Bhatia", 4, "Winter 2024");
 
     crossStudent.add_current_course(mixCourse1);
     crossStudent.add_current_course(mixCourse2);
@@ -2418,9 +2418,9 @@ void AdminPortal::demo_iiit_iit_course_integration()
     std::cout << "\n"
               << Colors::BOLD << " Student: " << Colors::YELLOW << crossStudent.get_name() << Colors::RESET
               << Colors::DIM << " (" << crossStudent.get_roll_number() << ")" << Colors::RESET << "\n";
-    std::cout << Colors::BOLD << "🏫 Home Institution: " << Colors::CYAN << "IIIT-Delhi" << Colors::RESET
+    std::cout << Colors::BOLD << "🏫 Home Institution: " << Colors::CYAN << "Apex University" << Colors::RESET
               << Colors::DIM << " (Roll format: string)" << Colors::RESET << "\n";
-    std::cout << Colors::BOLD << " Taking courses at: " << Colors::MAGENTA << "IIT-Delhi" << Colors::RESET
+    std::cout << Colors::BOLD << " Taking courses at: " << Colors::MAGENTA << "Vertex Institute" << Colors::RESET
               << Colors::DIM << " (Course codes: integer)" << Colors::RESET << "\n";
     std::cout << Colors::YELLOW << " Cross-Institutional Enrollment:" << Colors::RESET << "\n";
     auto mixCourses = crossStudent.get_current_courses();
@@ -2445,21 +2445,21 @@ void AdminPortal::demo_iiit_iit_course_integration()
     std::cout << "\n"
               << Colors::GREEN << "[OK] Template Instantiations Demonstrated:" << Colors::RESET << "\n\n";
 
-    std::cout << Colors::BOLD << "1. Student<string, string> - IIIT-Delhi student" << Colors::RESET << "\n";
+    std::cout << Colors::BOLD << "1. Student<string, string> (ApexStudent) - Apex University student" << Colors::RESET << "\n";
     std::cout << Colors::DIM << "   • Roll Number Type: std::string" << Colors::RESET << "\n";
     std::cout << Colors::DIM << "   • Course Code Type: std::string" << Colors::RESET << "\n";
-    std::cout << Colors::CYAN << "   • Example Roll: " << iiitStudent.get_roll_number() << Colors::RESET << "\n";
-    std::cout << Colors::CYAN << "   • Example Course: " << iiitCourse1.get_course_code() << Colors::RESET << "\n\n";
+    std::cout << Colors::CYAN << "   • Example Roll: " << apexStudent.get_roll_number() << Colors::RESET << "\n";
+    std::cout << Colors::CYAN << "   • Example Course: " << apexCourse1.get_course_code() << Colors::RESET << "\n\n";
 
-    std::cout << Colors::BOLD << "2. Student<string, int> - IIT-Delhi student" << Colors::RESET << "\n";
+    std::cout << Colors::BOLD << "2. Student<string, int> (VertexStudent) - Vertex Institute student" << Colors::RESET << "\n";
     std::cout << Colors::DIM << "   • Roll Number Type: std::string" << Colors::RESET << "\n";
     std::cout << Colors::DIM << "   • Course Code Type: int" << Colors::RESET << "\n";
-    std::cout << Colors::MAGENTA << "   • Example Roll: " << iitStudent.get_roll_number() << Colors::RESET << "\n";
-    std::cout << Colors::MAGENTA << "   • Example Course: " << iitCourse1.get_course_code() << Colors::RESET << "\n\n";
+    std::cout << Colors::MAGENTA << "   • Example Roll: " << vertexStudent.get_roll_number() << Colors::RESET << "\n";
+    std::cout << Colors::MAGENTA << "   • Example Course: " << vertexCourse1.get_course_code() << Colors::RESET << "\n\n";
 
     std::cout << Colors::BOLD << "3. Student<string, int> - Cross-institutional" << Colors::RESET << "\n";
-    std::cout << Colors::DIM << "   • Roll Number Type: std::string (IIIT format)" << Colors::RESET << "\n";
-    std::cout << Colors::DIM << "   • Course Code Type: int (IIT format)" << Colors::RESET << "\n";
+    std::cout << Colors::DIM << "   • Roll Number Type: std::string (Apex format)" << Colors::RESET << "\n";
+    std::cout << Colors::DIM << "   • Course Code Type: int (Vertex format)" << Colors::RESET << "\n";
     std::cout << Colors::YELLOW << "   • Example Roll: " << crossStudent.get_roll_number() << Colors::RESET << "\n";
     std::cout << Colors::YELLOW << "   • Example Course: " << mixCourse1.get_course_code() << Colors::RESET << "\n\n";
 
@@ -2473,45 +2473,45 @@ void AdminPortal::demo_iiit_iit_course_integration()
     std::cout << Colors::BOLD << Colors::GREEN << "DEMO 5: Grade Assignment (Works with Both Systems)" << Colors::RESET << "\n";
     OutputFormatter::print_double_line(68);
 
-    // Assign grades to IIIT student
+    // Assign grades to Apex student
     Grade g1(9.0); // A
     Grade g2(8.5); // A-
     Grade g3(9.5); // A+
 
-    iiitStudent.update_grade(iiitCourse1.get_course_code(), g1);
-    iiitStudent.update_grade(iiitCourse2.get_course_code(), g2);
-    iiitStudent.update_grade(iiitCourse3.get_course_code(), g3);
+    apexStudent.update_grade(apexCourse1.get_course_code(), g1);
+    apexStudent.update_grade(apexCourse2.get_course_code(), g2);
+    apexStudent.update_grade(apexCourse3.get_course_code(), g3);
 
     std::cout << "\n"
-              << Colors::BOLD << " " << iiitStudent.get_name() << " (IIIT-Delhi) - Grades:" << Colors::RESET << "\n";
-    auto iiitGrades = iiitStudent.get_current_grades();
-    for (size_t i = 0; i < iiitCourses.size(); ++i)
+              << Colors::BOLD << " " << apexStudent.get_name() << " (Apex University) - Grades:" << Colors::RESET << "\n";
+    auto apexGrades = apexStudent.get_current_grades();
+    for (size_t i = 0; i < apexCourses.size(); ++i)
     {
-        std::cout << Colors::CYAN << "   • " << iiitCourses[i].get_course_code() << ": " << Colors::RESET
-                  << Colors::GREEN << iiitGrades[i].get_letter_grade() << Colors::RESET << Colors::DIM << " (GP: "
-                  << std::fixed << std::setprecision(1) << iiitGrades[i].get_grade_point() << ")" << Colors::RESET << "\n";
+        std::cout << Colors::CYAN << "   • " << apexCourses[i].get_course_code() << ": " << Colors::RESET
+                  << Colors::GREEN << apexGrades[i].get_letter_grade() << Colors::RESET << Colors::DIM << " (GP: "
+                  << std::fixed << std::setprecision(1) << apexGrades[i].get_grade_point() << ")" << Colors::RESET << "\n";
     }
-    std::cout << Colors::BOLD << "   CGPA: " << Colors::GREEN << std::fixed << std::setprecision(2) << iiitStudent.calculate_cgpa() << Colors::RESET << "\n";
+    std::cout << Colors::BOLD << "   CGPA: " << Colors::GREEN << std::fixed << std::setprecision(2) << apexStudent.calculate_cgpa() << Colors::RESET << "\n";
 
-    // Assign grades to IIT student
+    // Assign grades to Vertex student
     Grade g4(8.0); // B+
     Grade g5(9.0); // A
     Grade g6(7.5); // B
 
-    iitStudent.update_grade(iitCourse1.get_course_code(), g4);
-    iitStudent.update_grade(iitCourse2.get_course_code(), g5);
-    iitStudent.update_grade(iitCourse3.get_course_code(), g6);
+    vertexStudent.update_grade(vertexCourse1.get_course_code(), g4);
+    vertexStudent.update_grade(vertexCourse2.get_course_code(), g5);
+    vertexStudent.update_grade(vertexCourse3.get_course_code(), g6);
 
     std::cout << "\n"
-              << Colors::BOLD << " " << iitStudent.get_name() << " (IIT-Delhi) - Grades:" << Colors::RESET << "\n";
-    auto iitGrades = iitStudent.get_current_grades();
-    for (size_t i = 0; i < iitCourses.size(); ++i)
+              << Colors::BOLD << " " << vertexStudent.get_name() << " (Vertex Institute) - Grades:" << Colors::RESET << "\n";
+    auto vertexGrades = vertexStudent.get_current_grades();
+    for (size_t i = 0; i < vertexCourses.size(); ++i)
     {
-        std::cout << Colors::MAGENTA << "   • Course " << iitCourses[i].get_course_code() << ": " << Colors::RESET
-                  << Colors::GREEN << iitGrades[i].get_letter_grade() << Colors::RESET << Colors::DIM << " (GP: "
-                  << std::fixed << std::setprecision(1) << iitGrades[i].get_grade_point() << ")" << Colors::RESET << "\n";
+        std::cout << Colors::MAGENTA << "   • Course " << vertexCourses[i].get_course_code() << ": " << Colors::RESET
+                  << Colors::GREEN << vertexGrades[i].get_letter_grade() << Colors::RESET << Colors::DIM << " (GP: "
+                  << std::fixed << std::setprecision(1) << vertexGrades[i].get_grade_point() << ")" << Colors::RESET << "\n";
     }
-    std::cout << Colors::BOLD << "   CGPA: " << Colors::GREEN << std::fixed << std::setprecision(2) << iitStudent.calculate_cgpa() << Colors::RESET << "\n";
+    std::cout << Colors::BOLD << "   CGPA: " << Colors::GREEN << std::fixed << std::setprecision(2) << vertexStudent.calculate_cgpa() << Colors::RESET << "\n";
 
     std::cout << "\n"
               << Colors::DIM << "Press " << Colors::BOLD << "[Enter]" << Colors::RESET
@@ -2532,7 +2532,7 @@ void AdminPortal::demo_iiit_iit_course_integration()
     std::cout << Colors::GREEN << "[OK] " << Colors::BOLD << "Performance:" << Colors::RESET << " Zero runtime overhead compared to runtime polymorphism\n\n";
 
     std::cout << Colors::CYAN << "Real-world Application:" << Colors::RESET << "\n";
-    std::cout << Colors::DIM << "  • IIIT-Delhi students can seamlessly take IIT-Delhi courses" << Colors::RESET << "\n";
+    std::cout << Colors::DIM << "  • Apex University students can seamlessly take Vertex Institute courses" << Colors::RESET << "\n";
     std::cout << Colors::DIM << "  • System tracks courses from both institutions correctly" << Colors::RESET << "\n";
     std::cout << Colors::DIM << "  • Type system ensures data integrity across institutions" << Colors::RESET << "\n";
     std::cout << Colors::DIM << "  • Same codebase serves multiple course numbering systems" << Colors::RESET << "\n\n";

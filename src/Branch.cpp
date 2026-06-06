@@ -46,7 +46,7 @@ bool Branch::operator!=(const Branch &_other) const
     return !(*this == _other);
 }
 
-// Static factory methods for common IIIT-D branches
+// Static factory methods for common engineering branches
 // BTech Branches
 Branch Branch::CSE()
 {

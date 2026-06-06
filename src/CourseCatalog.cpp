@@ -510,15 +510,15 @@ void CourseCatalog::initializeDefaultCourses()
     add_course(phdSeminar);
 
     // ====================================================================
-    // IIT-Delhi Courses (Integer-based Course Codes)
-    // IIIT-Delhi students can take these __courses as per cross-registration
+    // Vertex Institute Courses (Integer-based Course Codes)
+    // Apex University students can take these courses as per cross-registration
     // ====================================================================
 
     CourseInfo iit101;
     iit101.courseCode = "101";
     iit101.courseName = "Introduction to Computing";
     iit101.credits = 4;
-    iit101.instructor = "Prof. Subhashis Banerjee (IIT-Delhi)";
+    iit101.instructor = "Prof. Subhashis Banerjee (Vertex Institute)";
     iit101.duration = 1;
     iit101.courseType = "Regular";
     iit101.eligibleLevels = {"BTECH", "MTECH"};
@@ -529,7 +529,7 @@ void CourseCatalog::initializeDefaultCourses()
     iit201.courseCode = "201";
     iit201.courseName = "Advanced Algorithms";
     iit201.credits = 4;
-    iit201.instructor = "Prof. Mausam (IIT-Delhi)";
+    iit201.instructor = "Prof. Mausam (Vertex Institute)";
     iit201.duration = 1;
     iit201.courseType = "Regular";
     iit201.eligibleLevels = {"BTECH", "MTECH", "PHD"};
@@ -541,7 +541,7 @@ void CourseCatalog::initializeDefaultCourses()
     iit202.courseCode = "202";
     iit202.courseName = "Computer Architecture";
     iit202.credits = 4;
-    iit202.instructor = "Prof. Anshul Kumar (IIT-Delhi)";
+    iit202.instructor = "Prof. Anshul Kumar (Vertex Institute)";
     iit202.duration = 1;
     iit202.courseType = "Regular";
     iit202.eligibleLevels = {"BTECH", "MTECH"};
@@ -552,7 +552,7 @@ void CourseCatalog::initializeDefaultCourses()
     iit305.courseCode = "305";
     iit305.courseName = "Database Systems";
     iit305.credits = 4;
-    iit305.instructor = "Prof. S. Sudarshan (IIT-Delhi)";
+    iit305.instructor = "Prof. S. Sudarshan (Vertex Institute)";
     iit305.duration = 1;
     iit305.courseType = "Regular";
     iit305.eligibleLevels = {"BTECH", "MTECH", "PHD"};
@@ -564,7 +564,7 @@ void CourseCatalog::initializeDefaultCourses()
     iit401.courseCode = "401";
     iit401.courseName = "Artificial Intelligence and Machine Learning";
     iit401.credits = 4;
-    iit401.instructor = "Prof. Parag Singla (IIT-Delhi)";
+    iit401.instructor = "Prof. Parag Singla (Vertex Institute)";
     iit401.duration = 1;
     iit401.courseType = "Regular";
     iit401.eligibleLevels = {"BTECH", "MTECH", "PHD"};
@@ -576,7 +576,7 @@ void CourseCatalog::initializeDefaultCourses()
     iit501.courseCode = "501";
     iit501.courseName = "Advanced Computer Networks";
     iit501.credits = 4;
-    iit501.instructor = "Prof. Huzur Saran (IIT-Delhi)";
+    iit501.instructor = "Prof. Huzur Saran (Vertex Institute)";
     iit501.duration = 1;
     iit501.courseType = "Regular";
     iit501.eligibleLevels = {"MTECH", "PHD"};
@@ -587,7 +587,7 @@ void CourseCatalog::initializeDefaultCourses()
     iit502.courseCode = "502";
     iit502.courseName = "Parallel and Distributed Computing";
     iit502.credits = 4;
-    iit502.instructor = "Prof. Kolin Paul (IIT-Delhi)";
+    iit502.instructor = "Prof. Kolin Paul (Vertex Institute)";
     iit502.duration = 1;
     iit502.courseType = "Regular";
     iit502.eligibleLevels = {"MTECH", "PHD"};
@@ -598,7 +598,7 @@ void CourseCatalog::initializeDefaultCourses()
     iit601.courseCode = "601";
     iit601.courseName = "Advanced Topics in Computer Vision";
     iit601.credits = 4;
-    iit601.instructor = "Prof. Chetan Arora (IIT-Delhi)";
+    iit601.instructor = "Prof. Chetan Arora (Vertex Institute)";
     iit601.duration = 1;
     iit601.courseType = "Regular";
     iit601.eligibleLevels = {"MTECH", "PHD"};
@@ -606,9 +606,9 @@ void CourseCatalog::initializeDefaultCourses()
     iit601.syllabus = "Image Processing, Object Detection, Semantic Segmentation, 3D Vision, GANs";
     add_course(iit601);
 
-    std::cout << "Initialized course catalog with " << __courses.size() << " __courses.\n";
-    std::cout << "  - IIIT-Delhi __courses: " << (__courses.size() - 8) << "\n";
-    std::cout << "  - IIT-Delhi __courses: 8 (cross-registration available)\n";
+    std::cout << "Initialized course catalog with " << __courses.size() << " courses.\n";
+    std::cout << "  - Apex University courses: " << (__courses.size() - 8) << "\n";
+    std::cout << "  - Vertex Institute courses: 8 (cross-registration available)\n";
 }
 
 void CourseCatalog::displayCourse(const std::string &courseCode) const

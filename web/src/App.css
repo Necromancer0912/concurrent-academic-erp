@@ -1,0 +1,4 @@
+/* App-specific style overrides (if any) */
+.visualizer-node {
+  transition: all 0.3s ease;
+}

@@ -50,8 +50,8 @@ private:
     // Course enrollment view
     void view_course_enrollments();
 
-    // IIIT-IIT Course Integration Demo
-    void demo_iiit_iit_course_integration();
+    // Apex-Vertex Course Integration Demo
+    void demo_apex_vertex_course_integration();
 
 public:
     AdminPortal(const std::string &username,

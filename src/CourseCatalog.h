@@ -77,7 +77,7 @@ public:
     // Get course type (Regular, Capstone, Research)
     std::string getCourseType(const std::string &courseCode) const;
 
-    // Initialize with default IIIT-Delhi __courses
+    // Initialize with default Apex University courses
     void initializeDefaultCourses();
 
     // Display course details

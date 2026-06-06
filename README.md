@@ -41,7 +41,7 @@
 
 ## Overview
 
-This project presents a sophisticated **Enterprise Resource Planning (ERP) System** designed specifically for IIIT-Delhi's academic administration. Built using modern C++17 features, the system demonstrates advanced programming concepts including **template metaprogramming**, **multithreading**, **STL algorithms**, and **design patterns**.
+This project presents a sophisticated **Enterprise Resource Planning (ERP) System** for multi-institutional academic administration. Built using modern C++17 features, the system demonstrates advanced programming concepts including **template metaprogramming**, **multithreading**, **STL algorithms**, and **design patterns**.
 
 ### Core Philosophy
 
@@ -57,7 +57,7 @@ The system embodies the principles of:
 The ERP system manages comprehensive academic records for:
 - **Student Demographics**: Names, roll numbers, branches, enrollment years
 - **Academic Progress**: Current courses, completed courses, grades, CGPA
-- **Course Management**: Multi-institutional course catalogs (IIIT-Delhi & IIT-Delhi)
+- **Course Management**: Multi-institutional course catalogs (Apex University & Vertex Institute)
 - **Registration Workflow**: Course request submission and approval system
 - **Administrative Operations**: Bulk imports, parallel sorting, advanced search
 
@@ -132,7 +132,7 @@ This project is built to demonstrate advanced C++ software engineering principle
 #### Course Administration
 | Feature | Description |
 |---------|-------------|
-| **Course Catalog** | Manage 40+ courses from IIIT-Delhi and IIT-Delhi |
+| **Course Catalog** | Manage 40+ courses from Apex University and Vertex Institute |
 | **Enrollment Analytics** | View course-wise student statistics |
 | **Request Approval** | Review and process course registration requests |
 | **Semester Controls** | Toggle registration and drop periods |
@@ -143,7 +143,7 @@ This project is built to demonstrate advanced C++ software engineering principle
 | **Account Creation** | Generate student credentials (bulk supported) |
 | **Database Management** | Backup, restore, export operations |
 | **Statistics Dashboard** | Enrollment distribution and system metrics |
-| **IIIT-IIT Demo** | Live demonstration of template flexibility |
+| **Apex-Vertex Demo** | Live demonstration of template flexibility |
 
 ---
 
@@ -160,8 +160,8 @@ template <typename CourseCodeType>
 class Course { /* ... */ };
 
 // Type aliases for convenience
-using IIITDStudent = Student<std::string, std::string>;
-using IITDStudent = Student<std::string, int>;
+using ApexStudent = Student<std::string, std::string>;
+using VertexStudent = Student<std::string, int>;
 ```
 
 ### Threading Model
@@ -375,7 +375,7 @@ make
 # [*] Compiling Student.cpp
 # [*] Compiling Course.cpp
 # ... (more compilation messages)
-# [LINK] Creating executable: iiit_erp
+# [LINK] Creating executable: erp_system
 # [OK] Build complete!
 ```
 
@@ -383,7 +383,7 @@ make
 
 ```bash
 # Method 1: Direct execution
-./iiit_erp
+./erp_system
 
 # Method 2: Using make
 make run
@@ -428,7 +428,7 @@ make run
 
 ```
 ================================================================================
-  IIIT-Delhi ERP System
+  Apex University ERP System
 ================================================================================
 
   [ 1 ]  Student Portal
@@ -528,7 +528,7 @@ STUDENT MANAGEMENT
 
   COURSE ENROLLMENT & ANALYSIS
     [22]  View Course Enrollments (Students per Course)
-    [23]  IIIT-IIT Course Integration Demo (Template Demo)
+    [23]  Apex-Vertex Course Integration Demo (Template Demo)
 
   ITERATORS & GRADE SEARCH (Assignment Features)
     [25]  View Students (Insertion Order)
@@ -636,12 +636,12 @@ John Doe,2019CSE001,CSE,BTech,2019,"CSE201,MTH101","CSE102,ECE113","CSE102:8,ECE
 
 ---
 
-##### IIIT-IIT Integration Demo
+##### Apex-Vertex Integration Demo
 
 1. Select option `[21]`
 2. Watch automated demonstration:
-   - Creates IIIT-Delhi student with string course codes
-   - Creates IIT-Delhi student with integer course codes
+   - Creates Apex University student with string course codes
+   - Creates Vertex Institute student with integer course codes
    - Enrolls in respective courses
    - Assigns grades
    - Calculates CGPAs
@@ -650,12 +650,12 @@ John Doe,2019CSE001,CSE,BTech,2019,"CSE201,MTH101","CSE102,ECE113","CSE102:8,ECE
 
 **Output highlights:**
 ```
-Creating IIIT-Delhi Student (String Course Codes)...
+Creating Apex University Student (String Course Codes)...
 Student: Amit Sharma (2019CSE023)
 Courses: CSE201, MTH101, ECE113
 Type: Student<string, string>
 
-Creating IIT-Delhi Student (Integer Course Codes)...
+Creating Vertex Institute Student (Integer Course Codes)...
 Student: Priya Verma (2020EE042)
 Courses: 101, 201, 305
 Type: Student<string, int>
@@ -713,8 +713,8 @@ public:
 
 ```cpp
 // In Student.cpp
-template class Student<std::string, std::string>;      // IIIT-Delhi
-template class Student<std::string, int>;              // IIT-Delhi
+template class Student<std::string, std::string>;      // Apex University
+template class Student<std::string, int>;              // Vertex Institute
 template class Student<unsigned int, std::string>;     // University A
 template class Student<unsigned int, int>;             // University B
 ```
@@ -885,7 +885,7 @@ for (auto it = erpSystem->sortedOrderBegin();
 
 ## Course Catalog
 
-### IIIT-Delhi Courses (String Codes)
+### Apex University Courses (String Codes)
 
 #### Computer Science and Engineering (CSE)
 
@@ -926,7 +926,7 @@ for (auto it = erpSystem->sortedOrderBegin();
 
 ---
 
-### IIT-Delhi Courses (Integer Codes)
+### Vertex Institute Courses (Integer Codes)
 
 | Code | Course Name | Credits | Instructor | Prerequisites |
 |------|-------------|---------|------------|---------------|
@@ -939,7 +939,7 @@ for (auto it = erpSystem->sortedOrderBegin();
 | 502 | Parallel and Distributed Computing | 4 | Dr. G. Reddy | 201, 202 |
 | 601 | Advanced Topics in Computer Vision | 4 | Dr. H. Iyer | 401 |
 
-**Total Courses:** 40+ (25 IIIT-Delhi + 15 IIT-Delhi)
+**Total Courses:** 40+ (25 Apex University + 15 Vertex Institute)
 
 ---
 

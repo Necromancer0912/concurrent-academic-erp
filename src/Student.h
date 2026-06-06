@@ -128,7 +128,7 @@ public:
 };
 
 // Type aliases for convenience
-using IIITDStudent = Student<std::string, std::string>; // IIIT-D uses string roll numbers and course codes
-using IITDStudent = Student<std::string, int>;          // IIT-D uses string roll numbers and integer course codes
+using ApexStudent = Student<std::string, std::string>; // Apex uses string roll numbers and course codes
+using VertexStudent = Student<std::string, int>;       // Vertex uses string roll numbers and integer course codes
 
 #endif // STUDENT_H

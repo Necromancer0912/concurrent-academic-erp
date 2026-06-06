@@ -37,7 +37,7 @@ public:
     bool operator==(const Branch &other) const;
     bool operator!=(const Branch &other) const;
 
-    // Static factory methods for common IIIT-D branches
+    // Static factory methods for common engineering branches
     // BTech Branches
     static Branch CSE();    // Computer Science and Engineering
     static Branch ECE();    // Electronics and Communications Engineering
