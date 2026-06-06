@@ -21,7 +21,7 @@
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Overview](#-overview)
 - [Assignment Requirements](#-assignment-requirements)
@@ -39,7 +39,7 @@
 
 ---
 
-## 🎯 Overview
+## Overview
 
 This project presents a sophisticated **Enterprise Resource Planning (ERP) System** designed specifically for IIIT-Delhi's academic administration. Built using modern C++17 features, the system demonstrates advanced programming concepts including **template metaprogramming**, **multithreading**, **STL algorithms**, and **design patterns**.
 
@@ -63,7 +63,7 @@ The ERP system manages comprehensive academic records for:
 
 ---
 
-## ⚙️ Core Architecture & High-Performance Features
+## Core Architecture & High-Performance Features
 
 This project is built to demonstrate advanced C++ software engineering principles and systems programming paradigms, focusing on the following core components:
 
@@ -79,11 +79,11 @@ This project is built to demonstrate advanced C++ software engineering principle
 ### 3. High-Volume CSV Parsing & Parallel Sort Engine
 - A dedicated CSV handling subsystem capable of parsing and loading 10,000+ mock student records under 1.5 seconds.
 - **Dynamic Thread Allocation Engine:** Automatically scales worker threads based on workload:
-  - ≤3,000 students ➔ 2 threads
-  - 3,001-6,000 students ➔ 3 threads
-  - 6,001-10,000 students ➔ 4 threads
-  - 10,001-15,000 students ➔ 5 threads
-  - >15,000 students ➔ 6 threads
+  - <= 3,000 students: 2 threads
+  - 3,001-6,000 students: 3 threads
+  - 6,001-10,000 students: 4 threads
+  - 10,001-15,000 students: 5 threads
+  - > 15,000 students: 6 threads
 - **Algorithm:** Parallelized merge-sort with `std::sort` leaf-level optimizations.
 - **Thread Safety:** Mutex-protected logs and thread execution times tracking.
 - **Performance:** Achieves a ~2x speedup (2-3 ms compared to 5-6 ms baseline) for 10,000 students using 4 hardware threads.
@@ -104,9 +104,9 @@ This project is built to demonstrate advanced C++ software engineering principle
 
 ---
 
-## ✨ Key Features
+## Key Features
 
-### 🎓 Student Portal
+### Student Portal
 
 | Feature | Description |
 |---------|-------------|
@@ -117,7 +117,7 @@ This project is built to demonstrate advanced C++ software engineering principle
 | **Transcript Generation** | Download comprehensive academic transcript |
 | **Password Management** | Secure password change functionality |
 
-### 👨‍💼 Admin Portal
+### ‍ Admin Portal
 
 #### Student Management
 | Feature | Description |
@@ -147,7 +147,7 @@ This project is built to demonstrate advanced C++ software engineering principle
 
 ---
 
-## 🏗️ Technical Architecture
+## ️ Technical Architecture
 
 ### Template System
 
@@ -168,15 +168,15 @@ using IITDStudent = Student<std::string, int>;
 
 ```
 Main Thread
-    │
-    ├─→ Thread 1: Sort segment [0, n/k]
-    ├─→ Thread 2: Sort segment [n/k, 2n/k]
-    ├─→ Thread 3: Sort segment [2n/k, 3n/k]
-    └─→ Thread k: Sort segment [(k-1)n/k, n]
+    
+    → Thread 1: Sort segment [0, n/k]
+    → Thread 2: Sort segment [n/k, 2n/k]
+    → Thread 3: Sort segment [2n/k, 3n/k]
+    → Thread k: Sort segment [(k-1)n/k, n]
     
     [Wait for all threads to complete]
     
-    │
+    
     ↓
 Merge Thread: Combine sorted segments
 ```
@@ -184,46 +184,46 @@ Merge Thread: Combine sorted segments
 ### Data Flow Architecture
 
 ```
-┌─────────────────┐
-│   CSV Import    │
-│ (10,000 records)│
-└────────┬────────┘
-         │
+
+   CSV Import    
+ (10,000 records)
+
+         
          ↓
-┌─────────────────┐     ┌──────────────────┐
-│  CSV Handler    │────→│  Validation      │
-│  (Parser)       │     │  (Type checking) │
-└────────┬────────┘     └──────────────────┘
-         │
+     
+  CSV Handler    →  Validation      
+  (Parser)              (Type checking) 
+     
+         
          ↓
-┌─────────────────┐     ┌──────────────────┐
-│  ERP System     │────→│  Grade Index     │
-│  (Hash Map)     │     │  (Multimap)      │
-└────────┬────────┘     └──────────────────┘
-         │
-    ┌────┴────┐
+     
+  ERP System     →  Grade Index     
+  (Hash Map)            (Multimap)      
+     
+         
+    
     ↓         ↓
-┌─────────┐ ┌────────────┐
-│students │ │insertion   │
-│.db      │ │_order.db   │
-└─────────┘ └────────────┘
-         │
+ 
+students  insertion   
+.db       _order.db   
+ 
+         
          ↓
-┌─────────────────┐
-│ Sorting Manager │
-│ (Multi-threaded)│
-└────────┬────────┘
-         │
+
+ Sorting Manager 
+ (Multi-threaded)
+
+         
          ↓
-┌─────────────────┐     ┌──────────────────┐
-│  Portal Views   │     │  Authentication  │
-│ (Admin/Student) │────→│  (Credentials)   │
-└─────────────────┘     └──────────────────┘
+     
+  Portal Views          Authentication  
+ (Admin/Student) →  (Credentials)   
+     
 ```
 
 ---
 
-## 🎨 Design Patterns
+## Design Patterns
 
 ### 1. Template Method Pattern
 - **Usage:** `Student<RollType, CourseCodeType>` provides compile-time polymorphism
@@ -254,82 +254,59 @@ Merge Thread: Combine sorted segments
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
-Assignment_4_not_tested_without_sql/
-│
-├── 📄 Makefile                          # Build system with optimization flags
-├── 📘 README.md                         # This comprehensive documentation
-├── 📄 .gitignore                        # Version control exclusions
-├── 📊 demo_students.csv                 # Sample dataset (10,000 records)
-│
-├── 📂 src/                              # Source code directory
-│   │
-│   ├── 🎯 main.cpp                      # Application entry point
-│   │
-│   ├── 👤 Student Management
-│   │   ├── Student.h                    # Template student class definition
-│   │   ├── Student.cpp                  # Student implementation (500+ lines)
-│   │   ├── EnrollmentRecord.h           # Insertion order tracking
-│   │   ├── EnrollmentRecord.cpp         # Enrollment implementation
-│   │   ├── Grade.h                      # Grade and CGPA calculations
-│   │   └── Grade.cpp                    # Grade implementation
-│   │
-│   ├── 📚 Course Management
-│   │   ├── Course.h                     # Template course class
-│   │   ├── Course.cpp                   # Course implementation
-│   │   ├── CourseCatalog.h              # IIIT + IIT course catalog
-│   │   ├── CourseCatalog.cpp            # Catalog with 40+ courses
-│   │   ├── Branch.h                     # Academic branch definitions
-│   │   └── Branch.cpp                   # Branch implementation
-│   │
-│   ├── ⚙️ System Core
-│   │   ├── ERPSystem.h                  # Main ERP logic with templates
-│   │   ├── ERPSystem.cpp                # ERP implementation (1000+ lines)
-│   │   ├── Database.h                   # Binary file persistence
-│   │   ├── Database.cpp                 # I/O operations
-│   │   ├── CSVHandler.h                 # CSV import/export
-│   │   └── CSVHandler.cpp               # CSV parsing logic
-│   │
-│   ├── 🔐 Authentication
-│   │   ├── Auth.h                       # User authentication system
-│   │   └── Auth.cpp                     # Login/password management
-│   │
-│   ├── 🖥️ User Interfaces
-│   │   ├── AdminPortal.h                # Administrator interface
-│   │   ├── AdminPortal.cpp              # Admin operations (2500+ lines)
-│   │   ├── StudentPortal.h              # Student interface
-│   │   └── StudentPortal.cpp            # Student operations (1000+ lines)
-│   │
-│   ├── 🚀 Advanced Features
-│   │   ├── SortingManager.h             # Parallel sorting engine
-│   │   ├── SortingManager.cpp           # Multi-threaded sorting (400+ lines)
-│   │   ├── SemesterManager.h            # Academic semester controls
-│   │   ├── SemesterManager.cpp          # Registration period management
-│   │   └── PendingCourseRequest.h       # Course request queue
-│   │
-│   ├── 🎨 User Interface Components
-│   │   ├── Colors.h                     # Soft color palette definitions
-│   │   ├── Colors.cpp                   # ANSI color codes (256-color mode)
-│   │   ├── OutputFormatter.h            # Elegant formatting utilities
-│   │   └── OutputFormatter.cpp          # Beautiful output functions
-│   │
-│   └── 📦 obj/                          # Compiled object files (auto-generated)
-│
-├── 💾 data/                             # Runtime data (auto-created on first run)
-│   ├── __students.db                    # Main student database (binary)
-│   ├── insertion_order.db               # Insertion sequence tracking
-│   ├── course_catalog.dat               # Course definitions
-│   ├── admin_credentials.dat            # Administrator accounts
-│   ├── student_credentials.dat          # Student login credentials
-│   │
-│   └── 📂 syllabus/                     # Course syllabi (optional)
-│
-└── 📖 docs/                             # Additional documentation (optional)
-    ├── DESIGN_PATTERNS.md               # Detailed pattern explanations
-    ├── THREADING_GUIDE.md               # Multithreading implementation
-    └── API_REFERENCE.md                 # Class and function documentation
+project_root/
+|-- Makefile                          # Build system with optimization flags
+|-- README.md                         # This comprehensive documentation
+|-- .gitignore                        # Version control exclusions
+|-- demo_students.csv                 # Sample dataset (10,000 records)
+|-- src/                              # Source code directory
+|   |-- main.cpp                      # Application entry point
+|   |-- Student.h                     # Template student class definition
+|   |-- Student.cpp                   # Student implementation
+|   |-- EnrollmentRecord.h            # Insertion order tracking
+|   |-- EnrollmentRecord.cpp          # Enrollment implementation
+|   |-- Grade.h                       # Grade and CGPA calculations
+|   |-- Grade.cpp                     # Grade implementation
+|   |-- Course.h                      # Template course class
+|   |-- Course.cpp                    # Course implementation
+|   |-- CourseCatalog.h               # Course catalog structure
+|   |-- CourseCatalog.cpp             # Catalog implementation
+|   |-- Branch.h                      # Academic branch definitions
+|   |-- Branch.cpp                    # Branch implementation
+|   |-- ERPSystem.h                   # Main ERP logic with templates
+|   |-- ERPSystem.cpp                 # ERP implementation
+|   |-- Database.h                    # Binary file persistence
+|   |-- Database.cpp                  # I/O operations
+|   |-- CSVHandler.h                  # CSV import/export
+|   |-- CSVHandler.cpp                # CSV parsing logic
+|   |-- Auth.h                        # User authentication system
+|   |-- Auth.cpp                      # Login/password management
+|   |-- AdminPortal.h                 # Administrator interface
+|   |-- AdminPortal.cpp               # Admin operations
+|   |-- StudentPortal.h               # Student interface
+|   |-- StudentPortal.cpp             # Student operations
+|   |-- SortingManager.h              # Parallel sorting engine
+|   |-- SortingManager.cpp            # Multi-threaded sorting
+|   |-- SemesterManager.h             # Academic semester controls
+|   |-- SemesterManager.cpp           # Registration period management
+|   |-- PendingCourseRequest.h        # Course request queue
+|   |-- Colors.h                      # Color palette definitions
+|   |-- Colors.cpp                    # ANSI color codes
+|   |-- OutputFormatter.h             # Elegant formatting utilities
+|   `-- OutputFormatter.cpp           # Beautiful output functions
+|-- data/                             # Runtime data (created on first run)
+|   |-- __students.db                 # Main student database
+|   |-- insertion_order.db            # Insertion sequence tracking
+|   |-- course_catalog.dat            # Course definitions
+|   |-- admin_credentials.dat         # Administrator accounts
+|   `-- student_credentials.dat       # Student login credentials
+`-- docs/                             # Additional documentation
+    |-- DESIGN_PATTERNS.md            # Detailed pattern explanations
+    |-- THREADING_GUIDE.md            # Multithreading implementation
+    `-- API_REFERENCE.md              # Class and function documentation
 ```
 
 ### File Statistics
@@ -340,7 +317,7 @@ Assignment_4_not_tested_without_sql/
 
 ---
 
-## 🔧 Installation Guide
+## Installation Guide
 
 ### Prerequisites
 
@@ -426,20 +403,20 @@ make run
 
 On the first execution, the system will automatically:
 
-1. ✅ Create `data/` directory
-2. ✅ Create `data/syllabus/` subdirectory
-3. ✅ Initialize credential files:
+1.  Create `data/` directory
+2.  Create `data/syllabus/` subdirectory
+3.  Initialize credential files:
    - `admin_credentials.dat`
    - `student_credentials.dat`
-4. ✅ Load sample data from `demo_students.csv` (10,000 students)
-5. ✅ Initialize course catalog with 40+ courses
-6. ✅ Build grade index for fast queries
+4.  Load sample data from `demo_students.csv` (10,000 students)
+5.  Initialize course catalog with 40+ courses
+6.  Build grade index for fast queries
 
 **Expected first-run time:** ~2-3 seconds
 
 ---
 
-## 📖 User Manual
+## User Manual
 
 ### Starting the Application
 
@@ -463,7 +440,7 @@ Enter your choice:
 
 ---
 
-### 🎓 Student Portal Guide
+### Student Portal Guide
 
 #### Login Credentials
 
@@ -508,7 +485,7 @@ Enter your choice:
 
 ---
 
-### 👨‍💼 Admin Portal Guide
+### ‍ Admin Portal Guide
 
 #### Login Credentials
 
@@ -688,7 +665,7 @@ Template allows both types to coexist without conflicts!
 
 ---
 
-## 🔬 Implementation Details
+## Implementation Details
 
 ### Template Class Design
 
@@ -860,7 +837,7 @@ for (auto it = erpSystem->sortedOrderBegin();
 
 ---
 
-## 📊 Performance Metrics
+## Performance Metrics
 
 ### Benchmark Environment
 
@@ -906,7 +883,7 @@ for (auto it = erpSystem->sortedOrderBegin();
 
 ---
 
-## 📚 Course Catalog
+## Course Catalog
 
 ### IIIT-Delhi Courses (String Codes)
 
@@ -966,7 +943,7 @@ for (auto it = erpSystem->sortedOrderBegin();
 
 ---
 
-## 🚀 Future Enhancements
+## Future Enhancements
 
 ### Planned Features
 
@@ -1022,7 +999,7 @@ for (auto it = erpSystem->sortedOrderBegin();
   - Risk: High (requires comprehensive regression testing)
   - Status: Deferred to maintenance release
 
-## 🛠️ Credits and Technologies
+## Credits and Technologies
 
 ### Technologies Used
 
@@ -1044,6 +1021,6 @@ for (auto it = erpSystem->sortedOrderBegin();
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License. Feel free to use and modify it for educational or portfolio purposes.
