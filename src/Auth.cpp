@@ -6,7 +6,7 @@
 
 const std::string Auth::ADMIN_CREDENTIALS_FILE = "data/admin_credentials.dat";
 const std::string Auth::STUDENT_CREDENTIALS_FILE = "data/student_credentials.dat";
-const std::string Auth::SALT = "IIITD_ERP_2025_SECURE";
+const std::string Auth::SALT = "UNIVERSITY_ERP_SECURE_SALT";
 
 std::string Auth::hashPassword(const std::string &_password)
 {
@@ -202,12 +202,12 @@ void Auth::initializeCredentialFiles()
         std::map<std::string, std::string> _admin_creds;
         _admin_creds["admin"] = hashPassword("admin123");
         _admin_creds["super"] = hashPassword("super123");
-        _admin_creds["sayan"] = hashPassword("sayan123"); // Creator/Super user account
+        _admin_creds["developer"] = hashPassword("dev123"); // Developer account
         saveCredentials(ADMIN_CREDENTIALS_FILE, _admin_creds);
         std::cout << "Default admin accounts created:\n";
         std::cout << "  Username: admin, Password: admin123\n";
         std::cout << "  Username: super, Password: super123\n";
-        std::cout << "  Username: sayan, Password: sayan123 (Creator)\n";
+        std::cout << "  Username: developer, Password: dev123 (Developer Account)\n";
     }
     _admin_file.close();
 

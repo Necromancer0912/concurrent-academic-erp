@@ -16,9 +16,8 @@ void displayWelcome()
 {
     std::cout << Colors::BOLD << Colors::CYAN << "\n";
     std::cout << std::string(80, '=') << "\n";
-    std::cout << std::string(15, ' ') << "IIIT-DELHI UNIVERSITY ERP SYSTEM\n";
-    std::cout << std::string(15, ' ') << "Object-Oriented Programming & Design\n";
-    std::cout << std::string(15, ' ') << "Assignment 4 - Templates and Threads\n";
+    std::cout << std::string(22, ' ') << "UNIVERSITY ERP SYSTEM\n";
+    std::cout << std::string(21, ' ') << "Academic Records & Enrollment\n";
     std::cout << std::string(80, '=') << "\n";
     std::cout << Colors::RESET;
 }
@@ -66,7 +65,7 @@ UserType getUserType()
         else if (choice == 3)
         {
             std::cout << "\n"
-                      << Colors::GREEN << "[OK] Thank you for using IIIT-Delhi ERP System!" << Colors::RESET << "\n";
+                      << Colors::GREEN << "[OK] Thank you for using University ERP System!" << Colors::RESET << "\n";
             exit(0);
         }
         else

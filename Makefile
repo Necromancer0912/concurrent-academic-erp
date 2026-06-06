@@ -1,4 +1,4 @@
-# Makefile for IIIT-Delhi ERP System - OOPD Assignment 4
+# Makefile for High-Performance Multithreaded University ERP System
 # Authenticated System with Admin and Student Portals
 
 # Compiler and flags
@@ -61,9 +61,9 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp $(HEADERS) | $(BUILD_DIR)
 
 # Link executable
 $(TARGET): $(OBJECTS) | $(DATA_DIR)
-	@echo "\033[35m[LINK] Linking IIIT-Delhi ERP system...\033[0m"
+	@echo "\033[35m[LINK] Linking University ERP system...\033[0m"
 	@$(CXX) $(CXXFLAGS) $(OBJECTS) -o $@
-	@echo "\033[1;32m[OK] IIIT-Delhi ERP system built successfully:\033[0m $(TARGET)"
+	@echo "\033[1;32m[OK] University ERP system built successfully:\033[0m $(TARGET)"
 
 # Debug build
 debug: CXXFLAGS += $(DEBUGFLAGS)
@@ -71,7 +71,7 @@ debug: clean all
 
 # Run the system
 run: $(TARGET)
-	@echo "\033[1;36m▶ Running IIIT-Delhi ERP system...\033[0m"
+	@echo "\033[1;36m▶ Running University ERP system...\033[0m"
 	@./$(TARGET)
 
 # Build and run the demo CSV generator
@@ -97,10 +97,10 @@ clean-all: clean
 
 # Help target
 help:
-	@echo "IIIT-Delhi ERP System - Makefile"
+	@echo "University ERP System - Makefile"
 	@echo ""
 	@echo "Available targets:"
-	@echo "  all           - Build IIIT-Delhi ERP system (default)"
+	@echo "  all           - Build University ERP system (default)"
 	@echo "  run           - Build and run the system"
 	@echo "  debug         - Build with debug symbols"
 	@echo "  clean         - Remove build artifacts"
@@ -108,7 +108,7 @@ help:
 	@echo "  help          - Show this help message"
 	@echo ""
 	@echo "Executable:"
-	@echo "  $(TARGET) - IIIT-Delhi ERP system with authentication"
+	@echo "  $(TARGET) - University ERP system with authentication"
 
 # Phony targets
 .PHONY: all run debug clean clean-all help

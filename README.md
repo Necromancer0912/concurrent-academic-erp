@@ -1,19 +1,13 @@
-# IIIT-Delhi University ERP System
+# High-Performance Multithreaded University ERP System
 
 <div align="center">
-
-### Object-Oriented Programming and Design — Monsoon 2025
-### Assignment 4: Templates and Threads
 
 **A Comprehensive Enterprise Resource Planning System with Advanced C++ Features**
 
 ---
 
-**Developed by:** Sayan Das  
-**Roll Number:** MT25041  
-**Institution:** Indraprastha Institute of Information Technology, Delhi  
-**Course:** Object-Oriented Programming and Design  
-**Instructor:** Arani Bhattacharya
+**Author:** Sayan Das  
+**Technologies:** C++17, Multithreading, Template Metaprogramming
 
 ---
 
@@ -69,150 +63,44 @@ The ERP system manages comprehensive academic records for:
 
 ---
 
-## 📚 Assignment Requirements
+## ⚙️ Core Architecture & High-Performance Features
 
-This project fulfills all requirements of Assignment 4 for Object-Oriented Programming and Design (Monsoon 2025):
+This project is built to demonstrate advanced C++ software engineering principles and systems programming paradigms, focusing on the following core components:
 
-### Question 1: Template-Based University ERP Class ✅
+### 1. Template-Based Multi-University Architecture
+- A highly flexible template architecture (`Student<RollType, CourseCodeType>` and `Course<CourseCodeType>`) that allows the system to be deployed across different universities with varying data representation needs.
+- Supports multiple roll number types (e.g., `std::string` or `unsigned int`) and course code types (e.g., alphanumeric strings or integer keys) without runtime polymorphism overhead.
+- Explicit compile-time template instantiations are provided for all type combinations: `Student<string, string>`, `Student<string, int>`, `Student<unsigned int, string>`, and `Student<unsigned int, int>`.
 
-**Requirement:** Create a template class accommodating different universities with varying data types for roll numbers (string, unsigned int) and course codes (string, int).
+### 2. Multi-Institutional Catalog Integration
+- Integrates course catalog structures representing multiple campuses (e.g., alphanumeric string codes for campus A like "CSE201" alongside integer-based course numbering systems for campus B like "101, 201").
+- Standardized cross-registration and credit limit validation workflows.
 
-**Implementation:**
-- Template class `Student<RollType, CourseCodeType>` supporting all type combinations
-- Template class `Course<CourseCodeType>` for flexible course representation
-- Explicit instantiations: `Student<string, string>`, `Student<string, int>`, `Student<unsigned int, string>`, `Student<unsigned int, int>`
-- Type-safe operations preventing incompatible type mixing
-- CGPA calculation with weighted grade points
-- Comprehensive validation for all fields
+### 3. High-Volume CSV Parsing & Parallel Sort Engine
+- A dedicated CSV handling subsystem capable of parsing and loading 10,000+ mock student records under 1.5 seconds.
+- **Dynamic Thread Allocation Engine:** Automatically scales worker threads based on workload:
+  - ≤3,000 students ➔ 2 threads
+  - 3,001-6,000 students ➔ 3 threads
+  - 6,001-10,000 students ➔ 4 threads
+  - 10,001-15,000 students ➔ 5 threads
+  - >15,000 students ➔ 6 threads
+- **Algorithm:** Parallelized merge-sort with `std::sort` leaf-level optimizations.
+- **Thread Safety:** Mutex-protected logs and thread execution times tracking.
+- **Performance:** Achieves a ~2x speedup (2-3 ms compared to 5-6 ms baseline) for 10,000 students using 4 hardware threads.
 
-**Files:** `src/Student.h`, `src/Student.cpp`, `src/Course.h`, `src/Course.cpp`
+### 4. Dual-Order Iterator Subsystem (Zero-Copy)
+- Implements two iterator types for traversing the student registry:
+  - **InsertionOrderIterator:** Preserves chronological enrollment order utilizing an immutable lookup map.
+  - **SortedOrderIterator:** Traverses the dynamic sorted index of records.
+- **Zero-Copy Design:** Iterators hold reference pointers to records to eliminate data copying overhead. Standard STL compatibility is maintained for range-based `for` loops.
 
----
-
-### Question 2: IIIT-Delhi and IIT-Delhi Integration ✅
-
-**Requirement:** Handle both IIIT-Delhi (string course codes like "CSE201") and IIT-Delhi (integer course codes like 101, 201) in a unified system.
-
-**Implementation:**
-- Dual course catalog with 40+ courses from both institutions
-- IIIT-Delhi courses: CSE, ECE, MTH, SSH departments with string codes
-- IIT-Delhi courses: Integer-based numbering system (101-601)
-- Live demonstration feature (Admin Portal Option 23)
-- Template specialization enabling both systems to coexist
-- No runtime overhead from type abstraction
-
-**Course Examples:**
-- IIIT-Delhi: CSE201 (OOP), MTH101 (Mathematics), ECE113 (Digital Circuits)
-- IIT-Delhi: 101 (Intro to Computing), 201 (Advanced Algorithms), 305 (Database Systems)
-
-**Files:** `src/CourseCatalog.h`, `src/CourseCatalog.cpp`, `src/AdminPortal.cpp` (demo function)
-
----
-
-### Question 3: CSV Bulk Loading with Parallel Sorting ✅
-
-**Requirement:** Load 3000+ student records from CSV, implement parallel sorting with threading, log per-thread execution times, prevent race conditions.
-
-**Implementation:**
-
-#### A. CSV Handler
-- Supports bulk import of 10,000+ students
-- Comprehensive field parsing: name, roll, branch, level, year, courses, grades
-- Error handling with detailed validation messages
-- Sample dataset: `demo_students.csv` (10,000 records)
-
-#### B. Parallel Sorting Engine
-- **Dynamic Thread Allocation:**
-  - ≤3,000 students → 2 threads
-  - 3,001-6,000 → 3 threads
-  - 6,001-10,000 → 4 threads
-  - 10,001-15,000 → 5 threads
-  - >15,000 → 6 threads
-
-- **Algorithm:** Parallel merge sort with `std::sort` optimization
-- **Thread Safety:** Mutex-protected shared data structures
-- **Performance Logging:** Individual thread timing with microsecond precision
-- **Sorting Criteria:** Name, Roll Number, CGPA (ascending/descending)
-
-#### C. Performance Results (10,000 students)
-- Single-threaded: ~5-6 ms
-- Multi-threaded (4 threads): ~2-3 ms
-- Speedup: ~2x with parallel execution
-- Zero race conditions with lock guards
-
-**Files:** `src/CSVHandler.h`, `src/CSVHandler.cpp`, `src/SortingManager.h`, `src/SortingManager.cpp`
-
----
-
-### Question 4: Insertion and Sorted Order Iterators ✅
-
-**Requirement:** Implement iterators for both insertion order and sorted order without data duplication.
-
-**Implementation:**
-
-#### Two-File Persistence Architecture
-1. **__students.db**: Main student database (sortable, can be reordered)
-2. **insertion_order.db**: Enrollment records with timestamps (immutable)
-
-#### Iterator Classes
-
-**A. InsertionOrderIterator**
-- Iterates through `enrollmentRecords` vector (preserves original sequence)
-- O(1) hash map lookup for student data
-- Maintains chronological enrollment order
-- Persists across program restarts
-
-**B. SortedOrderIterator**
-- Iterates through `sortedStudents` vector (updated after sorting)
-- Direct pointer access (no lookup overhead)
-- Supports multiple sort criteria
-- Efficient forward traversal
-
-#### Key Features
-- **No Data Copying**: Iterators hold only references/pointers
-- **STL-Compatible**: Works with range-based for loops
-- **Thread-Safe**: Const iterators with mutex protection
-- **Persistent**: Both orders saved to disk independently
-
-**Files:** `src/ERPSystem.h`, `src/ERPSystem.cpp`, `src/EnrollmentRecord.h`, `src/EnrollmentRecord.cpp`
-
----
-
-### Question 5: Optimized Grade-Based Search ✅
-
-**Requirement:** Enable fast queries like "Find students with grade ≥9 in CSE201" without linear search.
-
-**Implementation:**
-
-#### Grade Index Data Structure
-```cpp
-std::map<CourseCode, std::multimap<GradePoint, StudentPointer>>
-```
-
-**Example:**
-```
-"CSE201" -> {
-    10.0 -> [Student1, Student2],     // A+ students
-    9.0  -> [Student3, Student4],     // A students
-    8.0  -> [Student5]                // B+ students
-}
-```
-
-#### Performance Characteristics
-- **Query Time:** O(log c + log g + k) where:
-  - c = number of courses
-  - g = distinct grades in course
-  - k = students matching criteria
-- **Memory Overhead:** ~18% for 200x query speedup
-- **Comparison:** Linear search (10,000 students) = 10ms, Indexed search = 0.05ms
-
-#### Index Maintenance
-- Auto-updated when adding students
-- Rebuilt on grade modifications
-- Reconstructed from database on startup
-- Thread-safe updates with mutex
-
-**Files:** `src/ERPSystem.h` (grade index), `src/ERPSystem.cpp` (query functions)
+### 5. Indexed O(log C + log G + K) Performance Search
+- Optimized search queries by maintaining a nested index structure:
+  ```cpp
+  std::map<CourseCode, std::multimap<GradePoint, StudentPointer>>
+  ```
+- **Query Performance:** Reduces query time from 10 ms (linear scan) to 0.05 ms (indexed lookup) for a database of 10,000 records.
+- **Index Maintenance:** Rebuilds dynamically on grade updates and parses from saved database files upon startup.
 
 ---
 
@@ -1134,33 +1022,7 @@ for (auto it = erpSystem->sortedOrderBegin();
   - Risk: High (requires comprehensive regression testing)
   - Status: Deferred to maintenance release
 
----
-
-## 🎓 Credits and Acknowledgments
-
-### Development Team
-
-**Lead Developer:** Sayan Das (MT25041)
-- System architecture and design
-- Template programming implementation
-- Multithreading engine
-- User interface design with soft color palette
-- Comprehensive documentation
-
-### Course Information
-
-**Institution:** Indraprastha Institute of Information Technology, Delhi (IIIT-Delhi)  
-**Course:** Object-Oriented Programming and Design  
-**Course Code:** CSE201  
-**Semester:** Monsoon 2025  
-**Instructor:** Dr. Arani Bhattacharya
-
-### Assignment Details
-
-**Assignment Number:** 4  
-**Topic:** Templates and Threads  
-**Total Marks:** 200  
-**Submission Date:** November 20, 2025
+## 🛠️ Credits and Technologies
 
 ### Technologies Used
 
@@ -1179,53 +1041,9 @@ for (auto it = erpSystem->sortedOrderBegin();
 2. **Design Patterns**: Gang of Four (GoF)
 3. **Multithreading**: C++ Concurrency in Action by Anthony Williams
 4. **Template Metaprogramming**: C++ Templates: The Complete Guide by David Vandevoorde
-5. **Color Theory**: Material Design Color System
-
-### Third-Party Libraries
-
-- **Standard Template Library (STL)**: C++17
-- **ANSI Color Codes**: Terminal styling (custom implementation with soft palette)
-
-### Special Thanks
-
-- IIIT-Delhi faculty for comprehensive course material
-- Teaching assistants for clarification and support
-- Classmates for collaborative problem-solving discussions
-- Stack Overflow community for technical insights
-- VS Code Copilot for documentation assistance
 
 ---
 
 ## 📄 License
 
-This project is developed as an academic assignment for IIIT-Delhi. All rights reserved.
-
-**Academic Integrity Notice:** This code is submitted as original work by Sayan Das (MT25041) for Assignment 4 of Object-Oriented Programming and Design (Monsoon 2025). Unauthorized copying, distribution, or plagiarism is strictly prohibited and violates the IIIT-Delhi Honor Code.
-
----
-
-## 📞 Contact Information
-
-**Developer:** Sayan Das  
-**Roll Number:** MT25041  
-**Email:** sayan25041@iiitd.ac.in  
-**Institution:** IIIT-Delhi  
-**Program:** M.Tech Computer Science
-
-**GitHub Repository:** https://github.com/Necromancer0912/OOPD-Assignment-4
-
----
-
-<div align="center">
-
-### 🌟 Thank You for Exploring the IIIT-Delhi ERP System! 🌟
-
-**Built with 💻 and ☕ by Sayan Das**
-
-*Demonstrating the power of modern C++ through elegant design and efficient implementation*
-
----
-
-**Version 1.0** | **November 2025** | **IIIT-Delhi**
-
-</div>
+This project is licensed under the MIT License. Feel free to use and modify it for educational or portfolio purposes.
